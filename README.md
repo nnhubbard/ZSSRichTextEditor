@@ -35,6 +35,7 @@ self.baseURL = [NSURL URLWithString:@"http://www.zedsaid.com"];
 // If you want to pretty print HTML within the source view.
 self.formatHTML = YES;
 
+// set the initial HTML for the editor
 [self setHtml:html];
 ```
 
