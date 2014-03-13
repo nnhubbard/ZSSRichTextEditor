@@ -22,7 +22,7 @@ We wanted to have a really beautiful color picker to make changing colors really
 How It Works
 ---
 
-Use a ZSPinAnnotation on a MapView:
+Just subclass `ZSSRichTextEditor` and use the following:
 
 ```objective-c
 // HTML Content to set in the editor
