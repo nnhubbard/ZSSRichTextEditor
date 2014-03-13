@@ -10,7 +10,7 @@ Using the Editor
 
 The editor is used how any other text input area in iOS is used. A selection of text or content is made, then tapping on the toolbar item below will apply that style. A Source View is also included, you can make changes and this will be reflected in the editor preview.
 
-![Editor](http://f.cl.ly/items/1k2Z2x2J3A1t0d1Q0H1G/demo2.gif "Editor")
+![Editor](http://cl.ly/image/3i41403g200B/demo.gif "Editor")
 
 Colors
 ---

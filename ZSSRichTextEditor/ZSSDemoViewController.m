@@ -32,6 +32,7 @@
     self.formatHTML = YES;
     
     [self setHtml:html];
+    NSLog(@"test");
     
 }
 
