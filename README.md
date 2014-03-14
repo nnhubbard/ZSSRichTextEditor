@@ -39,6 +39,32 @@ self.formatHTML = YES;
 [self setHtml:html];
 ```
 
+Insert Link and Insert Image Pickers
+---
+
+You can implement your own pickers for images and links if you have an alternate method that you are wanting to use. E.g., uploading an image from your camera roll then inserting the URL.
+
+When the alternate picker icon (crosshair) is tapped it will call the corresponding method, which you need to override in your `ZSSRichTextEditor` subclass (see example project):
+
+```objective-c
+- (void)showInsertURLAlternatePicker {
+    
+    [self dismissAlertView];
+    
+    // Show your custom picker
+    
+}
+
+
+- (void)showInsertImageAlternatePicker {
+    
+    [self dismissAlertView];
+    
+    // Show your custom picker
+    
+}
+```
+
 Supported Functions
 ---
 
