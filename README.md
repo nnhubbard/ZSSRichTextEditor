@@ -45,7 +45,22 @@ If you want to retrieve the HTML from the editor:
 [self getHTML];
 ```
 
-Insert Link and Insert Image Pickers
+Insert Link and Insert Image
+---
+
+If you want to manually insert a link or image where the cursor is, you can use the following methods:
+
+**Insert Image**
+```objective-c
+- (void)insertImage:(NSString *)url alt:(NSString *)alt;
+```
+
+**Insert Link**
+```objective-c
+- (void)insertLink:(NSString *)url title:(NSString *)title;
+```
+
+Custom Pickers
 ---
 
 You can implement your own pickers for images and links if you have an alternate method that you are wanting to use. E.g., uploading an image from your camera roll then inserting the URL.
@@ -119,3 +134,7 @@ Attribution
 | [HRColorPicker](https://github.com/hayashi311/Color-Picker-for-iOS)      | Simple color picker for iPhone      |   [BSD](https://github.com/hayashi311/Color-Picker-for-iOS/blob/master/ColorPicker/HRColorPickerView.h) |
 | [jQuery](https://jquery.com)      | jQuery is a fast, small, and feature-rich JavaScript library.      |   [MIT](http://jquery.org/license) |
 | [JS Beautifier](https://github.com/einars/js-beautify)      | Makes ugly Javascript pretty      |   [MIT](https://github.com/einars/js-beautify/blob/master/LICENSE) |
+
+Contact
+--------------
+Visit us online at [http://www.zedsaid.com](http://www.zedsaid.com) or [@zedsaid](https://twitter.com/zedsaid)
