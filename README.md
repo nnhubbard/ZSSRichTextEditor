@@ -39,6 +39,12 @@ self.formatHTML = YES;
 [self setHtml:html];
 ```
 
+If you want to retrieve the HTML from the editor:
+```objective-c
+// Returns an NSString
+[self getHTML];
+```
+
 Insert Link and Insert Image Pickers
 ---
 
