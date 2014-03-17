@@ -161,17 +161,21 @@ static Class hackishFixClass = Nil;
     
     // Background Toolbar
     UIToolbar *backgroundToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
+    backgroundToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     // Parent holding view
     self.toolbarHolder = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 44)];
+    self.toolbarHolder.autoresizingMask = self.toolbar.autoresizingMask;
     [self.toolbarHolder addSubview:self.toolBarScroll];
     [self.toolbarHolder insertSubview:backgroundToolbar atIndex:0];
     
     // Hide Keyboard
     if (![self isIpad]) {
+        
         // If we are not using an ipad we want to have a hide keyboard button
         UIButton *hideKeyboard = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         hideKeyboard.frame = CGRectMake(self.view.frame.size.width-44, 0, 44, 44);
+        hideKeyboard.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         [hideKeyboard setImage:[UIImage imageNamed:@"ZSSkeyboard.png"] forState:UIControlStateNormal];
         [hideKeyboard addTarget:self action:@selector(dismissKeyboard) forControlEvents:UIControlEventTouchUpInside];
         [self.toolbarHolder addSubview:hideKeyboard];
@@ -829,22 +833,37 @@ static Class hackishFixClass = Nil;
 #pragma mark - Keyboard status
 
 - (void)keyboardWillShowOrHide:(NSNotification *)notification {
+    
+    // Orientation
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
 	
     // User Info
     NSDictionary *info = notification.userInfo;
     CGFloat duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     int curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
-    CGRect keyboard = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect keyboardEnd = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    // Toolbar Sizes
+    CGFloat sizeOfToolbar = self.toolbarHolder.frame.size.height;
+    
+    // Keyboard Size
+    CGFloat keyboardHeight = UIInterfaceOrientationIsLandscape(orientation) ? keyboardEnd.size.width : keyboardEnd.size.height;
+    
+    // Correct Curve
+    UIViewAnimationOptions animationOptions = curve << 16;
     
 	if ([notification.name isEqualToString:UIKeyboardWillShowNotification]) {
-        [UIView animateWithDuration:duration delay:0 options:curve animations:^{
+        
+        [UIView animateWithDuration:duration delay:0 options:animationOptions animations:^{
+            
+            // Toolbar
             CGRect frame = self.toolbarHolder.frame;
-            frame.origin.y = (self.view.frame.size.height - keyboard.size.height) - 44;
+            frame.origin.y = self.view.frame.size.height - (keyboardHeight + sizeOfToolbar);
             self.toolbarHolder.frame = frame;
             
             // Editor View
             CGRect editorFrame = self.editorView.frame;
-            editorFrame.size.height = (self.view.frame.size.height - keyboard.size.height) - 44;
+            editorFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar;
             self.editorView.frame = editorFrame;
             self.editorViewFrame = self.editorView.frame;
             self.editorView.scrollView.contentInset = UIEdgeInsetsZero;
@@ -852,14 +871,17 @@ static Class hackishFixClass = Nil;
             
             // Source View
             CGRect sourceFrame = self.sourceView.frame;
-            sourceFrame.size.height = (self.view.frame.size.height - keyboard.size.height) - 44;
+            sourceFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar;
             self.sourceView.frame = sourceFrame;
             
         } completion:nil];
+        
 	} else {
-		[UIView animateWithDuration:duration delay:0 options:curve animations:^{
+        
+		[UIView animateWithDuration:duration delay:0 options:animationOptions animations:^{
+            
             CGRect frame = self.toolbarHolder.frame;
-            frame.origin.y = self.view.frame.size.height;
+            frame.origin.y = self.view.frame.size.height + keyboardHeight;
             self.toolbarHolder.frame = frame;
             
             // Editor View
@@ -876,6 +898,7 @@ static Class hackishFixClass = Nil;
             self.sourceView.frame = sourceFrame;
             
         } completion:nil];
+        
 	}//end
     
 }
