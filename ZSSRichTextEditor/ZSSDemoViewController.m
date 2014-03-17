@@ -20,6 +20,9 @@
     [super viewDidLoad];
     
     self.title = @"ZSSRichTextEditor";
+    
+    // Export HTML
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Export" style:UIBarButtonItemStylePlain target:self action:@selector(exportHTML)];
 	
     // HTML Content to set in the editor
     NSString *html = @"<!-- This is an HTML comment -->"
@@ -59,6 +62,13 @@
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:picker];
     nav.navigationBar.translucent = NO;
     [self presentViewController:nav animated:YES completion:nil];
+    
+}
+
+
+- (void)exportHTML {
+    
+    NSLog(@"%@", [self getHTML]);
     
 }
 
