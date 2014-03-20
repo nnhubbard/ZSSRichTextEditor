@@ -45,6 +45,23 @@ If you want to retrieve the HTML from the editor:
 [self getHTML];
 ```
 
+If you would like to change the tint color of the toolbar buttons:
+```objective-c
+// Set the toolbar item color
+self.toolbarItemTintColor = [UIColor greenColor];
+
+// Set the toolbar selected color
+self.toolbarItemSelectedTintColor = [UIColor redColor];
+```
+
+Show only specified buttons in the toolbar:
+```objective-c
+self.enabledToolbarItems =  ZSSRichTextEditorToolbarSuperscript |
+                            ZSSRichTextEditorToolbarUnderline |
+                            ZSSRichTextEditorToolbarH1 |
+                            ZSSRichTextEditorToolbarH3;
+```
+
 Insert Link and Insert Image
 ---
 
@@ -137,4 +154,4 @@ Attribution
 
 Contact
 --------------
-Visit us online at [http://www.zedsaid.com](http://www.zedsaid.com) or [@zedsaid](https://twitter.com/zedsaid)
+Visit us online at [http://www.zedsaid.com](http://www.zedsaid.com) or [@zedsaid](https://twitter.com/zedsaid).
