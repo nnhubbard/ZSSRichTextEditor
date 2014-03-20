@@ -34,6 +34,16 @@
     // If you want to pretty print HTML within the source view.
     self.formatHTML = YES;
     
+    // Set the toolbar item color
+    //self.toolbarItemTintColor = [UIColor greenColor];
+    
+    // Set the toolbar selected color
+    //self.toolbarItemSelectedTintColor = [UIColor brownColor];
+    
+    // Choose which toolbar items to show
+    //self.enabledToolbarItems = ZSSRichTextEditorToolbarSuperscript | ZSSRichTextEditorToolbarUnderline | ZSSRichTextEditorToolbarH1 | ZSSRichTextEditorToolbarH3;
+    
+    // Set the HTML contents of the editor
     [self setHtml:html];
     
 }
