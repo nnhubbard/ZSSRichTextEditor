@@ -140,6 +140,10 @@ ZSSRichTextEditor has the following functions:
 *   Text Color
 *   Background Color
 
+Requirements
+--------------
+`ZSSRichTextEditor` requires iOS7 as well as `CoreGraphics.framework` and `CoreText.framework`.
+
 Attribution
 --------------
 
