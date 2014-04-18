@@ -492,6 +492,13 @@ static Class hackishFixClass = Nil;
     // Dispose of any resources that can be recreated.
 }
 
+- (void)focusTextEditor
+{
+    self.editorView.keyboardDisplayRequiresUserAction = NO;
+    NSString *js = [NSString stringWithFormat:@"zss_editor.focusEditor();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+}
+
 
 #pragma mark - Editor Interaction
 

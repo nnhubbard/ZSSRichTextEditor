@@ -95,6 +95,11 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 - (NSString *)getHTML;
 
 /**
+ *  Manually focuses on the text editor
+ */
+- (void)focusTextEditor;
+
+/**
  *  Shows the insert image dialog with optinal inputs
  *
  *  @param url The URL for the image
