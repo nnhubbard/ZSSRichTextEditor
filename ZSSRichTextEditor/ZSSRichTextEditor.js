@@ -463,4 +463,8 @@ zss_editor.focusEditor = function() {
     selection.removeAllRanges();
     selection.addRange(range);
     $('#zss_editor_content').focus();
+}
+
+zss_editor.blurEditor = function() {
+    $('#zss_editor_content').blur();
 }//end

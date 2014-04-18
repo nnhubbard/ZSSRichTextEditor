@@ -499,6 +499,11 @@ static Class hackishFixClass = Nil;
     [self.editorView stringByEvaluatingJavaScriptFromString:js];
 }
 
+- (void)blurTextEditor
+{
+    NSString *js = [NSString stringWithFormat:@"zss_editor.blurEditor();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+}
 
 #pragma mark - Editor Interaction
 
