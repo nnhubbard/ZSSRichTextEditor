@@ -103,6 +103,20 @@ When the alternate picker icon (crosshair) is tapped it will call the correspond
 }
 ```
 
+Custom Toolbar Buttons
+---
+
+```objective-c
+UIButton *myButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, buttonWidth, 28.0f)];
+[myButton setTitle:@"My Button" forState:UIControlStateNormal];
+[myButton addTarget:self
+             action:@selector(didTapCustomToolbarButton:)
+   forControlEvents:UIControlEventTouchUpInside];
+
+[self addCustomToolbarItemWithButton:myButton];
+
+```
+
 Supported Functions
 ---
 

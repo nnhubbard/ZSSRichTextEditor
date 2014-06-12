@@ -112,6 +112,7 @@ static Class hackishFixClass = Nil;
 @property (nonatomic, strong) NSString *selectedImageURL;
 @property (nonatomic, strong) NSString *selectedImageAlt;
 @property (nonatomic, strong) UIBarButtonItem *keyboardItem;
+@property (nonatomic, strong) NSMutableArray *customBarButtonItems;
 - (NSString *)removeQuotesFromHTML:(NSString *)html;
 - (NSString *)tidyHTML:(NSString *)html;
 - (void)enableToolbarItems:(BOOL)enable;
@@ -228,6 +229,12 @@ static Class hackishFixClass = Nil;
 - (NSArray *)itemsForToolbar {
     
     NSMutableArray *items = [[NSMutableArray alloc] init];
+    
+    // None
+    if(_enabledToolbarItems & ZSSRichTextEditorToolbarNone)
+    {
+        return items;
+    }
     
     // Bold
     if (_enabledToolbarItems & ZSSRichTextEditorToolbarBold || _enabledToolbarItems & ZSSRichTextEditorToolbarAll) {
@@ -456,18 +463,30 @@ static Class hackishFixClass = Nil;
     
     // Check to see if we have any toolbar items, if not, add them all
     NSArray *items = [self itemsForToolbar];
-    if (items.count == 0) {
+    if (items.count == 0 && !(_enabledToolbarItems & ZSSRichTextEditorToolbarNone)) {
         _enabledToolbarItems = ZSSRichTextEditorToolbarAll;
         items = [self itemsForToolbar];
+    }
+    
+    // get the width before we add custom buttons
+    CGFloat toolbarWidth = items.count == 0 ? 0.0f : (CGFloat)(items.count * 39) - 10;
+    
+    if(self.customBarButtonItems != nil)
+    {
+        items = [items arrayByAddingObjectsFromArray:self.customBarButtonItems];
+        for(ZSSBarButtonItem *buttonItem in self.customBarButtonItems)
+        {
+            toolbarWidth += buttonItem.customView.frame.size.width + 11.0f;
+        }
     }
     
     self.toolbar.items = items;
     for (ZSSBarButtonItem *item in items) {
         item.tintColor = [self barButtonItemDefaultColor];
     }
-    self.toolbar.frame = CGRectMake(0, 0, (self.toolbar.items.count * 39) - 10, 44);
-    self.toolBarScroll.contentSize = CGSizeMake(self.toolbar.frame.size.width, 44);
     
+    self.toolbar.frame = CGRectMake(0, 0, toolbarWidth, 44);
+    self.toolBarScroll.contentSize = CGSizeMake(self.toolbar.frame.size.width, 44);
 }
 
 
@@ -787,6 +806,22 @@ static Class hackishFixClass = Nil;
     [self.alertView dismissWithClickedButtonIndex:self.alertView.cancelButtonIndex animated:YES];
 }
 
+- (void)addCustomToolbarItemWithButton:(UIButton *)button
+{
+    if(self.customBarButtonItems == nil)
+    {
+        self.customBarButtonItems = [NSMutableArray array];
+    }
+    
+    button.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:28.5f];
+    [button setTitleColor:[self barButtonItemDefaultColor] forState:UIControlStateNormal];
+    [button setTitleColor:[self barButtonItemSelectedDefaultColor] forState:UIControlStateHighlighted];
+    
+    ZSSBarButtonItem *barButtonItem = [[ZSSBarButtonItem alloc] initWithCustomView:button];
+    [self.customBarButtonItems addObject:barButtonItem];
+    
+    [self buildToolbar];
+}
 
 - (void)removeLink {
     [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.unlink();"];

@@ -45,7 +45,10 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
     ZSSRichTextEditorToolbarRedo = 1 << 28,
     ZSSRichTextEditorToolbarViewSource = 1 << 29,
     ZSSRichTextEditorToolbarAll = 1 << 30,
+    ZSSRichTextEditorToolbarNone = 1 << 31,
 };
+
+@class ZSSBarButtonItem;
 
 /**
  *  The viewController used with ZSSRichTextEditor
@@ -155,5 +158,9 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
  */
 - (void)dismissAlertView;
 
+/**
+ *  Add a custom UIBarButtonItem
+ */
+- (void)addCustomToolbarItemWithButton:(UIButton*)button;
 
 @end
