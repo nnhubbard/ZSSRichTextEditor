@@ -31,9 +31,6 @@
     // Set the base URL if you would like to use relative links, such as to images.
     self.baseURL = [NSURL URLWithString:@"http://www.zedsaid.com"];
     
-    // If you want to pretty print HTML within the source view.
-    self.formatHTML = YES;
-    
     // Set the toolbar item color
     //self.toolbarItemTintColor = [UIColor greenColor];
     

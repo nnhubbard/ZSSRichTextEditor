@@ -67,6 +67,11 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 @property (nonatomic) BOOL formatHTML;
 
 /**
+ *  If the keyboard should be shown when the editor loads
+ */
+@property (nonatomic) BOOL shouldShowKeyboard;
+
+/**
  *  Toolbar items to include
  */
 @property (nonatomic) ZSSRichTextEditorToolbar enabledToolbarItems;
