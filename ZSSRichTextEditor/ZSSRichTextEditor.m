@@ -140,6 +140,7 @@ static Class hackishFixClass = Nil;
     self.editorView = [[UIWebView alloc] initWithFrame:frame];
     self.editorView.delegate = self;
     self.editorView.hidesInputAccessoryView = YES;
+    self.editorView.keyboardDisplayRequiresUserAction = NO;
     self.editorView.scalesPageToFit = YES;
     self.editorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
     self.editorView.dataDetectorTypes = UIDataDetectorTypeNone;
@@ -970,6 +971,11 @@ static Class hackishFixClass = Nil;
     return YES;
     
 }//end
+
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    [self focusTextEditor];
+}
 
 
 #pragma mark - AlertView
