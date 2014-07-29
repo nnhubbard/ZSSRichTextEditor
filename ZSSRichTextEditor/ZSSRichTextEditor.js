@@ -60,6 +60,23 @@ zss_editor.restorerange = function(){
     selection.addRange(range);
 }
 
+zss_editor.getSelectedNode = function() {
+    var node,selection;
+    if (window.getSelection) {
+        selection = getSelection();
+        node = selection.anchorNode;
+    }
+    if (!node && document.selection) {
+        selection = document.selection
+        var range = selection.getRangeAt ? selection.getRangeAt(0) : selection.createRange();
+        node = range.commonAncestorContainer ? range.commonAncestorContainer :
+        range.parentElement ? range.parentElement() : range.item(0);
+    }
+    if (node) {
+        return (node.nodeName == "#text" ? node.parentNode : node);
+    }
+};
+
 zss_editor.setBold = function() {
 	document.execCommand('bold', false, null);
 	zss_editor.enabledEditingItems();
@@ -106,7 +123,16 @@ zss_editor.setHorizontalRule = function() {
 }
 
 zss_editor.setHeading = function(heading) {
-	document.execCommand('formatBlock', false, '<'+heading+'>');
+    var current_selection = $(zss_editor.getSelectedNode());
+    var t = current_selection.prop("tagName").toLowerCase();
+    var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+    if (is_heading && heading == t) {
+        var c = current_selection.html();
+        current_selection.replaceWith(c);
+    } else {
+        document.execCommand('formatBlock', false, '<'+heading+'>');
+    }
+	
 	zss_editor.enabledEditingItems();
 }
 
@@ -390,7 +416,6 @@ zss_editor.enabledEditingItems = function(e) {
 	
 	// Use jQuery to figure out those that are not supported
 	if (typeof(e) != "undefined") {
-		//alert($(e.target).css('textAlign'));
 		
 		// The target element
 		var t = $(e.target);
