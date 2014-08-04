@@ -41,7 +41,7 @@
     //self.enabledToolbarItems = ZSSRichTextEditorToolbarSuperscript | ZSSRichTextEditorToolbarUnderline | ZSSRichTextEditorToolbarH1 | ZSSRichTextEditorToolbarH3;
     
     // Set the HTML contents of the editor
-    [self setHtml:html];
+    [self setHTML:html];
     
 }
 
