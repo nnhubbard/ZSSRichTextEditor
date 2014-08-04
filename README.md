@@ -36,7 +36,7 @@ self.baseURL = [NSURL URLWithString:@"http://www.zedsaid.com"];
 self.formatHTML = YES;
 
 // set the initial HTML for the editor
-[self setHtml:html];
+[self setHTML:html];
 ```
 
 If you want to retrieve the HTML from the editor:
@@ -45,7 +45,13 @@ If you want to retrieve the HTML from the editor:
 [self getHTML];
 ```
 
-If you would like to change the tint color of the toolbar buttons:
+Insert HTML at the current caret position:
+```objective-c
+NSString *html = @"<strong>I love cats!</strong>";
+[self insertHTML:html];
+```
+
+Change the tint color of the toolbar buttons:
 ```objective-c
 // Set the toolbar item color
 self.toolbarItemTintColor = [UIColor greenColor];
