@@ -13,26 +13,6 @@
 #import "HRColorUtil.h"
 #import "ZSSTextView.h"
 
-@interface UIWebBrowserView : UIView
-@end
-
-@interface UIWebBrowserView (UIWebBrowserView_Additions)
-@end
-
-@implementation UIWebBrowserView (UIWebBrowserView_Additions)
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
-    if (action == @selector(_showTextStyleOptions:)) {
-        return NO;
-    } else if (action == @selector(_promptForReplace:)) {
-        return NO;
-    } else if (action == @selector(_define:)) {
-        return NO;
-    }
-    
-    return [super canPerformAction:action withSender:sender];
-}
-@end
 
 @interface UIWebView (HackishAccessoryHiding)
 @property (nonatomic, assign) BOOL hidesInputAccessoryView;
@@ -554,7 +534,6 @@ static Class hackishFixClass = Nil;
 }
 
 - (NSString *)getHTML {
-    
     NSString *html = [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getHTML();"];
     html = [self removeQuotesFromHTML:html];
     html = [self tidyHTML:html];
@@ -562,16 +541,8 @@ static Class hackishFixClass = Nil;
 }
 
 - (void)dismissKeyboard {
-    [self.editorView stringByEvaluatingJavaScriptFromString:@"document.activeElement.blur()"];
-    [self.sourceView resignFirstResponder];
     [self.view endEditing:YES];
 }
-
-
-- (void)focus {
-    [self.editorView stringByEvaluatingJavaScriptFromString:@"document.activeElement.focus()"];
-}
-
 
 - (void)showHTMLSource:(ZSSBarButtonItem *)barButtonItem {
     if (self.sourceView.hidden) {
