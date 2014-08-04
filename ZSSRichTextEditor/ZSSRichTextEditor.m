@@ -511,7 +511,7 @@ static Class hackishFixClass = Nil;
 
 #pragma mark - Editor Interaction
 
-- (void)setHtml:(NSString *)html {
+- (void)setHTML:(NSString *)html {
     
     if (!self.resourcesLoaded) {
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"editor" ofType:@"html"];
@@ -540,6 +540,13 @@ static Class hackishFixClass = Nil;
 	return html;
 }
 
+
+- (void)insertHTML:(NSString *)html {
+    NSString *cleanedHTML = [self removeQuotesFromHTML:html];
+	NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertHTML(\"%@\");", cleanedHTML];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+}
+
 - (void)dismissKeyboard {
     [self.view endEditing:YES];
 }
@@ -552,7 +559,7 @@ static Class hackishFixClass = Nil;
         self.editorView.hidden = YES;
         [self enableToolbarItems:NO];
     } else {
-        [self setHtml:self.sourceView.text];
+        [self setHTML:self.sourceView.text];
         barButtonItem.tintColor = [self barButtonItemDefaultColor];
         self.sourceView.hidden = YES;
         self.editorView.hidden = NO;

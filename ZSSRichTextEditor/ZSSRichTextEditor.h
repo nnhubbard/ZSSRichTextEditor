@@ -87,20 +87,26 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 @property (nonatomic, strong) UIColor *toolbarItemSelectedTintColor;
 
 /**
- *  The rich text editor
+ *  Sets the HTML for the entire editor
  *
- *  @param html  HTML string to start with
+ *  @param html  HTML string to set for the editor
  *
- *  @return id
  */
-- (void)setHtml:(NSString *)html;
+- (void)setHTML:(NSString *)html;
 
 /**
  *  Returns the HTML from the Rich Text Editor
  *
- *  @return NSString
  */
 - (NSString *)getHTML;
+
+/**
+ *  Inserts HTML at the caret position
+ *
+ *  @param html  HTML string to insert
+ *
+ */
+- (void)insertHTML:(NSString *)html;
 
 /**
  *  Manually focuses on the text editor
@@ -108,7 +114,7 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 - (void)focusTextEditor;
 
 /**
- *  Manually focuses on the text editor
+ *  Manually dismisses on the text editor
  */
 - (void)blurTextEditor;
 
