@@ -46,6 +46,7 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
     ZSSRichTextEditorToolbarViewSource = 1 << 29,
     ZSSRichTextEditorToolbarAll = 1 << 30,
     ZSSRichTextEditorToolbarNone = 1 << 31,
+    ZSSRichTextEditorToolbarParagraph = 1 << 32,
 };
 
 @class ZSSBarButtonItem;
