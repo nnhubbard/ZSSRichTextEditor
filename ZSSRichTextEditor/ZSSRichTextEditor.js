@@ -41,6 +41,23 @@ zss_editor.init = function() {
 			$('img').removeClass('zs_active');
 		}
 	});
+    
+    editor.on('keypress',function(e){
+        
+        var lineHeight = parseInt($(this).css('line-height')) + 2;
+              console.log(lineHeight);
+        newh = $(this).height();
+        if (typeof oldh === 'undefined') {
+            oldh = newh;//saves the current height
+              
+        }
+        if(oldh != newh) {
+              console.log('scroll');
+            //if height changes, scroll up by 1 line (plus a little 2 px)
+            window.scrollBy(0,lineHeight);
+            oldh = newh;//resave the saved height since it changed
+        }
+    });
 			
 }//end
 
@@ -136,7 +153,16 @@ zss_editor.setHeading = function(heading) {
 }
 
 zss_editor.setParagraph = function() {
-	document.execCommand('formatBlock', false, '<p>');
+    var current_selection = $(zss_editor.getSelectedNode());
+    var t = current_selection.prop("tagName").toLowerCase();
+    var is_paragraph = (t == 'p');
+    if (is_paragraph) {
+        var c = current_selection.html();
+        current_selection.replaceWith(c);
+    } else {
+        document.execCommand('formatBlock', false, '<p>');
+    }
+    
 	zss_editor.enabledEditingItems();
 }
 

@@ -313,6 +313,13 @@ static Class hackishFixClass = Nil;
         [items addObject:alignFull];
     }
     
+    // Paragraph
+    if (_enabledToolbarItems & ZSSRichTextEditorToolbarParagraph || _enabledToolbarItems & ZSSRichTextEditorToolbarAll) {
+        ZSSBarButtonItem *paragraph = [[ZSSBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSparagraph.png"] style:UIBarButtonItemStylePlain target:self action:@selector(paragraph)];
+        paragraph.label = @"p";
+        [items addObject:paragraph];
+    }
+    
     // Header 1
     if (_enabledToolbarItems & ZSSRichTextEditorToolbarH1 || _enabledToolbarItems & ZSSRichTextEditorToolbarAll) {
         ZSSBarButtonItem *h1 = [[ZSSBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSh1.png"] style:UIBarButtonItemStylePlain target:self action:@selector(heading1)];
@@ -674,6 +681,11 @@ static Class hackishFixClass = Nil;
 
 - (void)heading6 {
     NSString *trigger = @"zss_editor.setHeading('h6');";
+	[self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+}
+
+- (void)paragraph {
+    NSString *trigger = @"zss_editor.setParagraph();";
 	[self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
