@@ -139,6 +139,7 @@ ZSSRichTextEditor has the following functions:
 *   Justify Center
 *   Justify Right
 *   Justify Full
+*   Paragraph
 *   Heading 1
 *   Heading 2
 *   Heading 3
