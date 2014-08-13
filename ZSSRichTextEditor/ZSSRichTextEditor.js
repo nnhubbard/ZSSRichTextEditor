@@ -71,7 +71,7 @@ zss_editor.init = function() {
     });
     
     //set placeHolder
-    var placeholder = "请输入内容"; //Change this to your placeholder text
+    var placeholder = "place text here"; //Change this to your placeholder text
     if(editor.text().length){
         editor.text(placeholder);
         editor.css("color","gray");
