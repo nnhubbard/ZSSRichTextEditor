@@ -26,6 +26,17 @@ zss_editor.currentEditingLink;
 zss_editor.enabledItems = {};
 
 /**
+ * The log function for debug
+ */
+zss_editor.logMsg = function(msg){
+    
+    if (zss_editor.isUsingiOS) {
+        window.location = "log://" + msg;
+    } else {
+        console.log("log://" + msg);
+    }
+}
+/**
  * The initializer function that must be called onLoad
  */
 zss_editor.init = function() {
@@ -58,7 +69,25 @@ zss_editor.init = function() {
             oldh = newh;//resave the saved height since it changed
         }
     });
-			
+    
+    //set placeHolder
+    var placeholder = "请输入内容"; //Change this to your placeholder text
+    if(editor.text().length){
+        editor.text(placeholder);
+        editor.css("color","gray");
+    }
+    //set focus
+    editor.focus(function(){
+    	if($(this).text() == placeholder){
+    		$(this).text("");
+			$(this).css("color","black");
+    	}
+    }).focusout(function(){
+    	if(!$(this).text().length){
+    		$(this).text(placeholder);
+			$(this).css("color","gray");
+    	}
+    });
 }//end
 
 zss_editor.backuprange = function(){

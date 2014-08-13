@@ -25,11 +25,10 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Export" style:UIBarButtonItemStylePlain target:self action:@selector(exportHTML)];
 	
     // HTML Content to set in the editor
-    NSString *html = @"<!-- This is an HTML comment -->"
-    "<p>This is a test of the <strong>ZSSRichTextEditor</strong> by <a title=\"Zed Said\" href=\"http://www.zedsaid.com\">Zed Said Studio</a></p>";
+    NSString *html = @"";
     
     // Set the base URL if you would like to use relative links, such as to images.
-    self.baseURL = [NSURL URLWithString:@"http://www.zedsaid.com"];
+//    self.baseURL = [NSURL URLWithString:@"http://www.zedsaid.com"];
     
     // Set the toolbar item color
     //self.toolbarItemTintColor = [UIColor greenColor];

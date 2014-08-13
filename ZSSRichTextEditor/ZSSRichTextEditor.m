@@ -961,7 +961,10 @@ static Class hackishFixClass = Nil;
         [self updateToolBarWithButtonName:className];
         
     }
-    
+    else if ([urlString rangeOfString:@"log://"].location != NSNotFound) {
+        NSString *log = [urlString stringByReplacingOccurrencesOfString:@"log://" withString:@""];
+        NSLog(@"log--> %@",log);
+    }
     return YES;
     
 }//end
