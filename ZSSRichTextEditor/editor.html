@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html contenteditable="true">
+<html>
   <head>
     <title>ZSSRichTextEditor</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -786,10 +786,11 @@ function style_html(html_source, options) {
     </script>
     <style type="text/css">
         * {outline: 0px solid transparent; -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-touch-callout: none;}
-        html, body {padding:0; margin:0; font-family:Arial, Helvetica, sans-serif;}
+        html, body {padding:0; margin:0; font-family:Arial, Helvetica, sans-serif; height:100%;}
         body {padding:10px; overflow-y: scroll; -webkit-overflow-scrolling: touch;}
         img.zs_active {border: 2px dashed #000;}
+        audio {padding: 20px 0;}
     </style>
   </head>
-  <body onLoad="zss_editor.init();" onclick="void(0)" id="zss_editor_content"><!--content--></body>
+  <body contenteditable="true" onLoad="zss_editor.init();" onclick="void(0)" id="zss_editor_content"><!--content--></body>
 </html>

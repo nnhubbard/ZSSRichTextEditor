@@ -45,7 +45,11 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
     ZSSRichTextEditorToolbarRedo = 1 << 28,
     ZSSRichTextEditorToolbarViewSource = 1 << 29,
     ZSSRichTextEditorToolbarAll = 1 << 30,
+    ZSSRichTextEditorToolbarNone = 1 << 31,
+    ZSSRichTextEditorToolbarParagraph = 1 << 32,
 };
+
+@class ZSSBarButtonItem;
 
 /**
  *  The viewController used with ZSSRichTextEditor
@@ -64,6 +68,11 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 @property (nonatomic) BOOL formatHTML;
 
 /**
+ *  If the keyboard should be shown when the editor loads
+ */
+@property (nonatomic) BOOL shouldShowKeyboard;
+
+/**
  *  Toolbar items to include
  */
 @property (nonatomic) ZSSRichTextEditorToolbar enabledToolbarItems;
@@ -79,20 +88,36 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 @property (nonatomic, strong) UIColor *toolbarItemSelectedTintColor;
 
 /**
- *  The rich text editor
+ *  Sets the HTML for the entire editor
  *
- *  @param html  HTML string to start with
+ *  @param html  HTML string to set for the editor
  *
- *  @return id
  */
-- (void)setHtml:(NSString *)html;
+- (void)setHTML:(NSString *)html;
 
 /**
  *  Returns the HTML from the Rich Text Editor
  *
- *  @return NSString
  */
 - (NSString *)getHTML;
+
+/**
+ *  Inserts HTML at the caret position
+ *
+ *  @param html  HTML string to insert
+ *
+ */
+- (void)insertHTML:(NSString *)html;
+
+/**
+ *  Manually focuses on the text editor
+ */
+- (void)focusTextEditor;
+
+/**
+ *  Manually dismisses on the text editor
+ */
+- (void)blurTextEditor;
 
 /**
  *  Shows the insert image dialog with optinal inputs
@@ -145,5 +170,9 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
  */
 - (void)dismissAlertView;
 
+/**
+ *  Add a custom UIBarButtonItem
+ */
+- (void)addCustomToolbarItemWithButton:(UIButton*)button;
 
 @end

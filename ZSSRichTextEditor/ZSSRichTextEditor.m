@@ -13,26 +13,6 @@
 #import "HRColorUtil.h"
 #import "ZSSTextView.h"
 
-@interface UIWebBrowserView : UIView
-@end
-
-@interface UIWebBrowserView (UIWebBrowserView_Additions)
-@end
-
-@implementation UIWebBrowserView (UIWebBrowserView_Additions)
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
-    if (action == @selector(_showTextStyleOptions:)) {
-        return NO;
-    } else if (action == @selector(_promptForReplace:)) {
-        return NO;
-    } else if (action == @selector(_define:)) {
-        return NO;
-    }
-    
-    return [super canPerformAction:action withSender:sender];
-}
-@end
 
 @interface UIWebView (HackishAccessoryHiding)
 @property (nonatomic, assign) BOOL hidesInputAccessoryView;
@@ -112,6 +92,7 @@ static Class hackishFixClass = Nil;
 @property (nonatomic, strong) NSString *selectedImageURL;
 @property (nonatomic, strong) NSString *selectedImageAlt;
 @property (nonatomic, strong) UIBarButtonItem *keyboardItem;
+@property (nonatomic, strong) NSMutableArray *customBarButtonItems;
 - (NSString *)removeQuotesFromHTML:(NSString *)html;
 - (NSString *)tidyHTML:(NSString *)html;
 - (void)enableToolbarItems:(BOOL)enable;
@@ -122,6 +103,10 @@ static Class hackishFixClass = Nil;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // Defaults
+    self.shouldShowKeyboard = YES;
+    self.formatHTML = YES;
     
     // Source View
     CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
@@ -139,6 +124,7 @@ static Class hackishFixClass = Nil;
     self.editorView = [[UIWebView alloc] initWithFrame:frame];
     self.editorView.delegate = self;
     self.editorView.hidesInputAccessoryView = YES;
+    self.editorView.keyboardDisplayRequiresUserAction = NO;
     self.editorView.scalesPageToFit = YES;
     self.editorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
     self.editorView.dataDetectorTypes = UIDataDetectorTypeNone;
@@ -228,6 +214,12 @@ static Class hackishFixClass = Nil;
 - (NSArray *)itemsForToolbar {
     
     NSMutableArray *items = [[NSMutableArray alloc] init];
+    
+    // None
+    if(_enabledToolbarItems & ZSSRichTextEditorToolbarNone)
+    {
+        return items;
+    }
     
     // Bold
     if (_enabledToolbarItems & ZSSRichTextEditorToolbarBold || _enabledToolbarItems & ZSSRichTextEditorToolbarAll) {
@@ -319,6 +311,13 @@ static Class hackishFixClass = Nil;
         ZSSBarButtonItem *alignFull = [[ZSSBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSforcejustify.png"] style:UIBarButtonItemStylePlain target:self action:@selector(alignFull)];
         alignFull.label = @"justifyFull";
         [items addObject:alignFull];
+    }
+    
+    // Paragraph
+    if (_enabledToolbarItems & ZSSRichTextEditorToolbarParagraph || _enabledToolbarItems & ZSSRichTextEditorToolbarAll) {
+        ZSSBarButtonItem *paragraph = [[ZSSBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSparagraph.png"] style:UIBarButtonItemStylePlain target:self action:@selector(paragraph)];
+        paragraph.label = @"p";
+        [items addObject:paragraph];
     }
     
     // Header 1
@@ -456,18 +455,30 @@ static Class hackishFixClass = Nil;
     
     // Check to see if we have any toolbar items, if not, add them all
     NSArray *items = [self itemsForToolbar];
-    if (items.count == 0) {
+    if (items.count == 0 && !(_enabledToolbarItems & ZSSRichTextEditorToolbarNone)) {
         _enabledToolbarItems = ZSSRichTextEditorToolbarAll;
         items = [self itemsForToolbar];
+    }
+    
+    // get the width before we add custom buttons
+    CGFloat toolbarWidth = items.count == 0 ? 0.0f : (CGFloat)(items.count * 39) - 10;
+    
+    if(self.customBarButtonItems != nil)
+    {
+        items = [items arrayByAddingObjectsFromArray:self.customBarButtonItems];
+        for(ZSSBarButtonItem *buttonItem in self.customBarButtonItems)
+        {
+            toolbarWidth += buttonItem.customView.frame.size.width + 11.0f;
+        }
     }
     
     self.toolbar.items = items;
     for (ZSSBarButtonItem *item in items) {
         item.tintColor = [self barButtonItemDefaultColor];
     }
-    self.toolbar.frame = CGRectMake(0, 0, (self.toolbar.items.count * 39) - 10, 44);
-    self.toolBarScroll.contentSize = CGSizeMake(self.toolbar.frame.size.width, 44);
     
+    self.toolbar.frame = CGRectMake(0, 0, toolbarWidth, 44);
+    self.toolBarScroll.contentSize = CGSizeMake(self.toolbar.frame.size.width, 44);
 }
 
 
@@ -492,10 +503,22 @@ static Class hackishFixClass = Nil;
     // Dispose of any resources that can be recreated.
 }
 
+- (void)focusTextEditor
+{
+    self.editorView.keyboardDisplayRequiresUserAction = NO;
+    NSString *js = [NSString stringWithFormat:@"zss_editor.focusEditor();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+}
+
+- (void)blurTextEditor
+{
+    NSString *js = [NSString stringWithFormat:@"zss_editor.blurEditor();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+}
 
 #pragma mark - Editor Interaction
 
-- (void)setHtml:(NSString *)html {
+- (void)setHTML:(NSString *)html {
     
     if (!self.resourcesLoaded) {
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"editor" ofType:@"html"];
@@ -518,24 +541,22 @@ static Class hackishFixClass = Nil;
 }
 
 - (NSString *)getHTML {
-    
     NSString *html = [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getHTML();"];
     html = [self removeQuotesFromHTML:html];
     html = [self tidyHTML:html];
 	return html;
 }
 
+
+- (void)insertHTML:(NSString *)html {
+    NSString *cleanedHTML = [self removeQuotesFromHTML:html];
+	NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertHTML(\"%@\");", cleanedHTML];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+}
+
 - (void)dismissKeyboard {
-    [self.editorView stringByEvaluatingJavaScriptFromString:@"document.activeElement.blur()"];
-    [self.sourceView resignFirstResponder];
     [self.view endEditing:YES];
 }
-
-
-- (void)focus {
-    [self.editorView stringByEvaluatingJavaScriptFromString:@"document.activeElement.focus()"];
-}
-
 
 - (void)showHTMLSource:(ZSSBarButtonItem *)barButtonItem {
     if (self.sourceView.hidden) {
@@ -545,7 +566,7 @@ static Class hackishFixClass = Nil;
         self.editorView.hidden = YES;
         [self enableToolbarItems:NO];
     } else {
-        [self setHtml:self.sourceView.text];
+        [self setHTML:self.sourceView.text];
         barButtonItem.tintColor = [self barButtonItemDefaultColor];
         self.sourceView.hidden = YES;
         self.editorView.hidden = NO;
@@ -663,6 +684,11 @@ static Class hackishFixClass = Nil;
 	[self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
+- (void)paragraph {
+    NSString *trigger = @"zss_editor.setParagraph();";
+	[self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+}
+
 - (void)textColor {
     
     // Save the selection location
@@ -775,6 +801,22 @@ static Class hackishFixClass = Nil;
     [self.alertView dismissWithClickedButtonIndex:self.alertView.cancelButtonIndex animated:YES];
 }
 
+- (void)addCustomToolbarItemWithButton:(UIButton *)button
+{
+    if(self.customBarButtonItems == nil)
+    {
+        self.customBarButtonItems = [NSMutableArray array];
+    }
+    
+    button.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:28.5f];
+    [button setTitleColor:[self barButtonItemDefaultColor] forState:UIControlStateNormal];
+    [button setTitleColor:[self barButtonItemSelectedDefaultColor] forState:UIControlStateHighlighted];
+    
+    ZSSBarButtonItem *barButtonItem = [[ZSSBarButtonItem alloc] initWithCustomView:button];
+    [self.customBarButtonItems addObject:barButtonItem];
+    
+    [self buildToolbar];
+}
 
 - (void)removeLink {
     [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.unlink();"];
@@ -923,6 +965,15 @@ static Class hackishFixClass = Nil;
     return YES;
     
 }//end
+
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
+    if (self.shouldShowKeyboard) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self focusTextEditor];
+        });
+    }
+}
 
 
 #pragma mark - AlertView
@@ -1074,7 +1125,7 @@ static Class hackishFixClass = Nil;
     html = [html stringByReplacingOccurrencesOfString:@"<br>" withString:@"<br />"];
     html = [html stringByReplacingOccurrencesOfString:@"<hr>" withString:@"<hr />"];
     if (self.formatHTML) {
-        html = [self.editorView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"style_html('%@');", html]];
+        html = [self.editorView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"style_html(\"%@\");", html]];
     }
     return html;
 }//end

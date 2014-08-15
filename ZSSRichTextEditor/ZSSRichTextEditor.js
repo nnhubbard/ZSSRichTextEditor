@@ -32,7 +32,6 @@ zss_editor.init = function() {
 	
 	// Main editor div
 	var editor = $('#zss_editor_content');
-	editor.trigger('touchstart');
 	
 	// Bind an event so we always know what styles are applied
 	editor.bind('touchend', function(e) {
@@ -42,6 +41,23 @@ zss_editor.init = function() {
 			$('img').removeClass('zs_active');
 		}
 	});
+    
+    editor.on('keypress',function(e){
+        
+        var lineHeight = parseInt($(this).css('line-height')) + 2;
+              console.log(lineHeight);
+        newh = $(this).height();
+        if (typeof oldh === 'undefined') {
+            oldh = newh;//saves the current height
+              
+        }
+        if(oldh != newh) {
+              console.log('scroll');
+            //if height changes, scroll up by 1 line (plus a little 2 px)
+            window.scrollBy(0,lineHeight);
+            oldh = newh;//resave the saved height since it changed
+        }
+    });
 			
 }//end
 
@@ -59,6 +75,23 @@ zss_editor.restorerange = function(){
     range.setEnd(zss_editor.currentSelection.endContainer, zss_editor.currentSelection.endOffset);
     selection.addRange(range);
 }
+
+zss_editor.getSelectedNode = function() {
+    var node,selection;
+    if (window.getSelection) {
+        selection = getSelection();
+        node = selection.anchorNode;
+    }
+    if (!node && document.selection) {
+        selection = document.selection
+        var range = selection.getRangeAt ? selection.getRangeAt(0) : selection.createRange();
+        node = range.commonAncestorContainer ? range.commonAncestorContainer :
+        range.parentElement ? range.parentElement() : range.item(0);
+    }
+    if (node) {
+        return (node.nodeName == "#text" ? node.parentNode : node);
+    }
+};
 
 zss_editor.setBold = function() {
 	document.execCommand('bold', false, null);
@@ -106,12 +139,30 @@ zss_editor.setHorizontalRule = function() {
 }
 
 zss_editor.setHeading = function(heading) {
-	document.execCommand('formatBlock', false, '<'+heading+'>');
+    var current_selection = $(zss_editor.getSelectedNode());
+    var t = current_selection.prop("tagName").toLowerCase();
+    var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+    if (is_heading && heading == t) {
+        var c = current_selection.html();
+        current_selection.replaceWith(c);
+    } else {
+        document.execCommand('formatBlock', false, '<'+heading+'>');
+    }
+	
 	zss_editor.enabledEditingItems();
 }
 
 zss_editor.setParagraph = function() {
-	document.execCommand('formatBlock', false, '<p>');
+    var current_selection = $(zss_editor.getSelectedNode());
+    var t = current_selection.prop("tagName").toLowerCase();
+    var is_paragraph = (t == 'p');
+    if (is_paragraph) {
+        var c = current_selection.html();
+        current_selection.replaceWith(c);
+    } else {
+        document.execCommand('formatBlock', false, '<p>');
+    }
+    
 	zss_editor.enabledEditingItems();
 }
 
@@ -390,7 +441,6 @@ zss_editor.enabledEditingItems = function(e) {
 	
 	// Use jQuery to figure out those that are not supported
 	if (typeof(e) != "undefined") {
-		//alert($(e.target).css('textAlign'));
 		
 		// The target element
 		var t = $(e.target);
@@ -451,4 +501,20 @@ zss_editor.enabledEditingItems = function(e) {
 		}
 	}
 	
+}
+
+zss_editor.focusEditor = function() {
+    // the following was taken from http://stackoverflow.com/questions/1125292/how-to-move-cursor-to-end-of-contenteditable-entity/3866442#3866442
+    // and ensures we move the cursor to the end of the editor
+    var range = document.createRange();
+    range.selectNodeContents($('#zss_editor_content').get(0));
+    range.collapse(false);
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    $('#zss_editor_content').focus();
+}
+
+zss_editor.blurEditor = function() {
+    $('#zss_editor_content').blur();
 }//end
