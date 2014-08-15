@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "HRColorPickerViewController.h"
+#import "Third Party/HRColorPickerViewController.h"
 
 /**
  *  The types of toolbar items that can be added
