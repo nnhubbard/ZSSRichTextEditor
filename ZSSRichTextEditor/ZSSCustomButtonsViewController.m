@@ -7,6 +7,7 @@
 //
 
 #import "ZSSCustomButtonsViewController.h"
+#import "ZSSBarButtonItem.h"
 
 @interface ZSSCustomButtonsViewController ()
 
@@ -14,20 +15,49 @@
 
 @implementation ZSSCustomButtonsViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    
+    self.title = @"Custom Buttons";
+    
+    // HTML Content to set in the editor
+    NSString *html = @"<p>This editor is using <strong>custom buttons</strong>.</p>";
+    
+    // Set the HTML contents of the editor
+    [self setHTML:html];
+    
+    // Don't allow editor toolbar buttons (you can if you want)
+    self.enabledToolbarItems = ZSSRichTextEditorToolbarNone;
+    
+    // Create the custom buttons
+    UIButton *myButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 50, 28.0f)];
+    [myButton setTitle:@"Test" forState:UIControlStateNormal];
+    [myButton addTarget:self
+                 action:@selector(didTapCustomToolbarButton:)
+       forControlEvents:UIControlEventTouchUpInside];
+    [self addCustomToolbarItemWithButton:myButton];
+    
+    // Custom image button
+    ZSSBarButtonItem *item = [[ZSSBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSinsertkeyword.png"] style:UIBarButtonItemStylePlain target:self action:@selector(didTapCustomToolbarButton:)];
+    [self addCustomToolbarItem:item];
+    
 }
+
+
+- (void)didTapCustomToolbarButton:(UIButton *)button {
+    
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Custom Button!"
+                                        message:nil
+                                       delegate:self
+                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                              otherButtonTitles:nil];
+    [alertView show];
+    
+}
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -35,15 +65,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

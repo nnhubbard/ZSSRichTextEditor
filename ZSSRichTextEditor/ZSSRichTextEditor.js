@@ -1,17 +1,19 @@
 /*!
  *
- * ZSSRichTextEditor v1.0
+ * ZSSRichTextEditor v0.4
  * http://www.zedsaid.com
  *
- * Copyright 2013 Zed Said Studio
+ * Copyright 2014 Zed Said Studio LLC
  *
  */
 
-// The editor object
 var zss_editor = {};
 
 // If we are using iOS or desktop
 zss_editor.isUsingiOS = true;
+
+// If the user is draging
+zss_editor.isDragging = false;
 
 // The current selection
 zss_editor.currentSelection;
@@ -29,37 +31,88 @@ zss_editor.enabledItems = {};
  * The initializer function that must be called onLoad
  */
 zss_editor.init = function() {
-	
-	// Main editor div
-	var editor = $('#zss_editor_content');
+    
+    var editor = $('#zss_editor_content');
 	
 	// Bind an event so we always know what styles are applied
-	editor.bind('touchend', function(e) {
+	editor.on('touchend', function(e) {
 		zss_editor.enabledEditingItems(e);
 		var clicked = $(e.target);
 		if (!clicked.hasClass('zs_active')) {
 			$('img').removeClass('zs_active');
 		}
+		zss_editor.calculateEditorHeightWithCaretPosition();
+    });
+    editor.on('keyup',function(e){
+		zss_editor.calculateEditorHeightWithCaretPosition();
 	});
     
-    editor.on('keypress',function(e){
-        
-        var lineHeight = parseInt($(this).css('line-height')) + 2;
-              console.log(lineHeight);
-        newh = $(this).height();
-        if (typeof oldh === 'undefined') {
-            oldh = newh;//saves the current height
-              
-        }
-        if(oldh != newh) {
-              console.log('scroll');
-            //if height changes, scroll up by 1 line (plus a little 2 px)
-            window.scrollBy(0,lineHeight);
-            oldh = newh;//resave the saved height since it changed
-        }
-    });
-			
+    // Make sure that when we tap anywhere in the document we focus on the editor
+    $(window).on('touchmove', function(e) {
+		zss_editor.isDragging = true;
+	});
+    $(window).on('touchstart', function(e) {
+		zss_editor.isDragging = false;
+	});
+    $(document).on('touchend', function(e) {
+		if (!zss_editor.isDragging) {
+			zss_editor.focusEditor();
+		}
+	});
+    
 }//end
+
+// This will show up in the XCode console as we are able to push this into an NSLog.
+zss_editor.debug = function(msg) {
+	window.location = 'debug://'+msg;
+}
+
+zss_editor.setPlaceholder = function(placeholder) {
+
+    var editor = $('#zss_editor_content');
+    
+	//set placeHolder
+    if(editor.text().length == 1){
+        editor.text(placeholder);
+        editor.css("color","gray");
+    }
+    //set focus
+    editor.focus(function(){
+    	if($(this).text() == placeholder){
+    		$(this).text("");
+			$(this).css("color","black");
+    	}
+    }).focusout(function(){
+    	if(!$(this).text().length){
+    		$(this).text(placeholder);
+			$(this).css("color","gray");
+    	}
+    });
+
+}
+
+zss_editor.getCaretYPosition = function() {
+    var sel = window.getSelection();
+    sel.collapseToStart();
+    var range = sel.getRangeAt(0);
+    var span = document.createElement('span');
+    range.insertNode(span);
+    var topPosition = span.offsetTop;
+    span.parentNode.removeChild(span);
+    return topPosition;
+}
+
+zss_editor.calculateEditorHeightWithCaretPosition = function() {
+    
+    // Current caret position
+    var c = zss_editor.getCaretYPosition();
+    
+    // Current container height
+    var offsetHeight = document.getElementById('zss_editor_content').offsetHeight;
+    
+    console.log(c + ' == '+ offsetHeight);
+    
+}
 
 zss_editor.backuprange = function(){
 	var selection = window.getSelection();
@@ -319,14 +372,14 @@ zss_editor.quickLink = function() {
 			link_url = sel;
 		}
 	}
-
+    
 	var html_code = '<a href="' + link_url + '">' + sel + '</a>';
 	zss_editor.insertHTML(html_code);
 	
 }
 
 zss_editor.prepareInsert = function() {
-	zss_editor.backuprange();	
+	zss_editor.backuprange();
 }
 
 zss_editor.insertImage = function(url, alt) {
@@ -367,20 +420,20 @@ zss_editor.getHTML = function() {
     var bq = $('blockquote');
     if (bq.length != 0) {
         bq.each(function() {
-            var b = $(this);
+			var b = $(this);
 			if (b.css('border').indexOf('none') != -1) {
 				b.css({'border': ''});
 			}
 			if (b.css('padding').indexOf('0px') != -1) {
 				b.css({'padding': ''});
 			}
-        });
+		});
     }
-
+    
 	// Get the contents
 	var h = document.getElementById("zss_editor_content").innerHTML;
-
-	return h; 
+    
+	return h;
 }
 
 zss_editor.isCommandEnabled = function(commandName) {
@@ -392,7 +445,7 @@ zss_editor.enabledEditingItems = function(e) {
 	var items = [];
 	if (zss_editor.isCommandEnabled('bold')) {
 		items.push('bold');
-	} 
+	}
 	if (zss_editor.isCommandEnabled('italic')) {
 		items.push('italic');
 	}
@@ -435,9 +488,9 @@ zss_editor.enabledEditingItems = function(e) {
 	}
     // Images
 	$('img').bind('touchstart', function(e) {
-        $('img').removeClass('zs_active');
-        $(this).addClass('zs_active');
-    });
+                  $('img').removeClass('zs_active');
+                  $(this).addClass('zs_active');
+                  });
 	
 	// Use jQuery to figure out those that are not supported
 	if (typeof(e) != "undefined") {
@@ -484,7 +537,7 @@ zss_editor.enabledEditingItems = function(e) {
         } else {
             zss_editor.currentEditingImage = null;
         }
-			
+        
 	}
 	
 	if (items.length > 0) {
@@ -504,15 +557,17 @@ zss_editor.enabledEditingItems = function(e) {
 }
 
 zss_editor.focusEditor = function() {
+    
     // the following was taken from http://stackoverflow.com/questions/1125292/how-to-move-cursor-to-end-of-contenteditable-entity/3866442#3866442
     // and ensures we move the cursor to the end of the editor
+    var editor = $('#zss_editor_content');
     var range = document.createRange();
-    range.selectNodeContents($('#zss_editor_content').get(0));
+    range.selectNodeContents(editor.get(0));
     range.collapse(false);
     var selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
-    $('#zss_editor_content').focus();
+    editor.focus();
 }
 
 zss_editor.blurEditor = function() {

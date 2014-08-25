@@ -14,19 +14,28 @@
 
 @implementation ZSSColorViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    self.title = @"Colors";
+    
+    // HTML Content to set in the editor
+    NSString *html = @"<p>This editor is using <strong>custom toolbar colors</strong>.</p>";
+    
+    // Set the base URL if you would like to use relative links, such as to images.
+    self.baseURL = [NSURL URLWithString:@"http://www.zedsaid.com"];
+    
+    // Set the toolbar item color
+    self.toolbarItemTintColor = [UIColor redColor];
+    
+    // Set the toolbar selected color
+    self.toolbarItemSelectedTintColor = [UIColor blackColor];
+    
+    // Set the HTML contents of the editor
+    [self setHTML:html];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -35,15 +44,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

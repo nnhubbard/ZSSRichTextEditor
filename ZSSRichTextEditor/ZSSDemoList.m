@@ -7,6 +7,12 @@
 //
 
 #import "ZSSDemoList.h"
+#import "ZSSDemoViewController.h"
+#import "ZSSColorViewController.h"
+#import "ZSSLargeViewController.h"
+#import "ZSSPlaceholderViewController.h"
+#import "ZSSSelectiveViewController.h"
+#import "ZSSCustomButtonsViewController.h"
 
 @interface ZSSDemoList ()
 
@@ -27,11 +33,7 @@
 {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.title = @"ZSSRichTextEditor Demo";
 }
 
 - (void)didReceiveMemoryWarning
@@ -44,76 +46,76 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 0;
+    return 5;
 }
 
-/*
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
     
-    // Configure the cell...
+    static NSString *cellID = @"Cell Identifier";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    if (!cell)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID];
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
+    if (indexPath.row == 0) {
+        cell.textLabel.text = @"Standard";
+        cell.detailTextLabel.text = @"Default implementation";
+    } else if (indexPath.row == 1) {
+        cell.textLabel.text = @"Toolbar Colors";
+        cell.detailTextLabel.text = @"Custom button and selected button colors";
+    } else if (indexPath.row == 2) {
+        cell.textLabel.text = @"Selective Buttons";
+        cell.detailTextLabel.text = @"Pick and choose the features you want";
+    } else if (indexPath.row == 3) {
+        cell.textLabel.text = @"Custom Buttons";
+        cell.detailTextLabel.text = @"Add your own customized toolbar button";
+    } else if (indexPath.row == 4) {
+        cell.textLabel.text = @"Large";
+        cell.detailTextLabel.text = @"A large amount of content in the editor";
+    } else if (indexPath.row == 5) {
+        cell.textLabel.text = @"Placeholder";
+        cell.detailTextLabel.text = @"Using placeholder text in the editor";
+    }
+    cell.detailTextLabel.textColor = [UIColor grayColor];
     
     return cell;
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (indexPath.row == 0) {
+        ZSSDemoViewController *demo1 = [[ZSSDemoViewController alloc] init];
+        [self.navigationController pushViewController:demo1 animated:YES];
+    } else if (indexPath.row == 1) {
+        ZSSColorViewController *demo2 = [[ZSSColorViewController alloc] init];
+        [self.navigationController pushViewController:demo2 animated:YES];
+    } else if (indexPath.row == 2) {
+        ZSSSelectiveViewController *demo3 = [[ZSSSelectiveViewController alloc] init];
+        [self.navigationController pushViewController:demo3 animated:YES];
+    } else if (indexPath.row == 3) {
+        ZSSCustomButtonsViewController *demo4 = [[ZSSCustomButtonsViewController alloc] init];
+        [self.navigationController pushViewController:demo4 animated:YES];
+    } else if (indexPath.row == 4) {
+        ZSSLargeViewController *demo5 = [[ZSSLargeViewController alloc] init];
+        [self.navigationController pushViewController:demo5 animated:YES];
+    } else if (indexPath.row == 5) {
+        ZSSPlaceholderViewController *demo6 = [[ZSSPlaceholderViewController alloc] init];
+        [self.navigationController pushViewController:demo6 animated:YES];
+    }
+    
 }
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

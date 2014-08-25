@@ -93,6 +93,9 @@ static Class hackishFixClass = Nil;
 @property (nonatomic, strong) NSString *selectedImageAlt;
 @property (nonatomic, strong) UIBarButtonItem *keyboardItem;
 @property (nonatomic, strong) NSMutableArray *customBarButtonItems;
+@property (nonatomic, strong) NSMutableArray *customZSSBarButtonItems;
+@property (nonatomic, strong) NSString *internalHTML;
+@property (nonatomic) BOOL editorLoaded;
 - (NSString *)removeQuotesFromHTML:(NSString *)html;
 - (NSString *)tidyHTML:(NSString *)html;
 - (void)enableToolbarItems:(BOOL)enable;
@@ -104,7 +107,7 @@ static Class hackishFixClass = Nil;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Defaults
+    self.editorLoaded = NO;
     self.shouldShowKeyboard = YES;
     self.formatHTML = YES;
     
@@ -179,6 +182,18 @@ static Class hackishFixClass = Nil;
     
     // Build the toolbar
     [self buildToolbar];
+    
+    if (!self.resourcesLoaded) {
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"editor" ofType:@"html"];
+        NSData *htmlData = [NSData dataWithContentsOfFile:filePath];
+        NSString *htmlString = [[NSString alloc] initWithData:htmlData encoding:NSUTF8StringEncoding];
+        NSString *source = [[NSBundle mainBundle] pathForResource:@"ZSSRichTextEditor" ofType:@"js"];
+        NSString *jsString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:source] encoding:NSUTF8StringEncoding];
+        htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--editor-->" withString:jsString];
+        
+        [self.editorView loadHTMLString:htmlString baseURL:self.baseURL];
+        self.resourcesLoaded = YES;
+    }
 
 }
 
@@ -207,6 +222,14 @@ static Class hackishFixClass = Nil;
 - (void)setToolbarItemSelectedTintColor:(UIColor *)toolbarItemSelectedTintColor {
     
     _toolbarItemSelectedTintColor = toolbarItemSelectedTintColor;
+    
+}
+
+
+- (void)setPlaceholderText {
+    
+    NSString *js = [NSString stringWithFormat:@"zss_editor.setPlaceholder(\"%@\");", self.placeholder];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
     
 }
 
@@ -460,6 +483,10 @@ static Class hackishFixClass = Nil;
         items = [self itemsForToolbar];
     }
     
+    if (self.customZSSBarButtonItems != nil) {
+        items = [items arrayByAddingObjectsFromArray:self.customZSSBarButtonItems];
+    }
+    
     // get the width before we add custom buttons
     CGFloat toolbarWidth = items.count == 0 ? 0.0f : (CGFloat)(items.count * 39) - 10;
     
@@ -503,36 +530,32 @@ static Class hackishFixClass = Nil;
     // Dispose of any resources that can be recreated.
 }
 
-- (void)focusTextEditor
-{
+#pragma mark - Editor Interaction
+
+- (void)focusTextEditor {
     self.editorView.keyboardDisplayRequiresUserAction = NO;
     NSString *js = [NSString stringWithFormat:@"zss_editor.focusEditor();"];
     [self.editorView stringByEvaluatingJavaScriptFromString:js];
 }
 
-- (void)blurTextEditor
-{
+- (void)blurTextEditor {
     NSString *js = [NSString stringWithFormat:@"zss_editor.blurEditor();"];
     [self.editorView stringByEvaluatingJavaScriptFromString:js];
 }
 
-#pragma mark - Editor Interaction
-
 - (void)setHTML:(NSString *)html {
     
-    if (!self.resourcesLoaded) {
-        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"editor" ofType:@"html"];
-        NSData *htmlData = [NSData dataWithContentsOfFile:filePath];
-        NSString *htmlString = [[NSString alloc] initWithData:htmlData encoding:NSUTF8StringEncoding];
-        NSString *source = [[NSBundle mainBundle] pathForResource:@"ZSSRichTextEditor" ofType:@"js"];
-        NSString *jsString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:source] encoding:NSUTF8StringEncoding];
-        htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--editor-->" withString:jsString];
-        htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--content-->" withString:html];
-        
-        [self.editorView loadHTMLString:htmlString baseURL:self.baseURL];
-        self.resourcesLoaded = YES;
+    self.internalHTML = html;
+    
+    if (self.editorLoaded) {
+        [self updateHTML];
     }
     
+}
+
+- (void)updateHTML {
+    
+    NSString *html = self.internalHTML;
     self.sourceView.text = html;
     NSString *cleanedHTML = [self removeQuotesFromHTML:self.sourceView.text];
 	NSString *trigger = [NSString stringWithFormat:@"zss_editor.setHTML(\"%@\");", cleanedHTML];
@@ -813,10 +836,23 @@ static Class hackishFixClass = Nil;
     [button setTitleColor:[self barButtonItemSelectedDefaultColor] forState:UIControlStateHighlighted];
     
     ZSSBarButtonItem *barButtonItem = [[ZSSBarButtonItem alloc] initWithCustomView:button];
+    
     [self.customBarButtonItems addObject:barButtonItem];
     
     [self buildToolbar];
 }
+
+- (void)addCustomToolbarItem:(ZSSBarButtonItem *)item {
+    
+    if(self.customZSSBarButtonItems == nil)
+    {
+        self.customZSSBarButtonItems = [NSMutableArray array];
+    }
+    [self.customZSSBarButtonItems addObject:item];
+    
+    [self buildToolbar];
+}
+
 
 - (void)removeLink {
     [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.unlink();"];
@@ -913,7 +949,7 @@ static Class hackishFixClass = Nil;
         [itemsModified addObject:updatedItem];
     }
     itemNames = [NSArray arrayWithArray:itemsModified];
-    NSLog(@"%@", itemNames);
+   
     self.editorItemsEnabled = itemNames;
     
     // Highlight items
@@ -960,6 +996,12 @@ static Class hackishFixClass = Nil;
         NSString *className = [urlString stringByReplacingOccurrencesOfString:@"callback://" withString:@""];
         [self updateToolBarWithButtonName:className];
         
+    } else if ([urlString rangeOfString:@"debug://"].location != NSNotFound) {
+        
+        // We recieved the callback
+        NSString *debug = [[urlString stringByReplacingOccurrencesOfString:@"debug://" withString:@""] stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+        NSLog(@"%@", debug);
+        
     }
     
     return YES;
@@ -968,6 +1010,12 @@ static Class hackishFixClass = Nil;
 
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
+    self.editorLoaded = YES;
+    //[self setPlaceholderText];
+    if (!self.internalHTML) {
+        self.internalHTML = @"";
+    }
+    [self updateHTML];
     if (self.shouldShowKeyboard) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self focusTextEditor];

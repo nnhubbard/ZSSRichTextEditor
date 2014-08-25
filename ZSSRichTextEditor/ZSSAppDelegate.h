@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ZSSDemoViewController.h"
+#import "ZSSDemoList.h"
 
 @interface ZSSAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-@property (nonatomic, strong) ZSSDemoViewController *mainViewController;
+@property (nonatomic, strong) ZSSDemoList *mainViewController;
 
 @end

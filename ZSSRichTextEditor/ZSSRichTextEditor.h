@@ -73,6 +73,11 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 @property (nonatomic) BOOL shouldShowKeyboard;
 
 /**
+ *  The placeholder text to use if there is no editor content
+ */
+@property (nonatomic, strong) NSString *placeholder;
+
+/**
  *  Toolbar items to include
  */
 @property (nonatomic) ZSSRichTextEditorToolbar enabledToolbarItems;
@@ -171,8 +176,13 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 - (void)dismissAlertView;
 
 /**
- *  Add a custom UIBarButtonItem
+ *  Add a custom UIBarButtonItem by using a UIButton
  */
 - (void)addCustomToolbarItemWithButton:(UIButton*)button;
+
+/**
+ *  Add a custom ZSSBarButtonItem
+ */
+- (void)addCustomToolbarItem:(ZSSBarButtonItem *)item;
 
 @end
