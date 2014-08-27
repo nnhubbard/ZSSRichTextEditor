@@ -1002,6 +1002,11 @@ static Class hackishFixClass = Nil;
         NSString *debug = [[urlString stringByReplacingOccurrencesOfString:@"debug://" withString:@""] stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
         NSLog(@"%@", debug);
         
+    } else if ([urlString rangeOfString:@"scroll://"].location != NSNotFound) {
+        
+        NSInteger position = [[urlString stringByReplacingOccurrencesOfString:@"scroll://" withString:@""] integerValue];
+        [self editorDidScrollWithPosition:position];
+        
     }
     
     return YES;
@@ -1021,6 +1026,16 @@ static Class hackishFixClass = Nil;
             [self focusTextEditor];
         });
     }
+}
+
+
+#pragma mark - Callbacks
+
+// Blank implementation
+- (void)editorDidScrollWithPosition:(NSInteger)position {
+    
+    
+    
 }
 
 
