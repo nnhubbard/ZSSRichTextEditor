@@ -185,4 +185,9 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
  */
 - (void)addCustomToolbarItem:(ZSSBarButtonItem *)item;
 
+/**
+ *  Scroll event callback with position
+ */
+- (void)editorDidScrollWithPosition:(NSInteger)position;
+
 @end
