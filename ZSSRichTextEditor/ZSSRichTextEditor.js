@@ -42,7 +42,7 @@ zss_editor.init = function() {
 			$('img').removeClass('zs_active');
 		}
 		zss_editor.calculateEditorHeightWithCaretPosition();
-    });
+	});
     editor.on('keyup',function(e){
 		zss_editor.calculateEditorHeightWithCaretPosition();
 	});
@@ -54,10 +54,16 @@ zss_editor.init = function() {
     $(window).on('touchstart', function(e) {
 		zss_editor.isDragging = false;
 	});
-    $(document).on('touchend', function(e) {
+    $(window).on('touchend', function(e) {
 		if (!zss_editor.isDragging) {
 			zss_editor.focusEditor();
 		}
+	});
+	
+	// Capture the scroll event
+	editor.on('scroll',function(e){
+	    var position = e.currentTarget.scrollTop;
+	    window.location = 'scroll://'+position;
 	});
     
 }//end
