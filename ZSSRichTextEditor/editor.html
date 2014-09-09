@@ -784,13 +784,19 @@ function style_html(html_source, options) {
     <script>
     <!--editor-->
     </script>
-    <style type="text/css">
-        * {outline: 0px solid transparent; -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-touch-callout: none;}
-        html, body {padding:0; margin:0; font-family:Arial, Helvetica, sans-serif;}
-        body {padding:10px; overflow-y: scroll; -webkit-overflow-scrolling: touch; height:100%;}
-        img.zs_active {border: 2px dashed #000;}
-        audio {padding: 20px 0;}
-    </style>
+
+  <style type="text/css">
+      * {outline: 0px solid transparent; -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-touch-callout: none;}
+      html, body {padding:0; margin:0; font-family:Arial, Helvetica, sans-serif;}
+      body {padding:10px; overflow-y: scroll; -webkit-overflow-scrolling: touch; height:100%;}
+      img.zs_active {border: 2px dashed #000;}
+      audio {padding: 20px 0;}
+	</style>
   </head>
-  <body contenteditable="true" onLoad="zss_editor.init();" onclick="void(0)" id="zss_editor_content"></body>
+  <body onLoad="zss_editor.init();">
+      <div id="zss_editor_content" style="width: 100%; height: 100%; -webkit-overflow-scrolling: touch; overflow: auto;" contenteditable="true" ></div>
+      <div id="zss_editor_footer"> </div>
+  </body>
+
+
 </html>
