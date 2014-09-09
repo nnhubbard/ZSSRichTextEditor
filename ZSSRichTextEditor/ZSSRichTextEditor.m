@@ -233,6 +233,18 @@ static Class hackishFixClass = Nil;
     
 }
 
+- (void)setFooterHeight:(float)footerHeight {
+
+    NSString *js = [NSString stringWithFormat:@"zss_editor.setFooterHeight(\"%f\");", footerHeight];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+}
+
+- (void)setContentHeight:(float)contentHeight {
+    
+    NSString *js = [NSString stringWithFormat:@"zss_editor.contentHeight = %f;", contentHeight];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+}
+
 
 - (NSArray *)itemsForToolbar {
     
@@ -999,7 +1011,8 @@ static Class hackishFixClass = Nil;
     } else if ([urlString rangeOfString:@"debug://"].location != NSNotFound) {
         
         // We recieved the callback
-        NSString *debug = [[urlString stringByReplacingOccurrencesOfString:@"debug://" withString:@""] stringByReplacingOccurrencesOfString:@"%20" withString:@" "];
+        NSString *debug = [urlString stringByReplacingOccurrencesOfString:@"debug://" withString:@""];
+        debug = [debug stringByReplacingPercentEscapesUsingEncoding:NSStringEncodingConversionAllowLossy];
         NSLog(@"%@", debug);
         
     } else if ([urlString rangeOfString:@"scroll://"].location != NSNotFound) {
@@ -1033,7 +1046,6 @@ static Class hackishFixClass = Nil;
 
 // Blank implementation
 - (void)editorDidScrollWithPosition:(NSInteger)position {
-    
     
     
 }
@@ -1130,8 +1142,10 @@ static Class hackishFixClass = Nil;
             self.toolbarHolder.frame = frame;
             
             // Editor View
+            const int extraHeight = 10;
+
             CGRect editorFrame = self.editorView.frame;
-            editorFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar;
+            editorFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
             self.editorView.frame = editorFrame;
             self.editorViewFrame = self.editorView.frame;
             self.editorView.scrollView.contentInset = UIEdgeInsetsZero;
@@ -1139,8 +1153,12 @@ static Class hackishFixClass = Nil;
             
             // Source View
             CGRect sourceFrame = self.sourceView.frame;
-            sourceFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar;
+            sourceFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
             self.sourceView.frame = sourceFrame;
+            
+            // Provide editor with keyboard hegiht and aditor view height
+            [self setFooterHeight:(keyboardHeight - 8)];
+            [self setContentHeight: self.editorViewFrame.size.height];
             
         } completion:nil];
         
