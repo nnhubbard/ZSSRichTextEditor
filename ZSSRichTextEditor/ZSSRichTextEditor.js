@@ -1,6 +1,6 @@
 /*!
  *
- * ZSSRichTextEditor v0.4
+ * ZSSRichTextEditor v0.5
  * http://www.zedsaid.com
  *
  * Copyright 2014 Zed Said Studio LLC
@@ -27,13 +27,19 @@ zss_editor.currentEditingLink;
 // The objects that are enabled
 zss_editor.enabledItems = {};
 
+// Height of content window, will be set by viewController
+zss_editor.contentHeight = 244;
+
+// Sets to true when extra footer gap shows and requires to hide
+zss_editor.updateScrollOffset = false;
+
 /**
  * The initializer function that must be called onLoad
  */
 zss_editor.init = function() {
     
     var editor = $('#zss_editor_content');
-	
+    
 	// Bind an event so we always know what styles are applied
 	editor.on('touchend', function(e) {
 		zss_editor.enabledEditingItems(e);
@@ -41,15 +47,22 @@ zss_editor.init = function() {
 		if (!clicked.hasClass('zs_active')) {
 			$('img').removeClass('zs_active');
 		}
-		zss_editor.calculateEditorHeightWithCaretPosition();
 	});
-    editor.on('keyup',function(e){
-		zss_editor.calculateEditorHeightWithCaretPosition();
-	});
+    
+    $(document).on('selectionchange',function(e){
+                   zss_editor.calculateEditorHeightWithCaretPosition();
+                   zss_editor.setScrollPosition();
+              });
+    
+    $(window).on('scroll', function(e) {
+                 zss_editor.updateOffset();
+    });
     
     // Make sure that when we tap anywhere in the document we focus on the editor
     $(window).on('touchmove', function(e) {
 		zss_editor.isDragging = true;
+        zss_editor.updateScrollOffset = true;
+        zss_editor.setScrollPosition();
 	});
     $(window).on('touchstart', function(e) {
 		zss_editor.isDragging = false;
@@ -59,19 +72,42 @@ zss_editor.init = function() {
 			zss_editor.focusEditor();
 		}
 	});
-	
-	// Capture the scroll event
-	editor.on('scroll',function(e){
-	    var position = e.currentTarget.scrollTop;
-	    window.location = 'scroll://'+position;
-	});
     
 }//end
+
+zss_editor.updateOffset = function() {
+    
+    if (!zss_editor.updateScrollOffset)
+        return;
+    
+    var offsetY = window.document.body.scrollTop;
+    
+    var footer = $('#zss_editor_footer');
+    
+    var maxOffsetY = footer.offset().top - zss_editor.contentHeight;
+    
+    if (maxOffsetY < 0)
+        maxOffsetY = 0;
+    
+    if (offsetY > maxOffsetY)
+    {
+        window.scrollTo(0, maxOffsetY);
+    }
+    
+    zss_editor.setScrollPosition();
+}
 
 // This will show up in the XCode console as we are able to push this into an NSLog.
 zss_editor.debug = function(msg) {
 	window.location = 'debug://'+msg;
 }
+
+
+zss_editor.setScrollPosition = function() {
+	var position = window.pageYOffset;
+	window.location = 'scroll://'+position;
+}
+
 
 zss_editor.setPlaceholder = function(placeholder) {
 
@@ -97,6 +133,11 @@ zss_editor.setPlaceholder = function(placeholder) {
 
 }
 
+zss_editor.setFooterHeight = function(footerHeight) {
+    var footer = $('#zss_editor_footer');
+    footer.height(footerHeight + 'px');
+}
+
 zss_editor.getCaretYPosition = function() {
     var sel = window.getSelection();
     sel.collapseToStart();
@@ -110,14 +151,24 @@ zss_editor.getCaretYPosition = function() {
 
 zss_editor.calculateEditorHeightWithCaretPosition = function() {
     
-    // Current caret position
+    var padding = 50;
     var c = zss_editor.getCaretYPosition();
+    var e = document.getElementById('zss_editor_content');
+
+    var editor = $('#zss_editor_content');
     
-    // Current container height
-    var offsetHeight = document.getElementById('zss_editor_content').offsetHeight;
+    var offsetY = window.document.body.scrollTop;
+    var height = zss_editor.contentHeight;
     
-    console.log(c + ' == '+ offsetHeight);
+    var newPos = window.pageYOffset;
     
+    if (c < offsetY) {
+        newPos = c;
+    } else if (c > (offsetY + height - padding)) {
+        var newPos = c - height + padding - 18;
+    }
+    
+    window.scrollTo(0, newPos);
 }
 
 zss_editor.backuprange = function(){
@@ -504,7 +555,6 @@ zss_editor.enabledEditingItems = function(e) {
 		// The target element
 		var t = $(e.target);
 		var nodeName = e.target.nodeName.toLowerCase();
-        console.log(nodeName);
 		
 		// Background Color
 		var bgColor = t.css('backgroundColor');
