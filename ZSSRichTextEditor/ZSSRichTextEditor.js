@@ -66,6 +66,7 @@ zss_editor.init = function() {
 	});
     $(window).on('touchstart', function(e) {
 		zss_editor.isDragging = false;
+        window.location = "touchstart://";
 	});
     $(window).on('touchend', function(e) {
 		if (!zss_editor.isDragging) {
@@ -624,6 +625,10 @@ zss_editor.focusEditor = function() {
     selection.removeAllRanges();
     selection.addRange(range);
     editor.focus();
+}
+
+zss_editor.focusEditorToTop = function() {
+    $('#zss_editor_content').focus();
 }
 
 zss_editor.blurEditor = function() {
