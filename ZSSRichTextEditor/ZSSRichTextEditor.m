@@ -589,6 +589,10 @@ static Class hackishFixClass = Nil;
     [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
+- (NSString *)getText {
+    return [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getText();"];
+}
+
 - (void)dismissKeyboard {
     [self.view endEditing:YES];
 }
