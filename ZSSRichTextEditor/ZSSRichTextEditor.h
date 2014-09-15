@@ -107,6 +107,12 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 - (NSString *)getHTML;
 
 /**
+ *  Returns the plain text from the Rich Text Editor
+ *
+ */
+- (NSString *)getText;
+
+/**
  *  Inserts HTML at the caret position
  *
  *  @param html  HTML string to insert
