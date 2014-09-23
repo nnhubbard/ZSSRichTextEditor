@@ -1142,7 +1142,7 @@ static Class hackishFixClass = Nil;
             
             // Toolbar
             CGRect frame = self.toolbarHolder.frame;
-            frame.origin.y = self.view.frame.size.height - (keyboardHeight + sizeOfToolbar);
+            frame.origin.y = self.view.frame.size.height + self.view.frame.origin.y - (keyboardHeight + sizeOfToolbar);
             self.toolbarHolder.frame = frame;
             
             // Editor View
