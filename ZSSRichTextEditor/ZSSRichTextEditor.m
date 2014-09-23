@@ -43,7 +43,6 @@ static Class hackishFixClass = Nil;
 - (void)ensureHackishSubclassExistsOfBrowserViewClass:(Class)browserViewClass {
     if (!hackishFixClass) {
         Class newClass = objc_allocateClassPair(browserViewClass, hackishFixClassName, 0);
-        newClass = objc_allocateClassPair(browserViewClass, hackishFixClassName, 0);
         IMP nilImp = [self methodForSelector:@selector(methodReturningNil)];
         class_addMethod(newClass, @selector(inputAccessoryView), nilImp, "@@:");
         objc_registerClassPair(newClass);
