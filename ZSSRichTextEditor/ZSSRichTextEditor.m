@@ -43,6 +43,7 @@ static Class hackishFixClass = Nil;
 - (void)ensureHackishSubclassExistsOfBrowserViewClass:(Class)browserViewClass {
     if (!hackishFixClass) {
         Class newClass = objc_allocateClassPair(browserViewClass, hackishFixClassName, 0);
+        newClass = objc_allocateClassPair(browserViewClass, hackishFixClassName, 0);
         IMP nilImp = [self methodForSelector:@selector(methodReturningNil)];
         class_addMethod(newClass, @selector(inputAccessoryView), nilImp, "@@:");
         objc_registerClassPair(newClass);
@@ -588,6 +589,10 @@ static Class hackishFixClass = Nil;
     [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
+- (NSString *)getText {
+    return [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getText();"];
+}
+
 - (void)dismissKeyboard {
     [self.view endEditing:YES];
 }
@@ -1126,7 +1131,8 @@ static Class hackishFixClass = Nil;
     CGFloat sizeOfToolbar = self.toolbarHolder.frame.size.height;
     
     // Keyboard Size
-    CGFloat keyboardHeight = UIInterfaceOrientationIsLandscape(orientation) ? keyboardEnd.size.width : keyboardEnd.size.height;
+    //Checks if IOS8, gets correct keyboard height
+   CGFloat keyboardHeight = UIInterfaceOrientationIsLandscape(orientation) ? ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.000000) ? keyboardEnd.size.height : keyboardEnd.size.width : keyboardEnd.size.height;
     
     // Correct Curve
     UIViewAnimationOptions animationOptions = curve << 16;

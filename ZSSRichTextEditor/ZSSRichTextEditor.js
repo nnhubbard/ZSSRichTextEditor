@@ -1,6 +1,6 @@
 /*!
  *
- * ZSSRichTextEditor v0.5
+ * ZSSRichTextEditor v0.5.1
  * http://www.zedsaid.com
  *
  * Copyright 2014 Zed Said Studio LLC
@@ -38,24 +38,21 @@ zss_editor.updateScrollOffset = false;
  */
 zss_editor.init = function() {
     
-    var editor = $('#zss_editor_content');
-    
-	// Bind an event so we always know what styles are applied
-	editor.on('touchend', function(e) {
-		zss_editor.enabledEditingItems(e);
-		var clicked = $(e.target);
-		if (!clicked.hasClass('zs_active')) {
-			$('img').removeClass('zs_active');
-		}
-	});
+    $('#zss_editor_content').on('touchend', function(e) {
+    	zss_editor.enabledEditingItems(e);
+    	var clicked = $(e.target);
+    	if (!clicked.hasClass('zs_active')) {
+    		$('img').removeClass('zs_active');
+    	}
+    });
     
     $(document).on('selectionchange',function(e){
-                   zss_editor.calculateEditorHeightWithCaretPosition();
-                   zss_editor.setScrollPosition();
-              });
+		zss_editor.calculateEditorHeightWithCaretPosition();
+		zss_editor.setScrollPosition();
+	});
     
     $(window).on('scroll', function(e) {
-                 zss_editor.updateOffset();
+    	zss_editor.updateOffset();
     });
     
     // Make sure that when we tap anywhere in the document we focus on the editor
@@ -64,6 +61,7 @@ zss_editor.init = function() {
         zss_editor.updateScrollOffset = true;
         zss_editor.setScrollPosition();
 	});
+
     $(window).on('touchstart', function(e) {
 		zss_editor.isDragging = false;
         window.location = "touchstart://";
@@ -141,7 +139,8 @@ zss_editor.setFooterHeight = function(footerHeight) {
 
 zss_editor.getCaretYPosition = function() {
     var sel = window.getSelection();
-    sel.collapseToStart();
+    // Next line is comented to prevent deselecting selection. It looks like work but if there are any issues will appear then uconmment it as well as code above.
+	//sel.collapseToStart();
     var range = sel.getRangeAt(0);
     var span = document.createElement('span');
     range.insertNode(span);
@@ -494,6 +493,10 @@ zss_editor.getHTML = function() {
 	return h;
 }
 
+zss_editor.getText = function() {
+	return $('#zss_editor_content').text();
+}
+
 zss_editor.isCommandEnabled = function(commandName) {
 	return document.queryCommandState(commandName);
 }
@@ -546,9 +549,9 @@ zss_editor.enabledEditingItems = function(e) {
 	}
     // Images
 	$('img').bind('touchstart', function(e) {
-                  $('img').removeClass('zs_active');
-                  $(this).addClass('zs_active');
-                  });
+		$('img').removeClass('zs_active');
+		$(this).addClass('zs_active');
+	});
 	
 	// Use jQuery to figure out those that are not supported
 	if (typeof(e) != "undefined") {
