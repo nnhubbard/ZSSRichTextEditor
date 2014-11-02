@@ -1141,16 +1141,10 @@ static Class hackishFixClass = Nil;
         
         [UIView animateWithDuration:duration delay:0 options:animationOptions animations:^{
             
-            // Calculate Toolbar y position 
-            CGRect frameFrame = self.toolbarHolder.frame;
-            int yPos = UIInterfaceOrientationIsLandscape(orientation) ? self.view.window.frame.size.width : self.view.window.frame.size.height;
-            yPos -= (keyboardHeight + sizeOfToolbar);
-            yPos -=  self.view.frame.origin.y;
-            yPos -= UIInterfaceOrientationIsLandscape(orientation) ? [[UIApplication sharedApplication] statusBarFrame].size.width : [[UIApplication sharedApplication] statusBarFrame].size.height;
-            
-            frameFrame.origin.y = yPos;
-            
-            self.toolbarHolder.frame = frameFrame;
+            // Toolbar
+            CGRect frame = self.toolbarHolder.frame;
+            frame.origin.y = self.view.frame.size.height - (keyboardHeight + sizeOfToolbar);
+            self.toolbarHolder.frame = frame;
             
             // Editor View
             const int extraHeight = 10;

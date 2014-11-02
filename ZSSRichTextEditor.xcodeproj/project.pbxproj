@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		23065BF51A06BA67001BA0B0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23065BF41A06BA67001BA0B0 /* Images.xcassets */; };
 		2314CBA0198F4CEC00A126F6 /* 76.png in Resources */ = {isa = PBXBuildFile; fileRef = 2314CB9D198F4CEC00A126F6 /* 76.png */; };
 		2314CBA1198F4CEC00A126F6 /* 120.png in Resources */ = {isa = PBXBuildFile; fileRef = 2314CB9E198F4CEC00A126F6 /* 120.png */; };
 		2314CBA2198F4CEC00A126F6 /* 152.png in Resources */ = {isa = PBXBuildFile; fileRef = 2314CB9F198F4CEC00A126F6 /* 152.png */; };
@@ -116,6 +117,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		23065BF41A06BA67001BA0B0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ZSSRichTextEditor/Images.xcassets; sourceTree = "<group>"; };
 		2314CB9D198F4CEC00A126F6 /* 76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 76.png; sourceTree = "<group>"; };
 		2314CB9E198F4CEC00A126F6 /* 120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 120.png; sourceTree = "<group>"; };
 		2314CB9F198F4CEC00A126F6 /* 152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 152.png; sourceTree = "<group>"; };
@@ -397,6 +399,7 @@
 		4581EB73184845780048CAB0 = {
 			isa = PBXGroup;
 			children = (
+				23065BF41A06BA67001BA0B0 /* Images.xcassets */,
 				4581EB85184845790048CAB0 /* View Controllers */,
 				4581EB7E184845790048CAB0 /* Frameworks */,
 				4581EB7D184845790048CAB0 /* Products */,
@@ -623,6 +626,7 @@
 				45F860B518A84CFA0011266B /* ZSSitalic@2x.png in Resources */,
 				45F73D3518D7AE9700CD6DBA /* ZSSh6.png in Resources */,
 				2314CBA2198F4CEC00A126F6 /* 152.png in Resources */,
+				23065BF51A06BA67001BA0B0 /* Images.xcassets in Resources */,
 				45F860AE18A84CFA0011266B /* ZSSh3@2x.png in Resources */,
 				45F73D3918D7AE9700CD6DBA /* ZSSitalic.png in Resources */,
 				45F73D2E18D7AE9700CD6DBA /* ZSSclearstyle.png in Resources */,
@@ -727,6 +731,8 @@
 		23013BC5198C30A600C55598 /* Adhoc */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Nicholas Hubbard (W5MUA6S7P7)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -816,6 +822,8 @@
 		4581EBA91848457C0048CAB0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -831,6 +839,8 @@
 		4581EBAA1848457C0048CAB0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Nicholas Hubbard (W5MUA6S7P7)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
