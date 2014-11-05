@@ -185,13 +185,16 @@ static Class hackishFixClass = Nil;
     
     if (!self.resourcesLoaded) {
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"editor" ofType:@"html"];
-        NSData *htmlData = [NSData dataWithContentsOfFile:filePath];
-        NSString *htmlString = [[NSString alloc] initWithData:htmlData encoding:NSUTF8StringEncoding];
-        NSString *source = [[NSBundle mainBundle] pathForResource:@"ZSSRichTextEditor" ofType:@"js"];
-        NSString *jsString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:source] encoding:NSUTF8StringEncoding];
-        htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--editor-->" withString:jsString];
         
-        [self.editorView loadHTMLString:htmlString baseURL:self.baseURL];
+        NSURL* fileURL = [NSURL fileURLWithPath:filePath];
+//        NSData *htmlData = [NSData dataWithContentsOfFile:filePath];
+//        NSString *htmlString = [[NSString alloc] initWithData:htmlData encoding:NSUTF8StringEncoding];
+//        NSString *source = [[NSBundle mainBundle] pathForResource:@"ZSSRichTextEditor" ofType:@"js"];
+//        NSString *jsString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:source] encoding:NSUTF8StringEncoding];
+//        htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--editor-->" withString:jsString];
+//        [self.editorView loadHTMLString:htmlString baseURL:self.baseURL];
+        NSURLRequest* request = [NSURLRequest requestWithURL:fileURL];
+        [self.editorView loadRequest:request];
         self.resourcesLoaded = YES;
     }
 
@@ -578,7 +581,7 @@ static Class hackishFixClass = Nil;
 - (NSString *)getHTML {
     NSString *html = [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getHTML();"];
     html = [self removeQuotesFromHTML:html];
-    html = [self tidyHTML:html];
+//    html = [self tidyHTML:html];
 	return html;
 }
 

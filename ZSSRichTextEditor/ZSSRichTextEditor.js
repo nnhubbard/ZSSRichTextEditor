@@ -7,6 +7,42 @@
  *
  */
 
+
+// http://stackoverflow.com/questions/16766316/how-to-insert-image-in-uiwebview-at-caret-position
+this.prepareInsertImage = function(){
+    try{
+        backuprange();
+    }
+    catch(exc){
+        log('prepareInsertImage: ' + exc);
+    }
+}
+
+this.insertImage = function(imgPath){
+    try{
+        restorerange();
+        document.execCommand("InsertImage",true,imgPath);
+    }
+    catch(exc){
+        log('insertImage: ' + exc);
+    }
+}
+
+var focusRange;
+function backuprange(){
+    var selection = window.getSelection();
+    focusRange = selection.getRangeAt(0);
+    focusRange.setEnd(focusRange.startContainer, focusRange.startOffset);
+}
+function restorerange(){
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(focusRange);
+}
+// http://stackoverflow.com/questions/16766316/how-to-insert-image-in-uiwebview-at-caret-position
+
+
+
 var zss_editor = {};
 
 // If we are using iOS or desktop
@@ -151,6 +187,7 @@ zss_editor.getCaretYPosition = function() {
 
 zss_editor.calculateEditorHeightWithCaretPosition = function() {
     
+    return;
     var padding = 50;
     var c = zss_editor.getCaretYPosition();
     var e = document.getElementById('zss_editor_content');
