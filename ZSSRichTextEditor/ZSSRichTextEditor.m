@@ -580,7 +580,7 @@ static Class hackishFixClass = Nil;
 
 - (NSString *)getHTML {
     NSString *html = [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getHTML();"];
-    html = [self removeQuotesFromHTML:html];
+//    html = [self removeQuotesFromHTML:html];
 //    html = [self tidyHTML:html];
 	return html;
 }
