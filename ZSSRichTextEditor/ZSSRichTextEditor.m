@@ -1126,14 +1126,17 @@ static Class hackishFixClass = Nil;
     CGFloat duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     int curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
     CGRect keyboardEnd = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    
+    // convert from screen coordinates to self.view coordinates, as the bottom of self.view might not be at the bottom of the view
+    // also rotates the coordinates correctly in iOS<8
+    CGRect keyboardEndInView = [self.view convertRect:keyboardEnd fromView:nil];
+
     // Toolbar Sizes
     CGFloat sizeOfToolbar = self.toolbarHolder.frame.size.height;
     
     // Keyboard Size
-    //Checks if IOS8, gets correct keyboard height
-   CGFloat keyboardHeight = UIInterfaceOrientationIsLandscape(orientation) ? ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.000000) ? keyboardEnd.size.height : keyboardEnd.size.width : keyboardEnd.size.height;
-    
+    CGFloat keyboardTopYInView = keyboardEndInView.origin.y;
+    keyboardTopYInView = MAX(0, keyboardTopYInView);
+
     // Correct Curve
     UIViewAnimationOptions animationOptions = curve << 16;
     
@@ -1143,14 +1146,14 @@ static Class hackishFixClass = Nil;
             
             // Toolbar
             CGRect frame = self.toolbarHolder.frame;
-            frame.origin.y = self.view.frame.size.height - (keyboardHeight + sizeOfToolbar);
+            frame.origin.y = keyboardTopYInView - sizeOfToolbar;
             self.toolbarHolder.frame = frame;
             
             // Editor View
             const int extraHeight = 10;
 
             CGRect editorFrame = self.editorView.frame;
-            editorFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
+            editorFrame.size.height = keyboardTopYInView - sizeOfToolbar - extraHeight;
             self.editorView.frame = editorFrame;
             self.editorViewFrame = self.editorView.frame;
             self.editorView.scrollView.contentInset = UIEdgeInsetsZero;
@@ -1158,11 +1161,11 @@ static Class hackishFixClass = Nil;
             
             // Source View
             CGRect sourceFrame = self.sourceView.frame;
-            sourceFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
+            sourceFrame.size.height = keyboardTopYInView - sizeOfToolbar - extraHeight;
             self.sourceView.frame = sourceFrame;
             
             // Provide editor with keyboard hegiht and aditor view height
-            [self setFooterHeight:(keyboardHeight - 8)];
+            [self setFooterHeight:(self.view.frame.size.height - keyboardTopYInView - 8)];
             [self setContentHeight: self.editorViewFrame.size.height];
             
         } completion:nil];
@@ -1172,7 +1175,7 @@ static Class hackishFixClass = Nil;
 		[UIView animateWithDuration:duration delay:0 options:animationOptions animations:^{
             
             CGRect frame = self.toolbarHolder.frame;
-            frame.origin.y = self.view.frame.size.height + keyboardHeight;
+            frame.origin.y = keyboardTopYInView;
             self.toolbarHolder.frame = frame;
             
             // Editor View
