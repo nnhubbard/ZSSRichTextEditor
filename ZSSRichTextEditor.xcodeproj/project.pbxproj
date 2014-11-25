@@ -114,6 +114,7 @@
 		45F860C618A84CFA0011266B /* ZSSunlink@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A418A84CFA0011266B /* ZSSunlink@2x.png */; };
 		45F860C718A84CFA0011266B /* ZSSunorderedlist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A518A84CFA0011266B /* ZSSunorderedlist@2x.png */; };
 		45F860C818A84CFA0011266B /* ZSSviewsource@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A618A84CFA0011266B /* ZSSviewsource@2x.png */; };
+		BED7ED8F3236FDABAE361778 /* UIResponder+ZSSFirstResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = BED7E5F18AFFD2580FD3506F /* UIResponder+ZSSFirstResponder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -252,6 +253,8 @@
 		45F860A418A84CFA0011266B /* ZSSunlink@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSunlink@2x.png"; path = "Images/ZSSunlink@2x.png"; sourceTree = "<group>"; };
 		45F860A518A84CFA0011266B /* ZSSunorderedlist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSunorderedlist@2x.png"; path = "Images/ZSSunorderedlist@2x.png"; sourceTree = "<group>"; };
 		45F860A618A84CFA0011266B /* ZSSviewsource@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSviewsource@2x.png"; path = "Images/ZSSviewsource@2x.png"; sourceTree = "<group>"; };
+		BED7E5F18AFFD2580FD3506F /* UIResponder+ZSSFirstResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+ZSSFirstResponder.m"; sourceTree = "<group>"; };
+		BED7ED711102A36704E04897 /* UIResponder+ZSSFirstResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+ZSSFirstResponder.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -463,6 +466,7 @@
 				456A5977189C58C400FAEF89 /* Views */,
 				4581EBB9184B0F5C0048CAB0 /* ZSSRichTextEditor.h */,
 				4581EBBA184B0F5C0048CAB0 /* ZSSRichTextEditor.m */,
+				BED7E6581A4AF6344DB37BB4 /* FirstResponder */,
 			);
 			name = ZSRichTextEditor;
 			sourceTree = "<group>";
@@ -504,6 +508,15 @@
 				45A0CA4B18A8522A00F3F35E /* HRColorUtil.m */,
 			);
 			path = ColorPicker;
+			sourceTree = "<group>";
+		};
+		BED7E6581A4AF6344DB37BB4 /* FirstResponder */ = {
+			isa = PBXGroup;
+			children = (
+				BED7E5F18AFFD2580FD3506F /* UIResponder+ZSSFirstResponder.m */,
+				BED7ED711102A36704E04897 /* UIResponder+ZSSFirstResponder.h */,
+			);
+			name = FirstResponder;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -677,6 +690,7 @@
 				4581EBB81848F8190048CAB0 /* ZSSDemoViewController.m in Sources */,
 				45F80458189B1E9300A1EDD9 /* ZSSDemoPickerViewController.m in Sources */,
 				4513B3D8184E8F5100A9CA86 /* ZSSBarButtonItem.m in Sources */,
+				BED7ED8F3236FDABAE361778 /* UIResponder+ZSSFirstResponder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
