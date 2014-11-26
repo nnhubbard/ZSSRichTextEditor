@@ -62,10 +62,7 @@ self.toolbarItemSelectedTintColor = [UIColor redColor];
 
 Show only specified buttons in the toolbar:
 ```objective-c
-self.enabledToolbarItems =  ZSSRichTextEditorToolbarSuperscript |
-                            ZSSRichTextEditorToolbarUnderline |
-                            ZSSRichTextEditorToolbarH1 |
-                            ZSSRichTextEditorToolbarH3;
+self.enabledToolbarItems = @[ZSSRichTextEditorToolbarBold, ZSSRichTextEditorToolbarH1, ZSSRichTextEditorToolbarParagraph];
 ```
 
 Insert Link and Insert Image
@@ -173,7 +170,7 @@ Attribution
 `ZSSRichTextEditor` uses portions of code from the following sources:
 
 | Component     | Description   | License  |
-| ------------- |:-------------:| -----:|
+| :------------- |:-------------| :-----|
 | [CYRTextView](https://github.com/illyabusigin/CYRTextView)      | CYRTextView is a UITextView subclass that implements a variety of features that are relevant to a syntax or code text view. | [MIT](https://github.com/illyabusigin/CYRTextView/blob/master/LICENSE) |
 | [HRColorPicker](https://github.com/hayashi311/Color-Picker-for-iOS)      | Simple color picker for iPhone      |   [BSD](https://github.com/hayashi311/Color-Picker-for-iOS/blob/master/ColorPicker/HRColorPickerView.h) |
 | [jQuery](https://jquery.com)      | jQuery is a fast, small, and feature-rich JavaScript library.      |   [MIT](http://jquery.org/license) |
