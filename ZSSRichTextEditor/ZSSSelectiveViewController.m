@@ -25,7 +25,7 @@
     NSString *html = @"<p>Example showing just a few toolbar buttons.</p>";
     
     // Choose which toolbar items to show
-    self.enabledToolbarItems = ZSSRichTextEditorToolbarSuperscript | ZSSRichTextEditorToolbarUnderline | ZSSRichTextEditorToolbarH1 | ZSSRichTextEditorToolbarH3;
+    self.enabledToolbarItems = @[ZSSRichTextEditorToolbarBold, ZSSRichTextEditorToolbarH1, ZSSRichTextEditorToolbarParagraph];
     
     // Set the HTML contents of the editor
     [self setHTML:html];

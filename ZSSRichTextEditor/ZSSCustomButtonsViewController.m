@@ -30,7 +30,7 @@
     [self setHTML:html];
     
     // Don't allow editor toolbar buttons (you can if you want)
-    self.enabledToolbarItems = ZSSRichTextEditorToolbarNone;
+    self.enabledToolbarItems = @[ZSSRichTextEditorToolbarNone];
     
     // Create the custom buttons
     UIButton *myButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 50, 28.0f)];
@@ -50,10 +50,10 @@
 - (void)didTapCustomToolbarButton:(UIButton *)button {
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Custom Button!"
-                                        message:nil
-                                       delegate:self
-                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                              otherButtonTitles:nil];
+                                                        message:nil
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                              otherButtonTitles:nil];
     [alertView show];
     
 }

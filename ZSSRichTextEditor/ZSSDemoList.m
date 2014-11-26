@@ -15,7 +15,7 @@
 #import "ZSSCustomButtonsViewController.h"
 
 @interface ZSSDemoList ()
-
+@property (nonatomic) BOOL isIPad;
 @end
 
 @implementation ZSSDemoList
@@ -34,6 +34,9 @@
     [super viewDidLoad];
     
     self.title = @"ZSSRichTextEditor Demo";
+    
+    self.isIPad = ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad );
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -53,6 +56,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
+    //if (self.isIPad) return 6;
     return 5;
 }
 
@@ -85,8 +89,8 @@
         cell.textLabel.text = @"Large";
         cell.detailTextLabel.text = @"A large amount of content in the editor";
     } else if (indexPath.row == 5) {
-        cell.textLabel.text = @"Placeholder";
-        cell.detailTextLabel.text = @"Using placeholder text in the editor";
+        cell.textLabel.text = @"iPad Form Style Modal";
+        cell.detailTextLabel.text = @"Shows a form style modal on the iPad";
     }
     cell.detailTextLabel.textColor = [UIColor grayColor];
     
@@ -112,8 +116,10 @@
         ZSSLargeViewController *demo5 = [[ZSSLargeViewController alloc] init];
         [self.navigationController pushViewController:demo5 animated:YES];
     } else if (indexPath.row == 5) {
-        ZSSPlaceholderViewController *demo6 = [[ZSSPlaceholderViewController alloc] init];
-        [self.navigationController pushViewController:demo6 animated:YES];
+        ZSSDemoViewController *demo1 = [[ZSSDemoViewController alloc] init];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:demo1];
+        nav.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self presentViewController:nav animated:YES completion:nil];
     }
     
 }

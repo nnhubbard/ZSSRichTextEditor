@@ -12,42 +12,40 @@
 /**
  *  The types of toolbar items that can be added
  */
-typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
-    ZSSRichTextEditorToolbarBold = 1,
-    ZSSRichTextEditorToolbarItalic = 1 << 0,
-    ZSSRichTextEditorToolbarSubscript = 1 << 1,
-    ZSSRichTextEditorToolbarSuperscript = 1 << 2,
-    ZSSRichTextEditorToolbarStrikeThrough = 1 << 3,
-    ZSSRichTextEditorToolbarUnderline = 1 << 4,
-    ZSSRichTextEditorToolbarRemoveFormat = 1 << 5,
-    ZSSRichTextEditorToolbarJustifyLeft = 1 << 6,
-    ZSSRichTextEditorToolbarJustifyCenter = 1 << 7,
-    ZSSRichTextEditorToolbarJustifyRight = 1 << 8,
-    ZSSRichTextEditorToolbarJustifyFull = 1 << 9,
-    ZSSRichTextEditorToolbarH1 = 1 << 10,
-    ZSSRichTextEditorToolbarH2 = 1 << 11,
-    ZSSRichTextEditorToolbarH3 = 1 << 12,
-    ZSSRichTextEditorToolbarH4 = 1 << 13,
-    ZSSRichTextEditorToolbarH5 = 1 << 14,
-    ZSSRichTextEditorToolbarH6 = 1 << 15,
-    ZSSRichTextEditorToolbarTextColor = 1 << 16,
-    ZSSRichTextEditorToolbarBackgroundColor = 1 << 17,
-    ZSSRichTextEditorToolbarUnorderedList = 1 << 18,
-    ZSSRichTextEditorToolbarOrderedList = 1 << 19,
-    ZSSRichTextEditorToolbarHorizontalRule = 1 << 20,
-    ZSSRichTextEditorToolbarIndent = 1 << 21,
-    ZSSRichTextEditorToolbarOutdent = 1 << 22,
-    ZSSRichTextEditorToolbarInsertImage = 1 << 23,
-    ZSSRichTextEditorToolbarInsertLink = 1 << 24,
-    ZSSRichTextEditorToolbarRemoveLink = 1 << 25,
-    ZSSRichTextEditorToolbarQuickLink = 1 << 26,
-    ZSSRichTextEditorToolbarUndo = 1 << 27,
-    ZSSRichTextEditorToolbarRedo = 1 << 28,
-    ZSSRichTextEditorToolbarViewSource = 1 << 29,
-    ZSSRichTextEditorToolbarAll = 1 << 30,
-    ZSSRichTextEditorToolbarNone = 1 << 31,
-    ZSSRichTextEditorToolbarParagraph = 1 << 32,
-};
+static NSString * const ZSSRichTextEditorToolbarBold = @"com.zedsaid.toolbaritem.bold";
+static NSString * const ZSSRichTextEditorToolbarItalic = @"com.zedsaid.toolbaritem.italic";
+static NSString * const ZSSRichTextEditorToolbarSubscript = @"com.zedsaid.toolbaritem.subscript";
+static NSString * const ZSSRichTextEditorToolbarSuperscript = @"com.zedsaid.toolbaritem.superscript";
+static NSString * const ZSSRichTextEditorToolbarStrikeThrough = @"com.zedsaid.toolbaritem.strikeThrough";
+static NSString * const ZSSRichTextEditorToolbarUnderline = @"com.zedsaid.toolbaritem.underline";
+static NSString * const ZSSRichTextEditorToolbarRemoveFormat = @"com.zedsaid.toolbaritem.removeFormat";
+static NSString * const ZSSRichTextEditorToolbarJustifyLeft = @"com.zedsaid.toolbaritem.justifyLeft";
+static NSString * const ZSSRichTextEditorToolbarJustifyCenter = @"com.zedsaid.toolbaritem.justifyCenter";
+static NSString * const ZSSRichTextEditorToolbarJustifyRight = @"com.zedsaid.toolbaritem.justifyRight";
+static NSString * const ZSSRichTextEditorToolbarJustifyFull = @"com.zedsaid.toolbaritem.justifyFull";
+static NSString * const ZSSRichTextEditorToolbarH1 = @"com.zedsaid.toolbaritem.h1";
+static NSString * const ZSSRichTextEditorToolbarH2 = @"com.zedsaid.toolbaritem.h2";
+static NSString * const ZSSRichTextEditorToolbarH3 = @"com.zedsaid.toolbaritem.h3";
+static NSString * const ZSSRichTextEditorToolbarH4 = @"com.zedsaid.toolbaritem.h4";
+static NSString * const ZSSRichTextEditorToolbarH5 = @"com.zedsaid.toolbaritem.h5";
+static NSString * const ZSSRichTextEditorToolbarH6 = @"com.zedsaid.toolbaritem.h6";
+static NSString * const ZSSRichTextEditorToolbarTextColor = @"com.zedsaid.toolbaritem.textColor";
+static NSString * const ZSSRichTextEditorToolbarBackgroundColor = @"com.zedsaid.toolbaritem.backgroundColor";
+static NSString * const ZSSRichTextEditorToolbarUnorderedList = @"com.zedsaid.toolbaritem.unorderedList";
+static NSString * const ZSSRichTextEditorToolbarOrderedList = @"com.zedsaid.toolbaritem.orderedList";
+static NSString * const ZSSRichTextEditorToolbarHorizontalRule = @"com.zedsaid.toolbaritem.horizontalRule";
+static NSString * const ZSSRichTextEditorToolbarIndent = @"com.zedsaid.toolbaritem.indent";
+static NSString * const ZSSRichTextEditorToolbarOutdent = @"com.zedsaid.toolbaritem.outdent";
+static NSString * const ZSSRichTextEditorToolbarInsertImage = @"com.zedsaid.toolbaritem.insertImage";
+static NSString * const ZSSRichTextEditorToolbarInsertLink = @"com.zedsaid.toolbaritem.insertLink";
+static NSString * const ZSSRichTextEditorToolbarRemoveLink = @"com.zedsaid.toolbaritem.removeLink";
+static NSString * const ZSSRichTextEditorToolbarQuickLink = @"com.zedsaid.toolbaritem.quickLink";
+static NSString * const ZSSRichTextEditorToolbarUndo = @"com.zedsaid.toolbaritem.undo";
+static NSString * const ZSSRichTextEditorToolbarRedo = @"com.zedsaid.toolbaritem.redo";
+static NSString * const ZSSRichTextEditorToolbarViewSource = @"com.zedsaid.toolbaritem.viewSource";
+static NSString * const ZSSRichTextEditorToolbarParagraph = @"com.zedsaid.toolbaritem.paragraph";
+static NSString * const ZSSRichTextEditorToolbarAll = @"com.zedsaid.toolbaritem.all";
+static NSString * const ZSSRichTextEditorToolbarNone = @"com.zedsaid.toolbaritem.none";
 
 @class ZSSBarButtonItem;
 
@@ -80,7 +78,7 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 /**
  *  Toolbar items to include
  */
-@property (nonatomic) ZSSRichTextEditorToolbar enabledToolbarItems;
+@property (nonatomic, strong) NSArray *enabledToolbarItems;
 
 /**
  *  Color to tint the toolbar items
