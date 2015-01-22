@@ -111,28 +111,28 @@ static Class hackishFixClass = Nil;
     self.enabledToolbarItems = [[NSArray alloc] init];
     
     // Source View
-    frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    sourceView = [[ZSSTextView alloc] initWithFrame:frame];
-    sourceView.hidden = YES;
-    sourceView.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    sourceView.autocorrectionType = UITextAutocorrectionTypeNo;
-    sourceView.font = [UIFont fontWithName:@"Courier" size:13.0];
-    sourceView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    sourceView.autoresizesSubviews = YES;
-    sourceView.delegate = self;
-    [self.view addSubview:sourceView];
+    self.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    self.sourceView = [[ZSSTextView alloc] initWithFrame:self.frame];
+    self.sourceView.hidden = YES;
+    self.sourceView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.sourceView.autocorrectionType = UITextAutocorrectionTypeNo;
+    self.sourceView.font = [UIFont fontWithName:@"Courier" size:13.0];
+    self.sourceView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.sourceView.autoresizesSubviews = YES;
+    self.sourceView.delegate = self;
+    [self.view addSubview:self.sourceView];
     
     // Editor View
-    editorView = [[UIWebView alloc] initWithFrame:frame];
-    editorView.delegate = self;
-    editorView.hidesInputAccessoryView = YES;
-    editorView.keyboardDisplayRequiresUserAction = NO;
-    editorView.scalesPageToFit = YES;
-    editorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-    editorView.dataDetectorTypes = UIDataDetectorTypeNone;
-    editorView.scrollView.bounces = NO;
-    editorView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:editorView];
+    self.editorView = [[UIWebView alloc] initWithFrame:self.frame];
+    self.editorView.delegate = self;
+    self.editorView.hidesInputAccessoryView = YES;
+    self.editorView.keyboardDisplayRequiresUserAction = NO;
+    self.editorView.scalesPageToFit = YES;
+    self.editorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    self.editorView.dataDetectorTypes = UIDataDetectorTypeNone;
+    self.editorView.scrollView.bounces = NO;
+    self.editorView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.editorView];
     
     // Scrolling View
     self.toolBarScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, [self isIpad] ? self.view.frame.size.width : self.view.frame.size.width - 44, 44)];
@@ -190,7 +190,7 @@ static Class hackishFixClass = Nil;
         NSString *jsString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:source] encoding:NSUTF8StringEncoding];
         htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--editor-->" withString:jsString];
         
-        [editorView loadHTMLString:htmlString baseURL:self.baseURL];
+        [self.editorView loadHTMLString:htmlString baseURL:self.baseURL];
         self.resourcesLoaded = YES;
     }
     
@@ -228,20 +228,20 @@ static Class hackishFixClass = Nil;
 - (void)setPlaceholderText {
     
     NSString *js = [NSString stringWithFormat:@"zss_editor.setPlaceholder(\"%@\");", self.placeholder];
-    [editorView stringByEvaluatingJavaScriptFromString:js];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
     
 }
 
 - (void)setFooterHeight:(float)footerHeight {
     
     NSString *js = [NSString stringWithFormat:@"zss_editor.setFooterHeight(\"%f\");", footerHeight];
-    [editorView stringByEvaluatingJavaScriptFromString:js];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
 }
 
 - (void)setContentHeight:(float)contentHeight {
     
     NSString *js = [NSString stringWithFormat:@"zss_editor.contentHeight = %f;", contentHeight];
-    [editorView stringByEvaluatingJavaScriptFromString:js];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
 }
 
 
@@ -543,14 +543,14 @@ static Class hackishFixClass = Nil;
 #pragma mark - Editor Interaction
 
 - (void)focusTextEditor {
-    editorView.keyboardDisplayRequiresUserAction = NO;
+    self.editorView.keyboardDisplayRequiresUserAction = NO;
     NSString *js = [NSString stringWithFormat:@"zss_editor.focusEditor();"];
-    [editorView stringByEvaluatingJavaScriptFromString:js];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
 }
 
 - (void)blurTextEditor {
     NSString *js = [NSString stringWithFormat:@"zss_editor.blurEditor();"];
-    [editorView stringByEvaluatingJavaScriptFromString:js];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
 }
 
 - (void)setHTML:(NSString *)html {
@@ -566,15 +566,15 @@ static Class hackishFixClass = Nil;
 - (void)updateHTML {
     
     NSString *html = self.internalHTML;
-    sourceView.text = html;
-    NSString *cleanedHTML = [self removeQuotesFromHTML:sourceView.text];
+    self.sourceView.text = html;
+    NSString *cleanedHTML = [self removeQuotesFromHTML:self.sourceView.text];
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.setHTML(\"%@\");", cleanedHTML];
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
     
 }
 
 - (NSString *)getHTML {
-    NSString *html = [editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getHTML();"];
+    NSString *html = [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getHTML();"];
     html = [self removeQuotesFromHTML:html];
     html = [self tidyHTML:html];
     return html;
@@ -584,11 +584,11 @@ static Class hackishFixClass = Nil;
 - (void)insertHTML:(NSString *)html {
     NSString *cleanedHTML = [self removeQuotesFromHTML:html];
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertHTML(\"%@\");", cleanedHTML];
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (NSString *)getText {
-    return [editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getText();"];
+    return [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getText();"];
 }
 
 - (void)dismissKeyboard {
@@ -596,140 +596,140 @@ static Class hackishFixClass = Nil;
 }
 
 - (void)showHTMLSource:(ZSSBarButtonItem *)barButtonItem {
-    if (sourceView.hidden) {
-        sourceView.text = [self getHTML];
-        sourceView.hidden = NO;
+    if (self.sourceView.hidden) {
+        self.sourceView.text = [self getHTML];
+        self.sourceView.hidden = NO;
         barButtonItem.tintColor = [UIColor blackColor];
-        editorView.hidden = YES;
+        self.editorView.hidden = YES;
         [self enableToolbarItems:NO];
     } else {
-        [self setHTML:sourceView.text];
+        [self setHTML:self.sourceView.text];
         barButtonItem.tintColor = [self barButtonItemDefaultColor];
-        sourceView.hidden = YES;
-        editorView.hidden = NO;
+        self.sourceView.hidden = YES;
+        self.editorView.hidden = NO;
         [self enableToolbarItems:YES];
     }
 }
 
 - (void)removeFormat {
     NSString *trigger = @"zss_editor.removeFormating();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)alignLeft {
     NSString *trigger = @"zss_editor.setJustifyLeft();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)alignCenter {
     NSString *trigger = @"zss_editor.setJustifyCenter();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)alignRight {
     NSString *trigger = @"zss_editor.setJustifyRight();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)alignFull {
     NSString *trigger = @"zss_editor.setJustifyFull();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setBold {
     NSString *trigger = @"zss_editor.setBold();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setItalic {
     NSString *trigger = @"zss_editor.setItalic();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setSubscript {
     NSString *trigger = @"zss_editor.setSubscript();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setUnderline {
     NSString *trigger = @"zss_editor.setUnderline();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setSuperscript {
     NSString *trigger = @"zss_editor.setSuperscript();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setStrikethrough {
     NSString *trigger = @"zss_editor.setStrikeThrough();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setUnorderedList {
     NSString *trigger = @"zss_editor.setUnorderedList();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setOrderedList {
     NSString *trigger = @"zss_editor.setOrderedList();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setHR {
     NSString *trigger = @"zss_editor.setHorizontalRule();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setIndent {
     NSString *trigger = @"zss_editor.setIndent();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)setOutdent {
     NSString *trigger = @"zss_editor.setOutdent();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)heading1 {
     NSString *trigger = @"zss_editor.setHeading('h1');";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)heading2 {
     NSString *trigger = @"zss_editor.setHeading('h2');";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)heading3 {
     NSString *trigger = @"zss_editor.setHeading('h3');";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)heading4 {
     NSString *trigger = @"zss_editor.setHeading('h4');";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)heading5 {
     NSString *trigger = @"zss_editor.setHeading('h5');";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)heading6 {
     NSString *trigger = @"zss_editor.setHeading('h6');";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)paragraph {
     NSString *trigger = @"zss_editor.setParagraph();";
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 - (void)textColor {
     
     // Save the selection location
-    [editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
     
     // Call the picker
     HRColorPickerViewController *colorPicker = [HRColorPickerViewController cancelableFullColorPickerViewControllerWithColor:[UIColor whiteColor]];
@@ -743,7 +743,7 @@ static Class hackishFixClass = Nil;
 - (void)bgColor {
     
     // Save the selection location
-    [editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
     
     // Call the picker
     HRColorPickerViewController *colorPicker = [HRColorPickerViewController cancelableFullColorPickerViewControllerWithColor:[UIColor whiteColor]];
@@ -763,22 +763,22 @@ static Class hackishFixClass = Nil;
     } else if (tag == 2) {
         trigger = [NSString stringWithFormat:@"zss_editor.setBackgroundColor(\"%@\");", hex];
     }
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
     
 }
 
 - (void)undo:(ZSSBarButtonItem *)barButtonItem {
-    [editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.undo();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.undo();"];
 }
 
 - (void)redo:(ZSSBarButtonItem *)barButtonItem {
-    [editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.redo();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.redo();"];
 }
 
 - (void)insertLink {
     
     // Save the selection location
-    [editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
     
     // Show the dialog for inserting or editing a link
     [self showInsertLinkDialogWithLink:self.selectedLinkURL title:self.selectedLinkTitle];
@@ -864,14 +864,14 @@ static Class hackishFixClass = Nil;
 - (void)insertLink:(NSString *)url title:(NSString *)title {
     
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertLink(\"%@\", \"%@\");", url, title];
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
     
 }
 
 
 - (void)updateLink:(NSString *)url title:(NSString *)title {
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.updateLink(\"%@\", \"%@\");", url, title];
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 
@@ -910,17 +910,17 @@ static Class hackishFixClass = Nil;
 
 
 - (void)removeLink {
-    [editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.unlink();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.unlink();"];
 }//end
 
 - (void)quickLink {
-    [editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.quickLink();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.quickLink();"];
 }
 
 - (void)insertImage {
     
     // Save the selection location
-    [editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
     
     [self showInsertImageDialogWithLink:self.selectedImageURL alt:self.selectedImageAlt];
     
@@ -1003,13 +1003,13 @@ static Class hackishFixClass = Nil;
 
 - (void)insertImage:(NSString *)url alt:(NSString *)alt {
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertImage(\"%@\", \"%@\");", url, alt];
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 
 - (void)updateImage:(NSString *)url alt:(NSString *)alt {
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.updateImage(\"%@\", \"%@\");", url, alt];
-    [editorView stringByEvaluatingJavaScriptFromString:trigger];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
 
@@ -1229,17 +1229,17 @@ static Class hackishFixClass = Nil;
             // Editor View
             const int extraHeight = 10;
             
-            CGRect editorFrame = editorView.frame;
+            CGRect editorFrame = self.editorView.frame;
             editorFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
-            editorView.frame = editorFrame;
-            self.editorViewFrame = editorView.frame;
-            editorView.scrollView.contentInset = UIEdgeInsetsZero;
-            editorView.scrollView.scrollIndicatorInsets = UIEdgeInsetsZero;
+            self.editorView.frame = editorFrame;
+            self.editorViewFrame = self.editorView.frame;
+            self.editorView.scrollView.contentInset = UIEdgeInsetsZero;
+            self.editorView.scrollView.scrollIndicatorInsets = UIEdgeInsetsZero;
             
             // Source View
-            CGRect sourceFrame = sourceView.frame;
+            CGRect sourceFrame = self.sourceView.frame;
             sourceFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
-            sourceView.frame = sourceFrame;
+            self.sourceView.frame = sourceFrame;
             
             // Provide editor with keyboard height and editor view height
             [self setFooterHeight:(keyboardHeight - 8)];
@@ -1256,17 +1256,17 @@ static Class hackishFixClass = Nil;
             self.toolbarHolder.frame = frameToolbarHolder;
             
             // Editor View
-            CGRect editorFrame = editorView.frame;
+            CGRect editorFrame = self.editorView.frame;
             editorFrame.size.height = self.view.frame.size.height;
-            editorView.frame = editorFrame;
-            self.editorViewFrame = editorView.frame;
-            editorView.scrollView.contentInset = UIEdgeInsetsZero;
-            editorView.scrollView.scrollIndicatorInsets = UIEdgeInsetsZero;
+            self.editorView.frame = editorFrame;
+            self.editorViewFrame = self.editorView.frame;
+            self.editorView.scrollView.contentInset = UIEdgeInsetsZero;
+            self.editorView.scrollView.scrollIndicatorInsets = UIEdgeInsetsZero;
             
             // Source View
-            CGRect sourceFrame = sourceView.frame;
+            CGRect sourceFrame = self.sourceView.frame;
             sourceFrame.size.height = self.view.frame.size.height;
-            sourceView.frame = sourceFrame;
+            self.sourceView.frame = sourceFrame;
             
         } completion:nil];
         
@@ -1291,7 +1291,7 @@ static Class hackishFixClass = Nil;
     html = [html stringByReplacingOccurrencesOfString:@"<br>" withString:@"<br />"];
     html = [html stringByReplacingOccurrencesOfString:@"<hr>" withString:@"<hr />"];
     if (self.formatHTML) {
-        html = [editorView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"style_html(\"%@\");", html]];
+        html = [self.editorView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"style_html(\"%@\");", html]];
     }
     return html;
 }//end
