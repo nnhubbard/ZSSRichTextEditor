@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "HRColorPickerViewController.h"
+#import "ZSSTextView.h"
 
 /**
  *  The types of toolbar items that can be added
@@ -52,8 +53,12 @@ static NSString * const ZSSRichTextEditorToolbarNone = @"com.zedsaid.toolbaritem
 /**
  *  The viewController used with ZSSRichTextEditor
  */
-@interface ZSSRichTextEditor : UIViewController <UIWebViewDelegate, HRColorPickerViewControllerDelegate, UITextViewDelegate>
-
+@interface ZSSRichTextEditor : UIViewController <UIWebViewDelegate, HRColorPickerViewControllerDelegate, UITextViewDelegate> {
+    
+    CGRect frame;
+    ZSSTextView *sourceView;
+    UIWebView *editorView;
+}
 
 /**
  *  The base URL to use for the webView
