@@ -196,4 +196,6 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
  */
 - (void)editorDidScrollWithPosition:(NSInteger)position;
 
+@property (nonatomic, strong) UIWebView *editorView;
+
 @end
