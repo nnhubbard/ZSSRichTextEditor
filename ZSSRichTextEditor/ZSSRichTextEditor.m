@@ -546,9 +546,11 @@ static Class hackishFixClass = Nil;
 #pragma mark - Editor Interaction
 
 - (void)focusTextEditor {
+    CGPoint offset = self.editorView.scrollView.contentOffset;
     self.editorView.keyboardDisplayRequiresUserAction = NO;
     NSString *js = [NSString stringWithFormat:@"zss_editor.focusEditor();"];
     [self.editorView stringByEvaluatingJavaScriptFromString:js];
+    self.editorView.scrollView.contentOffset = offset;
 }
 
 - (void)blurTextEditor {
@@ -1005,6 +1007,7 @@ static Class hackishFixClass = Nil;
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     
     NSString *urlString = [[request URL] absoluteString];
+
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		return NO;
 	} else if ([urlString rangeOfString:@"callback://"].location != NSNotFound) {
@@ -1012,14 +1015,14 @@ static Class hackishFixClass = Nil;
         // We recieved the callback
         NSString *className = [urlString stringByReplacingOccurrencesOfString:@"callback://" withString:@""];
         [self updateToolBarWithButtonName:className];
-        
+        return NO;
     } else if ([urlString rangeOfString:@"debug://"].location != NSNotFound) {
         
         // We recieved the callback
         NSString *debug = [urlString stringByReplacingOccurrencesOfString:@"debug://" withString:@""];
         debug = [debug stringByReplacingPercentEscapesUsingEncoding:NSStringEncodingConversionAllowLossy];
         NSLog(@"%@", debug);
-        
+        return NO;
     } else if ([urlString rangeOfString:@"scroll://"].location != NSNotFound) {
         
         NSInteger position = [[urlString stringByReplacingOccurrencesOfString:@"scroll://" withString:@""] integerValue];
