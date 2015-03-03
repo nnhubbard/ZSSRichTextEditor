@@ -56,7 +56,7 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
  */
 @interface ZSSRichTextEditor : UIViewController <UIWebViewDelegate, HRColorPickerViewControllerDelegate, UITextViewDelegate>
 
-
+@property (nonatomic, strong) NSObject<UITextFieldDelegate>* textFieldDelegate;
 /**
  *  The base URL to use for the webView
  */

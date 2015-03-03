@@ -836,7 +836,7 @@ function style_html(html_source, options) {
     
     
     
-    var zss_editor = {};
+    zss_editor = {};
     
     // If we are using iOS or desktop
     zss_editor.isUsingiOS = true;
@@ -862,11 +862,13 @@ function style_html(html_source, options) {
     // Sets to true when extra footer gap shows and requires to hide
     zss_editor.updateScrollOffset = false;
     
+
+
     /**
      * The initializer function that must be called onLoad
      */
     zss_editor.init = function() {
-        
+
         $('#zss_editor_content').on('touchend', function(e) {
                                     zss_editor.enabledEditingItems(e);
                                     var clicked = $(e.target);
@@ -880,29 +882,43 @@ function style_html(html_source, options) {
                                                    zss_editor.setScrollPosition();
                                                    });
                                                    
-                                                   $(window).on('scroll', function(e) {
-                                                                zss_editor.updateOffset();
-                                                                });
-                                                                
-                                                                // Make sure that when we tap anywhere in the document we focus on the editor
-                                                                $(window).on('touchmove', function(e) {
-                                                                             zss_editor.isDragging = true;
-                                                                             zss_editor.updateScrollOffset = true;
-                                                                             zss_editor.setScrollPosition();
-                                                                             });
-                                                                             
-                                                                             $(window).on('touchstart', function(e) {
-                                                                                          zss_editor.isDragging = false;
-                                                                                          window.location = "touchstart://";
-                                                                                          });
-                                                                                          $(window).on('touchend', function(e) {
-                                                                                                       if (!zss_editor.isDragging) {
-                                                                                                       zss_editor.focusEditor();
-                                                                                                       }
-                                                                                                       });
-                                                                                                       
+       $(window).on('scroll', function(e) {
+                    zss_editor.updateOffset();
+                    });
+                    
+        // Make sure that when we tap anywhere in the document we focus on the editor
+        $(window).on('touchmove', function(e) {
+                     zss_editor.isDragging = true;
+                     zss_editor.updateScrollOffset = true;
+                     zss_editor.setScrollPosition();
+                     });
+                     
+         $(window).on('touchstart', function(e) {
+                      zss_editor.isDragging = false;
+                      window.location = "editorfocus://";
+                      });
+
+          $('#zss_editor_content').on('focus',function(){
+                      window.location = "editorfocus://";
+                        });
+
+          $('#zss_editor_content').on('blur',function() {
+                                          zss_editor.createCurentSelectionIfNeeded();
+                                          zss_editor.backuprange();
+
+                                      window.location = "editorblurr://";
+                                    });
+                                    
+
+          $('#zss_editor_content').on('input', function(e) {
+                                      zss_editor.backuprange();
+                                      zss_editor.calculateEditorHeightWithCaretPosition();
+                                      zss_editor.setScrollPosition();
+
+                               });
+                   
     }//end
-    
+
     zss_editor.updateOffset = function() {
         
         if (!zss_editor.updateScrollOffset)
@@ -970,11 +986,18 @@ function style_html(html_source, options) {
         var sel = window.getSelection();
         // Next line is comented to prevent deselecting selection. It looks like work but if there are any issues will appear then uconmment it as well as code above.
         //sel.collapseToStart();
-        var range = sel.getRangeAt(0);
         var span = document.createElement('span');
-        range.insertNode(span);
         var topPosition = span.offsetTop;
-        span.parentNode.removeChild(span);
+        try {
+            zss_editor.createCurentSelectionIfNeeded();
+            var range = zss_editor.currentSelection;
+            range.insertNode(span);
+            topPosition = span.offsetTop;
+            span.parentNode.removeChild(span);
+
+        } catch(exc) {
+            console.log("getCaretYPosition"+exc);
+        }
         return topPosition;
     }
     
@@ -1001,17 +1024,26 @@ function style_html(html_source, options) {
     }
     
     zss_editor.backuprange = function(){
-        var selection = window.getSelection();
-        var range = selection.getRangeAt(0);
-        zss_editor.currentSelection = {"startContainer": range.startContainer, "startOffset":range.startOffset,"endContainer":range.endContainer, "endOffset":range.endOffset};
+        if(window.getSelection && window.getSelection().rangeCount > 0) //FF,Chrome,Opera,Safari,IE9+
+        {
+            zss_editor.currentSelection = window.getSelection().getRangeAt(0);
+        } else {
+            zss_editor.createCurentSelectionIfNeeded();
+            console.log("dang couldnt get a selection");
+        }
+        console.log("backuprange:");
+        console.log(zss_editor.currentSelection);
     }
     
     zss_editor.restorerange = function(){
         var selection = window.getSelection();
         selection.removeAllRanges();
-        var range = document.createRange();
-        range.setStart(zss_editor.currentSelection.startContainer, zss_editor.currentSelection.startOffset);
-        range.setEnd(zss_editor.currentSelection.endContainer, zss_editor.currentSelection.endOffset);
+        console.log("restorerange: ");
+        console.log(zss_editor.currentSelection);
+        //var range = document.createRange();
+        //range.setStart(zss_editor.currentSelection.startContainer, zss_editor.currentSelection.startOffset);
+        //range.setEnd(zss_editor.currentSelection.endContainer, zss_editor.currentSelection.endOffset);
+        var range = zss_editor.currentSelection;
         selection.addRange(range);
     }
     
@@ -1265,6 +1297,7 @@ function style_html(html_source, options) {
     }
     
     zss_editor.prepareInsert = function() {
+        zss_editor.createCurentSelectionIfNeeded();
         zss_editor.backuprange();
     }
     
@@ -1446,16 +1479,28 @@ function style_html(html_source, options) {
                       
     }
     
+    zss_editor.createCurentSelectionIfNeeded = function() {
+        if(typeof zss_editor.currentSelection == 'undefined') {
+            var editor = $('#zss_editor_content');
+            var range = document.createRange();
+            range.setStart(editor.get(0));
+            range.collapse(true);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            zss_editor.backuprange();
+        }
+    };
+    
     zss_editor.focusEditor = function() {
         
         var editor = $('#zss_editor_content');
-        var range = document.createRange();
-        range.setStart(editor.get(0));
-        range.collapse(true);
-        var selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
+
+        zss_editor.createCurentSelectionIfNeeded();
+
         editor.focus();
+        console.log("focusEditor");
+
         // the following was taken from http://stackoverflow.com/questions/1125292/how-to-move-cursor-to-end-of-contenteditable-entity/3866442#3866442
         // and ensures we move the cursor to the end of the editor
 //        var editor = $('#zss_editor_content');
@@ -1477,18 +1522,18 @@ function style_html(html_source, options) {
 
   <style type="text/css">
       * {outline: 0px solid transparent; -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-touch-callout: none;}
-      html, body {padding:0; margin:0; font-family:Arial, Helvetica, sans-serif;}
+      html, body {padding:0; margin:0; font-family:AvenirNext-Regular, HelveticaNeue, Arial, sans-serif;}
       body {padding:10px; overflow-y: scroll; -webkit-overflow-scrolling: touch; height:100%;}
       img{
           height:auto;
           width:100%;
       }
-      img.zs_active {border: 2px dashed #000;}
+        img.zs_active {}
       audio {padding: 20px 0;}
 	</style>
   </head>
   <body onLoad="zss_editor.init();">
-      <div id="zss_editor_content" style="width: 100%; height: 100%; -webkit-overflow-scrolling: touch; overflow: auto;" contenteditable="true" ></div>
+      <div id="zss_editor_content" style="width: 100%; height: 100%; -webkit-overflow-scrolling: touch; overflow: auto;" contenteditable="true" spellcheck="true" autocorrect="true" auto></div>
       <div id="zss_editor_footer"> </div>
   </body>
 

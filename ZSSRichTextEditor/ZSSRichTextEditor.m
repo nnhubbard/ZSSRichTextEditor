@@ -124,6 +124,7 @@ static Class hackishFixClass = Nil;
     // Editor View
     self.editorView = [[UIWebView alloc] initWithFrame:frame];
     self.editorView.delegate = self;
+    self.editorView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal;
     self.editorView.hidesInputAccessoryView = YES;
     self.editorView.keyboardDisplayRequiresUserAction = NO;
     self.editorView.scalesPageToFit = YES;
@@ -546,11 +547,9 @@ static Class hackishFixClass = Nil;
 #pragma mark - Editor Interaction
 
 - (void)focusTextEditor {
-    CGPoint offset = self.editorView.scrollView.contentOffset;
     self.editorView.keyboardDisplayRequiresUserAction = NO;
     NSString *js = [NSString stringWithFormat:@"zss_editor.focusEditor();"];
     [self.editorView stringByEvaluatingJavaScriptFromString:js];
-    self.editorView.scrollView.contentOffset = offset;
 }
 
 - (void)blurTextEditor {
@@ -930,7 +929,8 @@ static Class hackishFixClass = Nil;
 
 - (void)insertImage:(NSString *)url alt:(NSString *)alt {
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertImage(\"%@\", \"%@\");", url, alt];
-    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+    NSString* output = [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+    NSLog(@"%@",output);
 }
 
 
@@ -1027,13 +1027,34 @@ static Class hackishFixClass = Nil;
         
         NSInteger position = [[urlString stringByReplacingOccurrencesOfString:@"scroll://" withString:@""] integerValue];
         [self editorDidScrollWithPosition:position];
-        
+        return NO;
+    } else if ([urlString rangeOfString:@"editorfocus://"].location != NSNotFound) {
+        if(self.textFieldDelegate && [self.textFieldDelegate respondsToSelector:@selector(textFieldShouldBeginEditing:)]) {
+            BOOL shouldBegin = [self.textFieldDelegate textFieldShouldBeginEditing:nil];
+//            if(shouldBegin) {
+//                [self focusTextEditor];
+//            } else {
+//                [self blurTextEditor];
+//            }
+        }
+
+        return NO;
+    } else if ([urlString rangeOfString:@"editorblurr://"].location != NSNotFound) {
+        if(self.textFieldDelegate && [self.textFieldDelegate respondsToSelector:@selector(textFieldShouldEndEditing:)]) {
+            BOOL shouldEnd = [self.textFieldDelegate textFieldShouldEndEditing:nil];
+            if(shouldEnd) {
+                [self blurTextEditor];
+            } else {
+                [self focusTextEditor];
+            }
+        }
+
+        return NO;
     }
     
     return YES;
     
 }//end
-
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.editorLoaded = YES;
