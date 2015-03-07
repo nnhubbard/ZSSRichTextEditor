@@ -1030,12 +1030,12 @@ static Class hackishFixClass = Nil;
         return NO;
     } else if ([urlString rangeOfString:@"editorfocus://"].location != NSNotFound) {
         if(self.textFieldDelegate && [self.textFieldDelegate respondsToSelector:@selector(textFieldShouldBeginEditing:)]) {
-//            BOOL shouldBegin = [self.textFieldDelegate textFieldShouldBeginEditing:nil];
-//            if(shouldBegin) {
+            BOOL shouldBegin = [self.textFieldDelegate textFieldShouldBeginEditing:nil];
+            if(shouldBegin) {
 //                [self focusTextEditor];
-//            } else {
+            } else {
 //                [self blurTextEditor];
-//            }
+            }
         }
 
         return NO;
