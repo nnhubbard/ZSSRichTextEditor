@@ -983,14 +983,14 @@ function style_html(html_source, options) {
     }
     
     zss_editor.getCaretYPosition = function() {
-        var sel = window.getSelection();
+        var sel = zss_editor.currentSelection;
         // Next line is comented to prevent deselecting selection. It looks like work but if there are any issues will appear then uconmment it as well as code above.
         //sel.collapseToStart();
         var span = document.createElement('span');
         var topPosition = span.offsetTop;
         try {
             zss_editor.createCurentSelectionIfNeeded();
-            var range = zss_editor.currentSelection;
+            var range = sel;
             range.insertNode(span);
             topPosition = span.offsetTop;
             span.parentNode.removeChild(span);
@@ -1029,7 +1029,6 @@ function style_html(html_source, options) {
             zss_editor.currentSelection = window.getSelection().getRangeAt(0);
         } else {
             zss_editor.createCurentSelectionIfNeeded();
-            console.log("dang couldnt get a selection");
         }
         console.log("backuprange:");
         console.log(zss_editor.currentSelection);
@@ -1303,7 +1302,7 @@ function style_html(html_source, options) {
     
     zss_editor.insertImage = function(url, alt) {
         zss_editor.restorerange();
-        var html = '<img src="'+url+'" alt="'+alt+'" />';
+        var html = '<img src="'+url+'" class="tbinline" alt="'+alt+'" />';
         zss_editor.insertHTML(html);
         zss_editor.enabledEditingItems();
     }
