@@ -538,6 +538,11 @@ static Class hackishFixClass = Nil;
 }
 
 
+-(void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
 #pragma mark - Editor Interaction
 
 - (void)focusTextEditor {
