@@ -538,12 +538,6 @@ static Class hackishFixClass = Nil;
 }
 
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 #pragma mark - Editor Interaction
 
 - (void)focusTextEditor {
