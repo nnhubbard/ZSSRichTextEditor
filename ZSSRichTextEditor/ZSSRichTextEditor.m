@@ -13,6 +13,7 @@
 #import "HRColorUtil.h"
 #import "ZSSTextView.h"
 
+#import <JavaScriptCore/JavaScriptCore.h>
 
 @interface UIWebView (HackishAccessoryHiding)
 @property (nonatomic, assign) BOOL hidesInputAccessoryView;
@@ -1067,6 +1068,18 @@ static Class hackishFixClass = Nil;
 //            [self focusTextEditor];
 //        });
     }
+    __weak ZSSRichTextEditor *weakSelf = self;
+    JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+    ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
+        [weakSelf contentUpdated];
+    };
+    [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
+}
+
+
+// Blank implementation
+-(void) contentUpdated {
+
 }
 
 
