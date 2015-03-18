@@ -13,6 +13,7 @@
 #import "HRColorUtil.h"
 #import "ZSSTextView.h"
 
+#import <JavaScriptCore/JavaScriptCore.h>
 
 @interface UIWebView (HackishAccessoryHiding)
 @property (nonatomic, assign) BOOL hidesInputAccessoryView;
@@ -525,24 +526,23 @@ static Class hackishFixClass = Nil;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillHideNotification object:nil];
+
+    NSNotificationCenter * nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillShowNotification object:nil];
+    [nc addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
 
 #pragma mark - Editor Interaction
 
@@ -1068,6 +1068,18 @@ static Class hackishFixClass = Nil;
 //            [self focusTextEditor];
 //        });
     }
+    __weak ZSSRichTextEditor *weakSelf = self;
+    JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+    ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
+        [weakSelf contentUpdated];
+    };
+    [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
+}
+
+
+// Blank implementation
+-(void) contentUpdated {
+
 }
 
 
