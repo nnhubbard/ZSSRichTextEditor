@@ -574,7 +574,7 @@ static Class hackishFixClass = Nil;
     NSString *cleanedHTML = [self removeQuotesFromHTML:self.sourceView.text];
 	NSString *trigger = [NSString stringWithFormat:@"zss_editor.setHTML(\"%@\");", cleanedHTML];
 	[self.editorView stringByEvaluatingJavaScriptFromString:trigger];
-    
+
 }
 
 - (NSString *)getHTML {
@@ -1062,12 +1062,9 @@ static Class hackishFixClass = Nil;
     if (!self.internalHTML) {
         self.internalHTML = @"";
     }
+    
     [self updateHTML];
-    if (self.shouldShowKeyboard) {
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [self focusTextEditor];
-//        });
-    }
+
     __weak ZSSRichTextEditor *weakSelf = self;
     JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
     ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
