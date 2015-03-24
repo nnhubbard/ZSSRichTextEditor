@@ -26,6 +26,7 @@
 		18AD8790199DB58500C7E10D /* CYRTextStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AD878A199DB58500C7E10D /* CYRTextStorage.m */; };
 		18AD8791199DB58500C7E10D /* CYRTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AD878C199DB58500C7E10D /* CYRTextView.m */; };
 		18AD8792199DB58500C7E10D /* CYRToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AD878E199DB58500C7E10D /* CYRToken.m */; };
+		A18EF15C1ABCCC010086A12A /* UIWebView+HackishAccessoryHiding.m in Sources */ = {isa = PBXBuildFile; fileRef = A18EF15B1ABCCC010086A12A /* UIWebView+HackishAccessoryHiding.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,8 @@
 		18AD878C199DB58500C7E10D /* CYRTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CYRTextView.m; path = "Third Party/CYRTextView.m"; sourceTree = "<group>"; };
 		18AD878D199DB58500C7E10D /* CYRToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CYRToken.h; path = "Third Party/CYRToken.h"; sourceTree = "<group>"; };
 		18AD878E199DB58500C7E10D /* CYRToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CYRToken.m; path = "Third Party/CYRToken.m"; sourceTree = "<group>"; };
+		A18EF15A1ABCCC010086A12A /* UIWebView+HackishAccessoryHiding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+HackishAccessoryHiding.h"; sourceTree = "<group>"; };
+		A18EF15B1ABCCC010086A12A /* UIWebView+HackishAccessoryHiding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+HackishAccessoryHiding.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +144,7 @@
 		18AD8746199DB36C00C7E10D /* ZSSRichTextEditor */ = {
 			isa = PBXGroup;
 			children = (
+				A18EF15D1ABCCC970086A12A /* Categories */,
 				18AD876B199DB4F700C7E10D /* Views */,
 				18AD876A199DB4ED00C7E10D /* Third Party */,
 				18AD8749199DB36C00C7E10D /* ZSSRichTextEditor.h */,
@@ -211,6 +215,15 @@
 				18AD8780199DB56C00C7E10D /* HRColorUtil.m */,
 			);
 			name = ColorPicker;
+			sourceTree = "<group>";
+		};
+		A18EF15D1ABCCC970086A12A /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				A18EF15A1ABCCC010086A12A /* UIWebView+HackishAccessoryHiding.h */,
+				A18EF15B1ABCCC010086A12A /* UIWebView+HackishAccessoryHiding.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -302,6 +315,7 @@
 				18AD8790199DB58500C7E10D /* CYRTextStorage.m in Sources */,
 				18AD8782199DB56C00C7E10D /* HRCgUtil.m in Sources */,
 				18AD878F199DB58500C7E10D /* CYRLayoutManager.m in Sources */,
+				A18EF15C1ABCCC010086A12A /* UIWebView+HackishAccessoryHiding.m in Sources */,
 				18AD8792199DB58500C7E10D /* CYRToken.m in Sources */,
 				18AD8783199DB56C00C7E10D /* HRColorCursor.m in Sources */,
 				18AD8785199DB56C00C7E10D /* HRColorPickerViewController.m in Sources */,
