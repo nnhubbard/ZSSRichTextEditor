@@ -1310,6 +1310,7 @@ function style_html(html_source, options) {
     zss_editor.setHTML = function(html) {
         var editor = $('#zss_editor_content');
         editor.html(html);
+        $("body").css('background-color', 'white');
     }
     
     zss_editor.insertHTML = function(html) {
@@ -1521,7 +1522,7 @@ function style_html(html_source, options) {
 
   <style type="text/css">
       * {outline: 0px solid transparent; -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-touch-callout: none;}
-      html, body {padding:0; margin:0; font-family:AvenirNext-Regular, HelveticaNeue, Arial, sans-serif;}
+      html, body {padding:10px; margin:0; font-family:AvenirNext-Regular, HelveticaNeue, Arial, sans-serif;}
       body {padding:10px; overflow-y: visible; -webkit-overflow-scrolling: touch; height:100%;}
       img.tbinline {
           height:auto;
