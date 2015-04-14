@@ -876,23 +876,24 @@ function style_html(html_source, options) {
                                     $('img').removeClass('zs_active');
                                     }
                                     });
-                                    
+/*
                                     $(document).on('selectionchange',function(e){
                                                    zss_editor.calculateEditorHeightWithCaretPosition();
                                                    zss_editor.setScrollPosition();
                                                    });
-                                                   
+*/
        $(window).on('scroll', function(e) {
                     zss_editor.updateOffset();
                     });
                     
         // Make sure that when we tap anywhere in the document we focus on the editor
-        $(window).on('touchmove', function(e) {
+/*
+ $(window).on('touchmove', function(e) {
                      zss_editor.isDragging = true;
                      zss_editor.updateScrollOffset = true;
                      zss_editor.setScrollPosition();
                      });
-                     
+*/                     
          $(window).on('touchstart', function(e) {
                       zss_editor.isDragging = false;
                       window.location = "editorfocus://";
@@ -935,7 +936,7 @@ function style_html(html_source, options) {
         
         if (offsetY > maxOffsetY)
         {
-            //window.scrollTo(0, maxOffsetY);
+            window.scrollTo(0, maxOffsetY);
         }
         
         zss_editor.setScrollPosition();
