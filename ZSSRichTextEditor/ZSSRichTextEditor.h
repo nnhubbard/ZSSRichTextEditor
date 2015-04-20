@@ -101,6 +101,14 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 - (void)setHTML:(NSString *)html;
 
 /**
+ *  Sets the default font size for the entire editor
+ *
+ *  @param fontSize  The size for the default font
+ *
+ */
+- (void)setEditorFont:(CGFloat)fontSize;
+
+/**
  *  Returns the HTML from the Rich Text Editor
  *
  */

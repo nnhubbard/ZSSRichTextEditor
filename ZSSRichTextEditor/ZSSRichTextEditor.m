@@ -640,6 +640,11 @@
 	[self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
+- (void)setEditorFont:(CGFloat)fontSize {
+    NSString *trigger = [NSString stringWithFormat:@"zss_editor.setEditorFont(%@);", @(fontSize)];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+}
+
 - (void)heading1 {
     NSString *trigger = @"zss_editor.setHeading('h1');";
 	[self.editorView stringByEvaluatingJavaScriptFromString:trigger];

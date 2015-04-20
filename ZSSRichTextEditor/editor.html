@@ -1515,6 +1515,9 @@ function style_html(html_source, options) {
        // alert('focusEditor Called');
     }
     
+    zss_editor.setEditorFont = function(fontSize) {
+        $('#zss_editor_content').css('fontSize', fontSize + "px");
+    }
     
     zss_editor.blurEditor = function() {
         $('#zss_editor_content').blur();
