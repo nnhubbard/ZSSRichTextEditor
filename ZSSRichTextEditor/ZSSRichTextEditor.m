@@ -482,6 +482,10 @@
 
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+    [_editorView stopLoading];
+    _editorView.delegate = nil;
+    _sourceView.delegate = nil;
 }
 
 
