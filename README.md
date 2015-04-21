@@ -3,7 +3,7 @@ ZSSRichTextEditor
 
 Help Wanted
 ---
-Looking for anyone willing to help with this project. I have not had enough time to give the projec the love it deserves. Contact me here or @zedsaid.
+Looking for anyone willing to help with this project. I have not had enough time to give the projec the love it deserves. Contact me here or [@zedsaid](https://twitter.com/zedsaid).
 
 The Editor
 ---
