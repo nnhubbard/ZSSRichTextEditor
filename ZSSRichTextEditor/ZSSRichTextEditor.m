@@ -492,9 +492,17 @@
 #pragma mark - Editor Interaction
 
 - (void)focusTextEditor {
-    self.editorView.keyboardDisplayRequiresUserAction = NO;
-    NSString *js = [NSString stringWithFormat:@"zss_editor.focusEditor();"];
-    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+    if (self.editorLoaded) {
+        self.editorView.keyboardDisplayRequiresUserAction = NO;
+        NSString *js = [NSString stringWithFormat:@"zss_editor.focusEditor();"];
+        [self.editorView stringByEvaluatingJavaScriptFromString:js];
+    } else {
+        // Editor not loaded try again
+        __weak typeof(self) weakSelf = self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf focusTextEditor];
+        });
+    }
 }
 
 - (void)blurTextEditor {
