@@ -34,7 +34,7 @@
     [self addObserver:self forKeyPath:NSStringFromSelector(@selector(boldFont)) options:NSKeyValueObservingOptionNew context:0];
     [self addObserver:self forKeyPath:NSStringFromSelector(@selector(italicFont)) options:NSKeyValueObservingOptionNew context:0];
     
-    if (_italicFont == nil && ([UIFontDescriptor class] != nil))
+    if (_italicFont == nil)
     {
         // This works around a bug in 7.0.3 where HelveticaNeue-Italic is not present as a UIFont option
         _italicFont = (__bridge_transfer UIFont*)CTFontCreateWithName(CFSTR("HelveticaNeue-Italic"), 14.0f, NULL);
