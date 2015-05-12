@@ -494,8 +494,7 @@
 - (void)focusTextEditor {
     if (self.editorLoaded) {
         self.editorView.keyboardDisplayRequiresUserAction = NO;
-        NSString *js = [NSString stringWithFormat:@"zss_editor.focusEditor();"];
-        [self.editorView stringByEvaluatingJavaScriptFromString:js];
+        [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.focusEditor();"];
     } else {
         // Editor not loaded try again
         __weak typeof(self) weakSelf = self;
@@ -506,8 +505,7 @@
 }
 
 - (void)blurTextEditor {
-    NSString *js = [NSString stringWithFormat:@"zss_editor.blurEditor();"];
-    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.blurEditor();"];
 }
 
 - (void)setHTML:(NSString *)html {
