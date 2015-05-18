@@ -47,6 +47,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self setupGUI];
+
+}
+
+-(void) setupGUI
+{
     self.editorLoaded = NO;
     self.shouldShowKeyboard = YES;
     self.formatHTML = YES;
@@ -125,22 +131,26 @@
     [self buildToolbar];
     
     if (!self.resourcesLoaded) {
-        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"editor" ofType:@"html"];
-        
-        NSURL* fileURL = [NSURL fileURLWithPath:filePath];
-//        NSData *htmlData = [NSData dataWithContentsOfFile:filePath];
-//        NSString *htmlString = [[NSString alloc] initWithData:htmlData encoding:NSUTF8StringEncoding];
-//        NSString *source = [[NSBundle mainBundle] pathForResource:@"ZSSRichTextEditor" ofType:@"js"];
-//        NSString *jsString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:source] encoding:NSUTF8StringEncoding];
-//        htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--editor-->" withString:jsString];
-//        [self.editorView loadHTMLString:htmlString baseURL:self.baseURL];
+        NSURL* fileURL = [ZSSRichTextEditor editorHTMLResourcePath];
+        //        NSData *htmlData = [NSData dataWithContentsOfFile:filePath];
+        //        NSString *htmlString = [[NSString alloc] initWithData:htmlData encoding:NSUTF8StringEncoding];
+        //        NSString *source = [[NSBundle mainBundle] pathForResource:@"ZSSRichTextEditor" ofType:@"js"];
+        //        NSString *jsString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:source] encoding:NSUTF8StringEncoding];
+        //        htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--editor-->" withString:jsString];
+        //        [self.editorView loadHTMLString:htmlString baseURL:self.baseURL];
         NSURLRequest* request = [NSURLRequest requestWithURL:fileURL];
         [self.editorView loadRequest:request];
         self.resourcesLoaded = YES;
     }
-
 }
 
++(NSURL*) editorHTMLResourcePath
+{
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"editor" ofType:@"html"];
+    
+    NSURL* fileURL = [NSURL fileURLWithPath:filePath];
+    return fileURL;
+}
 
 - (void)setEnabledToolbarItems:(ZSSRichTextEditorToolbar)enabledToolbarItems {
     

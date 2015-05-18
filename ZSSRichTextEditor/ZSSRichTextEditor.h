@@ -204,6 +204,16 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
  */
 - (void)editorDidScrollWithPosition:(NSInteger)position;
 
+/**
+ * Setup GUI objects, subclasses should call this if they override it
+ */
+-(void) setupGUI;
+
+/**
+ * Exposes the URL to access editor.html, used for Unit testing
+ */
++(NSURL*) editorHTMLResourcePath;
+
 @property (nonatomic, strong) UIWebView *editorView;
 
 @end
