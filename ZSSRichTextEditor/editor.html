@@ -1004,21 +1004,23 @@ function style_html(html_source, options) {
     
     zss_editor.calculateEditorHeightWithCaretPosition = function() {
         
-        var padding = 50;
+        var padding = 30;
         var c = zss_editor.getCaretYPosition();
         var e = document.getElementById('zss_editor_content');
         
-        var editor = $('#zss_editor_content');
+        var footer = $('#zss_editor_footer');
         
-        var offsetY = window.document.body.scrollTop;
-        var height = zss_editor.contentHeight;
+        var offsetY = zss_editor.webViewScrollPosition;
+        
+        var height = zss_editor.contentHeight - footer.height();
+        if (height < 0) height = 10;
         
         var newPos = window.pageYOffset;
         
         if (c < offsetY) {
             newPos = c;
-        } else if (c > (offsetY + height - padding)) {
-            var newPos = c - height + padding - 18;
+        } else if ((c + padding) > (offsetY + height)) {
+            newPos = c - height + padding;
         }
         
         window.scrollTo(0, newPos);

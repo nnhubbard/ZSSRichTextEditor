@@ -199,6 +199,12 @@
     [self.editorView stringByEvaluatingJavaScriptFromString:js];
 }
 
+- (void)setWebViewScrollPosition:(float)scrollPosition {
+    
+    NSString *js = [NSString stringWithFormat:@"zss_editor.webViewScrollPosition = %f;", scrollPosition];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+}
+
 
 - (NSArray *)itemsForToolbar {
     
