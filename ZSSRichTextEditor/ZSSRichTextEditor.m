@@ -22,7 +22,7 @@
 @property (nonatomic, strong) UIToolbar *toolbar;
 @property (nonatomic, strong) UIView *toolbarHolder;
 @property (nonatomic, strong) NSString *htmlString;
-@property (nonatomic, strong) ZSSTextView *sourceView;
+@property (nonatomic, strong) UITextView *sourceView;
 @property (nonatomic) CGRect editorViewFrame;
 @property (nonatomic) BOOL resourcesLoaded;
 @property (nonatomic, strong) NSArray *editorItemsEnabled;
@@ -59,7 +59,7 @@
     
     // Source View
     CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    self.sourceView = [[ZSSTextView alloc] initWithFrame:frame];
+    self.sourceView = [[UITextView alloc] initWithFrame:frame];
     self.sourceView.hidden = YES;
     self.sourceView.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.sourceView.autocorrectionType = UITextAutocorrectionTypeNo;
