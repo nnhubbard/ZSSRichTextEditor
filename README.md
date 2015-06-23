@@ -158,9 +158,14 @@ ZSSRichTextEditor has the following functions:
 *   Text Color
 *   Background Color
 
-Requirements
+Installation
 --------------
+You can use `CocoaPods` or manually using the following instructions:
+
 `ZSSRichTextEditor` requires iOS7 as well as `CoreGraphics.framework` and `CoreText.framework`.
+
+- Copy the `Source` folder to your project.
+- Subclass `ZSSRichTextEditor` and implement the methods as mentioned above.
 
 **When using `ZSSRichTextEditor` in your own project, XCode will automatically add `ZSSRichTextEditor.js` to compile sources under build phases, this will cause `ZSSRichTextEditor` to not work correctly as the javascript file won't be included in your app. Instead, remove it from compile sources and add it to copy bundle resources.**
 
