@@ -1,12 +1,16 @@
 ZSSRichTextEditor
 =============
 
+Help Wanted
+---
+Looking for anyone willing to help with this project. I have not had enough time to give the projec the love it deserves. Contact me here or [@zedsaid](https://twitter.com/zedsaid).
+
+The Editor
+---
+
 `ZSSRichTextEditor` is a beautiful Rich Text `WYSIWYG Editor` for `iOS`. It includes all of the standard editor tools one would expect from a `WYSIWYG` editor as well as an amazing source view with syntax highlighting.
 
 ![Toolbar](http://f.cl.ly/items/0L3c0N3u142Q2S0v1Y0o/demo1.gif "Toolbar")
-
-Using the Editor
----
 
 The editor is used how any other text input area in iOS is used. A selection of text or content is made, then tapping on the toolbar item below will apply that style. A Source View is also included, you can make changes and this will be reflected in the editor preview.
 
