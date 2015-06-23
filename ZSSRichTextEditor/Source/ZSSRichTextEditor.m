@@ -178,8 +178,12 @@ static Class hackishFixClass = Nil;
         line.backgroundColor = [UIColor lightGrayColor];
         line.alpha = 0.7f;
         [toolbarCropper addSubview:line];
-    }
-    [self.view addSubview:self.toolbarHolder];
+     
+// j5136p1 12/08/2014 : On iphone we add toolbar to view
+        [self.view addSubview:self.toolbarHolder];
+    }else
+// j5136p1 12/08/2014 : On iPad we add toolbar to keyWindow
+        [[UIApplication sharedApplication].keyWindow addSubview:self.toolbarHolder];
     
     // Build the toolbar
     [self buildToolbar];
@@ -528,13 +532,14 @@ static Class hackishFixClass = Nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
+// j5136p1 12/08/2014 : remove observer diddisappear. willdisappear is to early
+-(void)viewDidDisappear:(BOOL)animated{
+
+    [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    
 }
-
 
 - (void)didReceiveMemoryWarning
 {
@@ -1225,11 +1230,14 @@ static Class hackishFixClass = Nil;
             
             // Toolbar
             CGRect frame = self.toolbarHolder.frame;
-            frame.origin.y = self.view.frame.size.height - (keyboardHeight + sizeOfToolbar);
+// j5136p1 12/08/2014 : Set y position in keywindow not in view. To handle also ex. modal views
+            frame.origin.y = [UIApplication sharedApplication].keyWindow.frame.size.height - (keyboardHeight + sizeOfToolbar);
             self.toolbarHolder.frame = frame;
             
             // Editor View
+            
             const int extraHeight = 10;
+            
             
             CGRect editorFrame = self.editorView.frame;
             editorFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
@@ -1247,6 +1255,7 @@ static Class hackishFixClass = Nil;
             [self setFooterHeight:(keyboardHeight - 8)];
             [self setContentHeight: self.editorViewFrame.size.height];
             
+            
         } completion:nil];
         
     } else {
@@ -1254,7 +1263,8 @@ static Class hackishFixClass = Nil;
         [UIView animateWithDuration:duration delay:0 options:animationOptions animations:^{
             
             CGRect frame = self.toolbarHolder.frame;
-            frame.origin.y = self.view.frame.size.height + keyboardHeight;
+// j5136p1 12/08/2014 : Set y position in keywindow not in view. To handle also ex. modal views
+            frame.origin.y = [UIApplication sharedApplication].keyWindow.frame.size.height + keyboardHeight;
             self.toolbarHolder.frame = frame;
             
             // Editor View

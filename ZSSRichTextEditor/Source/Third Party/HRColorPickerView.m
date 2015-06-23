@@ -57,16 +57,19 @@
     return style;
 }
 
-+ (HRColorPickerStyle)fitScreenStyle
+// j5136p1 12/08/2014 : Extended the method with size to fit the current view
++ (HRColorPickerStyle)fitScreenStyleWithSize:(CGSize)size
 {
-    CGSize defaultSize = [[UIScreen mainScreen] applicationFrame].size;
-    defaultSize.height -= 44.f;
+    size.height -= 44.f;
     
     HRColorPickerStyle style = [HRColorPickerView defaultStyle];
-    style.colorMapSizeHeight = (defaultSize.height - style.headerHeight)/style.colorMapTileSize;
+    style.colorMapSizeHeight = (size.height - style.headerHeight)/style.colorMapTileSize;
+    style.colorMapSizeWidth = size.width/style.colorMapTileSize;
+    
+    style.width = size.width;
     
     float colorMapMargin = (style.width - (style.colorMapSizeWidth*style.colorMapTileSize))/2.f;
-    style.headerHeight = defaultSize.height - (style.colorMapSizeHeight*style.colorMapTileSize) - colorMapMargin;
+    style.headerHeight = size.height - (style.colorMapSizeHeight*style.colorMapTileSize) - colorMapMargin;
     
     return style;
 }
@@ -79,14 +82,14 @@
     return style;
 }
 
-+ (HRColorPickerStyle)fitScreenFullColorStyle
+// j5136p1 12/08/2014 : Extended the method with size to fit the current view
++ (HRColorPickerStyle)fitScreenFullColorStyleWithSize:(CGSize)size
 {
-    HRColorPickerStyle style = [HRColorPickerView fitScreenStyle];
+    HRColorPickerStyle style = [HRColorPickerView fitScreenStyleWithSize:size];
     style.brightnessLowerLimit = 0.0f;
     style.saturationUpperLimit = 1.0f;
     return style;
 }
-
 
 + (CGSize)sizeWithStyle:(HRColorPickerStyle)style
 {
