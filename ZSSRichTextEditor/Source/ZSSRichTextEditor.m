@@ -910,6 +910,10 @@ static Class hackishFixClass = Nil;
     [self buildToolbar];
 }
 
+- (void)addCSS:(NSString *)css {
+    NSString *javascript = [NSString stringWithFormat:@"zss_editor.addCSS('%@');", css];
+    [self.editorView stringByEvaluatingJavaScriptFromString:javascript];
+}
 
 - (void)removeLink {
     [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.unlink();"];
