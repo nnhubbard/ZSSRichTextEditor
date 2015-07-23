@@ -429,7 +429,7 @@
 		4581EB85184845790048CAB0 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				4581EBBC184B0FB10048CAB0 /* ZSRichTextEditor */,
+				4581EBBC184B0FB10048CAB0 /* ZSSRichTextEditor */,
 				2343B1D7199B2C3C00349048 /* Demo */,
 				4581EB861848457A0048CAB0 /* Supporting Files */,
 			);
@@ -455,7 +455,7 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		4581EBBC184B0FB10048CAB0 /* ZSRichTextEditor */ = {
+		4581EBBC184B0FB10048CAB0 /* ZSSRichTextEditor */ = {
 			isa = PBXGroup;
 			children = (
 				45EC1D6018763A75009B6B61 /* Third Party */,
@@ -464,7 +464,7 @@
 				4581EBB9184B0F5C0048CAB0 /* ZSSRichTextEditor.h */,
 				4581EBBA184B0F5C0048CAB0 /* ZSSRichTextEditor.m */,
 			);
-			name = ZSRichTextEditor;
+			name = ZSSRichTextEditor;
 			sourceTree = "<group>";
 		};
 		4581EBBE184BB92E0048CAB0 /* Editor Resources */ = {
