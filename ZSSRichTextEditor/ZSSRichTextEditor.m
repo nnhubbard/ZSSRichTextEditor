@@ -1011,17 +1011,6 @@
         }
 
         return NO;
-    } else if ([urlString rangeOfString:@"editorblurr://"].location != NSNotFound) {
-        if(self.textFieldDelegate && [self.textFieldDelegate respondsToSelector:@selector(textFieldShouldEndEditing:)]) {
-            BOOL shouldEnd = [self.textFieldDelegate textFieldShouldEndEditing:nil];
-            if(shouldEnd) {
-                [self blurTextEditor];
-            } else {
-                [self focusTextEditor];
-            }
-        }
-
-        return NO;
     }
     
     return YES;
