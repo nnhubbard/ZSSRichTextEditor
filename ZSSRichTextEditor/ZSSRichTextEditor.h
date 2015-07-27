@@ -51,12 +51,22 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 
 @class ZSSBarButtonItem;
 
+
+@protocol ZSSRichTextEditorDelegate <NSObject>
+
+-(void)zssEditorDidBeginEditing;
+
+@end
+
+
 /**
  *  The viewController used with ZSSRichTextEditor
  */
 @interface ZSSRichTextEditor : UIViewController <UIWebViewDelegate, HRColorPickerViewControllerDelegate, UITextViewDelegate>
 
 @property (nonatomic, weak) NSObject<UITextFieldDelegate>* textFieldDelegate;
+@property (nonatomic, weak) NSObject<ZSSRichTextEditorDelegate>* zssEditorDelegate;
+
 /**
  *  The base URL to use for the webView
  */
