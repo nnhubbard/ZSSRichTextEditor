@@ -899,6 +899,12 @@
     
 }
 
+- (void)insertEmailImage:(NSString *)url fileName:(NSString *)fileName cid:(NSString *)cid {
+    NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertEmailImage(\'%@\', \'%@\', \'%@\');", url, fileName, cid];
+    NSString* output = [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+    NSLog(@"%@",output);
+}
+
 - (void)insertImage:(NSString *)url alt:(NSString *)alt {
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertImage(\"%@\", \"%@\");", url, alt];
     NSString* output = [self.editorView stringByEvaluatingJavaScriptFromString:trigger];

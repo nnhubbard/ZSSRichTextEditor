@@ -1301,6 +1301,13 @@ function style_html(html_source, options) {
         zss_editor.backuprange();
     }
     
+    zss_editor.insertEmailImage = function(url, fileName, cid) {
+        zss_editor.restorerange();
+        var html = '<img src="'+url+'" class="tbinline" tb_fileName="'+fileName+'" tb_cid="'+cid+'"/>';
+        zss_editor.insertHTML(html);
+        zss_editor.enabledEditingItems();
+    }
+
     zss_editor.insertImage = function(url, alt) {
         zss_editor.restorerange();
         var html = '<img src="'+url+'" class="tbinline" alt="'+alt+'" />';

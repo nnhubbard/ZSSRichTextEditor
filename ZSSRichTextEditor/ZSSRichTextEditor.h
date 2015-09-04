@@ -157,6 +157,16 @@ typedef NS_ENUM(NSInteger, ZSSRichTextEditorToolbar) {
 - (void)showInsertImageDialogWithLink:(NSString *)url alt:(NSString *)alt;
 
 /**
+ *  Inserts an email image
+ *
+ *  @param url The URL for the image
+ *  @param fileName The tb_fileName attribute for the image
+ *  @param cid The tb_cid attribute for the image
+ */
+
+- (void)insertEmailImage:(NSString *)url fileName:(NSString *)fileName cid:(NSString *)cid;
+
+/**
  *  Inserts an image
  *
  *  @param url The URL for the image
