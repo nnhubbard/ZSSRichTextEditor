@@ -30,7 +30,7 @@
     
     // Set the base URL if you would like to use relative links, such as to images.
     self.baseURL = [NSURL URLWithString:@"http://www.zedsaid.com"];
-    
+    self.shouldShowKeyboard = NO;
     // Set the HTML contents of the editor
     [self setHTML:html];
     
