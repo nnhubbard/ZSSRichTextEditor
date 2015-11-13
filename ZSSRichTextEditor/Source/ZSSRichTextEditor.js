@@ -65,7 +65,7 @@ zss_editor.init = function() {
                  zss_editor.isDragging = false;
                  });
     $(window).on('touchend', function(e) {
-                 if (!zss_editor.isDragging) {
+                 if (!zss_editor.isDragging && (e.target.id == "zss_editor_footer"||e.target.nodeName.toLowerCase() == "html")) {
                  zss_editor.focusEditor();
                  }
                  });

@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "6C2C2B670C50C326F4CDE75C16826EDA0491AEF0",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "6C2C2B670C50C326F4CDE75C16826EDA0491AEF0" : 0,
+    "D4901E2DECC4ACCA927A8E9BA33FBB59E4A0AF3D" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "1D85276D-8013-471B-8035-FD0DD32B9643",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "6C2C2B670C50C326F4CDE75C16826EDA0491AEF0" : "ZSSRichTextEditor",
+    "D4901E2DECC4ACCA927A8E9BA33FBB59E4A0AF3D" : ""
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "ZSSRichTextEditor",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ZSSRichTextEditor.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/nnhubbard\/ZSSRichTextEditor.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6C2C2B670C50C326F4CDE75C16826EDA0491AEF0"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/zedsaid\/simple-geocaching.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D4901E2DECC4ACCA927A8E9BA33FBB59E4A0AF3D"
+    }
+  ]
+}
