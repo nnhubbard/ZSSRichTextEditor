@@ -365,6 +365,11 @@ zss_editor.insertLink = function(url, title) {
             sel.addRange(range);
         }
     }
+    else
+    {
+        document.execCommand("insertHTML",false,"<a href='"+url+"'>"+title+"</a>");
+    }
+    
     zss_editor.enabledEditingItems();
 }
 
