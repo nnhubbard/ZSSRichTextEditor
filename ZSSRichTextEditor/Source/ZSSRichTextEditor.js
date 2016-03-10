@@ -49,6 +49,7 @@ zss_editor.init = function() {
     $(document).on('selectionchange',function(e){
                    zss_editor.calculateEditorHeightWithCaretPosition();
                    zss_editor.setScrollPosition();
+                   zss_editor.enabledEditingItems(e);
                    });
     
     $(window).on('scroll', function(e) {
@@ -60,6 +61,7 @@ zss_editor.init = function() {
                  zss_editor.isDragging = true;
                  zss_editor.updateScrollOffset = true;
                  zss_editor.setScrollPosition();
+                 zss_editor.enabledEditingItems(e);
                  });
     $(window).on('touchstart', function(e) {
                  zss_editor.isDragging = false;
@@ -563,7 +565,8 @@ zss_editor.enabledEditingItems = function(e) {
     if (typeof(e) != "undefined") {
         
         // The target element
-        var t = $(e.target);
+        var s = zss_editor.getSelectedNode();
+        var t = $(s);
         var nodeName = e.target.nodeName.toLowerCase();
         
         // Background Color
