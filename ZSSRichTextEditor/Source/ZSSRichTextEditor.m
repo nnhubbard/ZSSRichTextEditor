@@ -91,11 +91,14 @@ static Class hackishFixClass = Nil;
 @property (nonatomic, strong) NSString *selectedLinkTitle;
 @property (nonatomic, strong) NSString *selectedImageURL;
 @property (nonatomic, strong) NSString *selectedImageAlt;
+@property (nonatomic, assign) CGFloat selectedImageScale;
+@property (nonatomic, strong) NSString *imageBase64String;
 @property (nonatomic, strong) UIBarButtonItem *keyboardItem;
 @property (nonatomic, strong) NSMutableArray *customBarButtonItems;
 @property (nonatomic, strong) NSMutableArray *customZSSBarButtonItems;
 @property (nonatomic, strong) NSString *internalHTML;
 @property (nonatomic) BOOL editorLoaded;
+@property (nonatomic, strong) UIImagePickerController *imagePicker;
 - (NSString *)removeQuotesFromHTML:(NSString *)html;
 - (NSString *)tidyHTML:(NSString *)html;
 - (void)enableToolbarItems:(BOOL)enable;
@@ -103,6 +106,10 @@ static Class hackishFixClass = Nil;
 @end
 
 @implementation ZSSRichTextEditor
+
+//Scale image from device
+static CGFloat kJPEGCompression = 0.8;
+static CGFloat kDefaultScale = 0.5;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -136,6 +143,13 @@ static Class hackishFixClass = Nil;
     self.editorView.scrollView.bounces = NO;
     self.editorView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.editorView];
+    
+    // Image Picker used to allow the user insert images from the device (base64 encoded)
+    self.imagePicker = [[UIImagePickerController alloc] init];
+    self.imagePicker.delegate = self;
+    self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    self.imagePicker.allowsEditing = YES;
+    self.selectedImageScale = kDefaultScale; //by default scale to half the size
     
     // Scrolling View
     self.toolBarScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, [self isIpad] ? self.view.frame.size.width : self.view.frame.size.width - 44, 44)];
@@ -571,6 +585,17 @@ static Class hackishFixClass = Nil;
             [items replaceObjectAtIndex:[_enabledToolbarItems indexOfObject:ZSSRichTextEditorToolbarInsertImage] withObject:insertImage];
         } else {
             [items addObject:insertImage];
+        }
+    }
+    
+    // Image From Device
+    if ((_enabledToolbarItems && [_enabledToolbarItems containsObject:ZSSRichTextEditorToolbarInsertImageFromDevice]) || (_enabledToolbarItems && [_enabledToolbarItems containsObject:ZSSRichTextEditorToolbarAll])) {
+        ZSSBarButtonItem *insertImageFromDevice = [[ZSSBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSimageDevice.png"] style:UIBarButtonItemStylePlain target:self action:@selector(insertImageFromDevice)];
+        insertImageFromDevice.label = @"imageFromDevice";
+        if (customOrder) {
+            [items replaceObjectAtIndex:[_enabledToolbarItems indexOfObject:ZSSRichTextEditorToolbarInsertImage] withObject:insertImageFromDevice];
+        } else {
+            [items addObject:insertImageFromDevice];
         }
     }
     
@@ -1065,6 +1090,15 @@ static Class hackishFixClass = Nil;
     
 }
 
+- (void)insertImageFromDevice {
+    
+    // Save the selection location
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
+    
+    [self showInsertImageDialogFromDeviceWithScale:self.selectedImageScale alt:self.selectedImageAlt];
+    
+}
+
 - (void)showInsertImageDialogWithLink:(NSString *)url alt:(NSString *)alt {
     
     // Insert Button Title
@@ -1140,6 +1174,76 @@ static Class hackishFixClass = Nil;
     
 }
 
+- (void)showInsertImageDialogFromDeviceWithScale:(CGFloat)scale alt:(NSString *)alt {
+    
+    // Insert button title
+    NSString *insertButtonTitle = !self.selectedImageURL ? NSLocalizedString(@"Pick Image", nil) : NSLocalizedString(@"Pick New Image", nil);
+    
+    //If the OS version supports the new UIAlertController go for it. Otherwise use the old UIAlertView
+    if ([NSProcessInfo instancesRespondToSelector:@selector(isOperatingSystemAtLeastVersion:)]) {
+        
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Insert Image From Device", nil) message:nil preferredStyle:UIAlertControllerStyleAlert];
+        
+        //Add alt text field
+        [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+            textField.placeholder = NSLocalizedString(@"Alt", nil);
+            textField.clearButtonMode = UITextFieldViewModeAlways;
+            textField.secureTextEntry = NO;
+            if (alt) {
+                textField.text = alt;
+            }
+        }];
+        
+        //Add scale text field
+        [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+            textField.clearButtonMode = UITextFieldViewModeAlways;
+            textField.secureTextEntry = NO;
+            textField.placeholder = NSLocalizedString(@"Image scale, 0.5 by default", nil);
+            textField.keyboardType = UIKeyboardTypeDecimalPad;
+        }];
+        
+        //Cancel action
+        [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+            [self focusTextEditor];
+        }]];
+        
+        //Insert action
+        [alertController addAction:[UIAlertAction actionWithTitle:insertButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            UITextField *textFieldAlt = [alertController.textFields objectAtIndex:0];
+            UITextField *textFieldScale = [alertController.textFields objectAtIndex:1];
+
+            self.selectedImageScale = [textFieldScale.text floatValue]?:kDefaultScale;
+            self.selectedImageAlt = textFieldAlt.text?:@"";
+            
+            [self presentViewController:self.imagePicker animated:YES completion:nil];
+
+        }]];
+        
+        [self presentViewController:alertController animated:YES completion:NULL];
+        
+    } else {
+        
+        self.alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Insert Image", nil) message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:insertButtonTitle, nil];
+        self.alertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
+        self.alertView.tag = 3;
+        
+        UITextField *textFieldAlt = [self.alertView textFieldAtIndex:0];
+        textFieldAlt.secureTextEntry = NO;
+        textFieldAlt.placeholder = NSLocalizedString(@"Alt", nil);
+        textFieldAlt.clearButtonMode = UITextFieldViewModeAlways;
+        if (alt) {
+            textFieldAlt.text = alt;
+        }
+        
+        UITextField *textFieldScale = [self.alertView textFieldAtIndex:1];
+        textFieldScale.placeholder = NSLocalizedString(@"Image scale, 0.5 by default", nil);
+        textFieldScale.keyboardType = UIKeyboardTypeDecimalPad;
+        
+        [self.alertView show];
+    }
+    
+}
+
 - (void)insertImage:(NSString *)url alt:(NSString *)alt {
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertImage(\"%@\", \"%@\");", url, alt];
     [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
@@ -1148,6 +1252,16 @@ static Class hackishFixClass = Nil;
 
 - (void)updateImage:(NSString *)url alt:(NSString *)alt {
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.updateImage(\"%@\", \"%@\");", url, alt];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+}
+
+- (void)insertImageBase64String:(NSString *)imageBase64String alt:(NSString *)alt {
+    NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertImageBase64String(\"%@\", \"%@\");", imageBase64String, alt];
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+}
+
+- (void)updateImageBase64String:(NSString *)imageBase64String alt:(NSString *)alt {
+    NSString *trigger = [NSString stringWithFormat:@"zss_editor.updateImageBase64String(\"%@\", \"%@\");", imageBase64String, alt];
     [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
 }
 
@@ -1295,7 +1409,7 @@ static Class hackishFixClass = Nil;
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
+
     if (alertView.tag == 1) {
         if (buttonIndex == 1) {
             UITextField *imageURL = [alertView textFieldAtIndex:0];
@@ -1316,8 +1430,18 @@ static Class hackishFixClass = Nil;
                 [self updateLink:linkURL.text title:title.text];
             }
         }
+    } else if (alertView.tag == 3) {
+        if (buttonIndex == 1) {
+            UITextField *textFieldAlt = [alertView textFieldAtIndex:0];
+            UITextField *textFieldScale = [alertView textFieldAtIndex:1];
+            
+            self.selectedImageScale = [textFieldScale.text floatValue]?:kDefaultScale;
+            self.selectedImageAlt = textFieldAlt.text?:@"";
+            
+            [self presentViewController:self.imagePicker animated:YES completion:nil];
+
+        }
     }
-    
 }
 
 
@@ -1330,6 +1454,43 @@ static Class hackishFixClass = Nil;
 
 - (void)showInsertImageAlternatePicker {
     // Blank method. User should implement this in their subclass
+}
+
+#pragma mark - Image Picker Delegate
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
+    //Dismiss the Image Picker
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info{
+
+    UIImage *selectedImage = info[UIImagePickerControllerEditedImage]?:info[UIImagePickerControllerOriginalImage];
+    
+    //Scale the image
+    CGSize targetSize = CGSizeMake(selectedImage.size.width * self.selectedImageScale, selectedImage.size.height * self.selectedImageScale);
+    UIGraphicsBeginImageContext(targetSize);
+    [selectedImage drawInRect:CGRectMake(0,0,targetSize.width,targetSize.height)];
+    UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    //Compress the image, as it is going to be encoded rather than linked
+    NSData *scaledImageData = UIImageJPEGRepresentation(scaledImage, kJPEGCompression);
+    
+    //Encode the image data as a base64 string
+    NSString *imageBase64String = [scaledImageData base64EncodedStringWithOptions:0];
+    
+    //Decide if we have to insert or update
+    if (!self.imageBase64String) {
+        [self insertImageBase64String:imageBase64String alt:self.selectedImageAlt];
+    } else {
+        [self updateImageBase64String:imageBase64String alt:self.selectedImageAlt];
+    }
+    
+    self.imageBase64String = imageBase64String;
+
+    //Dismiss the Image Picker
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
