@@ -114,6 +114,8 @@
 		45F860C618A84CFA0011266B /* ZSSunlink@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A418A84CFA0011266B /* ZSSunlink@2x.png */; };
 		45F860C718A84CFA0011266B /* ZSSunorderedlist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A518A84CFA0011266B /* ZSSunorderedlist@2x.png */; };
 		45F860C818A84CFA0011266B /* ZSSviewsource@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A618A84CFA0011266B /* ZSSviewsource@2x.png */; };
+		BCD4FA311D27E5F100B7BFE7 /* ZSSimageDevice.png in Resources */ = {isa = PBXBuildFile; fileRef = BCD4FA301D27E5F100B7BFE7 /* ZSSimageDevice.png */; };
+		BCD4FA331D27E5FB00B7BFE7 /* ZSSimageDevice@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCD4FA321D27E5FB00B7BFE7 /* ZSSimageDevice@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -252,6 +254,8 @@
 		45F860A418A84CFA0011266B /* ZSSunlink@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSunlink@2x.png"; path = "Source/Images/ZSSunlink@2x.png"; sourceTree = "<group>"; };
 		45F860A518A84CFA0011266B /* ZSSunorderedlist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSunorderedlist@2x.png"; path = "Source/Images/ZSSunorderedlist@2x.png"; sourceTree = "<group>"; };
 		45F860A618A84CFA0011266B /* ZSSviewsource@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSviewsource@2x.png"; path = "Source/Images/ZSSviewsource@2x.png"; sourceTree = "<group>"; };
+		BCD4FA301D27E5F100B7BFE7 /* ZSSimageDevice.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ZSSimageDevice.png; sourceTree = "<group>"; };
+		BCD4FA321D27E5FB00B7BFE7 /* ZSSimageDevice@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ZSSimageDevice@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -335,6 +339,8 @@
 				45F8609018A84CF90011266B /* ZSShorizontalrule@2x.png */,
 				45F73D1418D7AE9700CD6DBA /* ZSSimage.png */,
 				45F8609118A84CF90011266B /* ZSSimage@2x.png */,
+				BCD4FA301D27E5F100B7BFE7 /* ZSSimageDevice.png */,
+				BCD4FA321D27E5FB00B7BFE7 /* ZSSimageDevice@2x.png */,
 				45F73D1518D7AE9700CD6DBA /* ZSSindent.png */,
 				45F8609218A84CF90011266B /* ZSSindent@2x.png */,
 				2343B1D3199A776A00349048 /* ZSSinsertkeyword.png */,
@@ -586,6 +592,7 @@
 				45F73D2D18D7AE9700CD6DBA /* ZSScenterjustify.png in Resources */,
 				45F73D4418D7AE9700CD6DBA /* ZSSstrikethrough.png in Resources */,
 				23A76DC4187532F1000169F6 /* editor.html in Resources */,
+				BCD4FA331D27E5FB00B7BFE7 /* ZSSimageDevice@2x.png in Resources */,
 				45F860A818A84CFA0011266B /* ZSSbold@2x.png in Resources */,
 				45F860BB18A84CFA0011266B /* ZSSparagraph@2x.png in Resources */,
 				45F860AD18A84CFA0011266B /* ZSSh2@2x.png in Resources */,
@@ -631,6 +638,7 @@
 				45F73D3918D7AE9700CD6DBA /* ZSSitalic.png in Resources */,
 				45F73D2E18D7AE9700CD6DBA /* ZSSclearstyle.png in Resources */,
 				45F73D3218D7AE9700CD6DBA /* ZSSh3.png in Resources */,
+				BCD4FA311D27E5F100B7BFE7 /* ZSSimageDevice.png in Resources */,
 				45F860C518A84CFA0011266B /* ZSSundo@2x.png in Resources */,
 				45F860BF18A84CFA0011266B /* ZSSstrikethrough@2x.png in Resources */,
 				45F73D3718D7AE9700CD6DBA /* ZSSimage.png in Resources */,
