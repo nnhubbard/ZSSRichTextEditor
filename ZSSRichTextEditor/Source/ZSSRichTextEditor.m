@@ -1072,6 +1072,10 @@ static CGFloat kDefaultScale = 0.5;
     [self buildToolbar];
 }
 
+- (void)addCSS:(NSString *)css {
+    NSString *javascript = [NSString stringWithFormat:@"zss_editor.addCSS('%@');", css];
+    [self.editorView stringByEvaluatingJavaScriptFromString:javascript];
+}
 
 - (void)removeLink {
     [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.unlink();"];

@@ -191,6 +191,11 @@ static NSString * const ZSSRichTextEditorToolbarNone = @"com.zedsaid.toolbaritem
 - (void)addCustomToolbarItem:(ZSSBarButtonItem *)item;
 
 /**
+ *  Add a custom block of CSS
+ */
+- (void)addCSS:(NSString*)css;
+
+/**
  *  Scroll event callback with position
  */
 - (void)editorDidScrollWithPosition:(NSInteger)position;
