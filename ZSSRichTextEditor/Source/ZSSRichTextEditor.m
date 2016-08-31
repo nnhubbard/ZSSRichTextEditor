@@ -593,7 +593,7 @@ static CGFloat kDefaultScale = 0.5;
         ZSSBarButtonItem *insertImageFromDevice = [[ZSSBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSimageDevice.png"] style:UIBarButtonItemStylePlain target:self action:@selector(insertImageFromDevice)];
         insertImageFromDevice.label = @"imageFromDevice";
         if (customOrder) {
-            [items replaceObjectAtIndex:[_enabledToolbarItems indexOfObject:ZSSRichTextEditorToolbarInsertImage] withObject:insertImageFromDevice];
+            [items replaceObjectAtIndex:[_enabledToolbarItems indexOfObject:ZSSRichTextEditorToolbarInsertImageFromDevice] withObject:insertImageFromDevice];
         } else {
             [items addObject:insertImageFromDevice];
         }
