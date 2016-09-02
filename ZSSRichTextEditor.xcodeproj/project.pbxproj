@@ -114,8 +114,9 @@
 		45F860C618A84CFA0011266B /* ZSSunlink@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A418A84CFA0011266B /* ZSSunlink@2x.png */; };
 		45F860C718A84CFA0011266B /* ZSSunorderedlist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A518A84CFA0011266B /* ZSSunorderedlist@2x.png */; };
 		45F860C818A84CFA0011266B /* ZSSviewsource@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A618A84CFA0011266B /* ZSSviewsource@2x.png */; };
-		BCD4FA311D27E5F100B7BFE7 /* ZSSimageDevice.png in Resources */ = {isa = PBXBuildFile; fileRef = BCD4FA301D27E5F100B7BFE7 /* ZSSimageDevice.png */; };
-		BCD4FA331D27E5FB00B7BFE7 /* ZSSimageDevice@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCD4FA321D27E5FB00B7BFE7 /* ZSSimageDevice@2x.png */; };
+		DB1D27A21D79EC1700EC1CBD /* ZSSimageDevice.png in Resources */ = {isa = PBXBuildFile; fileRef = DB1D27A01D79EC1700EC1CBD /* ZSSimageDevice.png */; };
+		DB1D27A31D79EC1700EC1CBD /* ZSSimageDevice@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB1D27A11D79EC1700EC1CBD /* ZSSimageDevice@2x.png */; };
+		DB1D27A61D79F62D00EC1CBD /* DemoModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1D27A51D79F62D00EC1CBD /* DemoModalViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -254,8 +255,10 @@
 		45F860A418A84CFA0011266B /* ZSSunlink@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSunlink@2x.png"; path = "Source/Images/ZSSunlink@2x.png"; sourceTree = "<group>"; };
 		45F860A518A84CFA0011266B /* ZSSunorderedlist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSunorderedlist@2x.png"; path = "Source/Images/ZSSunorderedlist@2x.png"; sourceTree = "<group>"; };
 		45F860A618A84CFA0011266B /* ZSSviewsource@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSviewsource@2x.png"; path = "Source/Images/ZSSviewsource@2x.png"; sourceTree = "<group>"; };
-		BCD4FA301D27E5F100B7BFE7 /* ZSSimageDevice.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ZSSimageDevice.png; sourceTree = "<group>"; };
-		BCD4FA321D27E5FB00B7BFE7 /* ZSSimageDevice@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ZSSimageDevice@2x.png"; sourceTree = "<group>"; };
+		DB1D27A01D79EC1700EC1CBD /* ZSSimageDevice.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZSSimageDevice.png; path = Source/Images/ZSSimageDevice.png; sourceTree = "<group>"; };
+		DB1D27A11D79EC1700EC1CBD /* ZSSimageDevice@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSimageDevice@2x.png"; path = "Source/Images/ZSSimageDevice@2x.png"; sourceTree = "<group>"; };
+		DB1D27A41D79F62D00EC1CBD /* DemoModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoModalViewController.h; sourceTree = "<group>"; };
+		DB1D27A51D79F62D00EC1CBD /* DemoModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoModalViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,6 +294,8 @@
 				2343B22B199D6D6400349048 /* ZSSSelectiveViewController.m */,
 				2343B22D199D6E6700349048 /* ZSSCustomButtonsViewController.h */,
 				2343B22E199D6E6700349048 /* ZSSCustomButtonsViewController.m */,
+				DB1D27A41D79F62D00EC1CBD /* DemoModalViewController.h */,
+				DB1D27A51D79F62D00EC1CBD /* DemoModalViewController.m */,
 			);
 			name = Demo;
 			sourceTree = "<group>";
@@ -339,8 +344,8 @@
 				45F8609018A84CF90011266B /* ZSShorizontalrule@2x.png */,
 				45F73D1418D7AE9700CD6DBA /* ZSSimage.png */,
 				45F8609118A84CF90011266B /* ZSSimage@2x.png */,
-				BCD4FA301D27E5F100B7BFE7 /* ZSSimageDevice.png */,
-				BCD4FA321D27E5FB00B7BFE7 /* ZSSimageDevice@2x.png */,
+				DB1D27A01D79EC1700EC1CBD /* ZSSimageDevice.png */,
+				DB1D27A11D79EC1700EC1CBD /* ZSSimageDevice@2x.png */,
 				45F73D1518D7AE9700CD6DBA /* ZSSindent.png */,
 				45F8609218A84CF90011266B /* ZSSindent@2x.png */,
 				2343B1D3199A776A00349048 /* ZSSinsertkeyword.png */,
@@ -539,11 +544,11 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = ZSS;
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "Zed Said Studio";
 				TargetAttributes = {
 					4581EB7B184845790048CAB0 = {
-						DevelopmentTeam = W5MUA6S7P7;
+						DevelopmentTeam = 3FYDFXZ9H7;
 					};
 				};
 			};
@@ -585,6 +590,7 @@
 				45F73D4A18D7AE9700CD6DBA /* ZSSundo.png in Resources */,
 				45F860AF18A84CFA0011266B /* ZSSh4@2x.png in Resources */,
 				45F860C418A84CFA0011266B /* ZSSunderline@2x.png in Resources */,
+				DB1D27A21D79EC1700EC1CBD /* ZSSimageDevice.png in Resources */,
 				45F73D3318D7AE9700CD6DBA /* ZSSh4.png in Resources */,
 				45F860B418A84CFA0011266B /* ZSSindent@2x.png in Resources */,
 				45F860C618A84CFA0011266B /* ZSSunlink@2x.png in Resources */,
@@ -592,7 +598,7 @@
 				45F73D2D18D7AE9700CD6DBA /* ZSScenterjustify.png in Resources */,
 				45F73D4418D7AE9700CD6DBA /* ZSSstrikethrough.png in Resources */,
 				23A76DC4187532F1000169F6 /* editor.html in Resources */,
-				BCD4FA331D27E5FB00B7BFE7 /* ZSSimageDevice@2x.png in Resources */,
+				DB1D27A31D79EC1700EC1CBD /* ZSSimageDevice@2x.png in Resources */,
 				45F860A818A84CFA0011266B /* ZSSbold@2x.png in Resources */,
 				45F860BB18A84CFA0011266B /* ZSSparagraph@2x.png in Resources */,
 				45F860AD18A84CFA0011266B /* ZSSh2@2x.png in Resources */,
@@ -638,7 +644,6 @@
 				45F73D3918D7AE9700CD6DBA /* ZSSitalic.png in Resources */,
 				45F73D2E18D7AE9700CD6DBA /* ZSSclearstyle.png in Resources */,
 				45F73D3218D7AE9700CD6DBA /* ZSSh3.png in Resources */,
-				BCD4FA311D27E5F100B7BFE7 /* ZSSimageDevice.png in Resources */,
 				45F860C518A84CFA0011266B /* ZSSundo@2x.png in Resources */,
 				45F860BF18A84CFA0011266B /* ZSSstrikethrough@2x.png in Resources */,
 				45F73D3718D7AE9700CD6DBA /* ZSSimage.png in Resources */,
@@ -683,6 +688,7 @@
 				45A0CA3B18A8521600F3F35E /* CYRLayoutManager.m in Sources */,
 				45A0CA4E18A8522A00F3F35E /* HRColorCursor.m in Sources */,
 				4581EBB81848F8190048CAB0 /* ZSSDemoViewController.m in Sources */,
+				DB1D27A61D79F62D00EC1CBD /* DemoModalViewController.m in Sources */,
 				45F80458189B1E9300A1EDD9 /* ZSSDemoPickerViewController.m in Sources */,
 				4513B3D8184E8F5100A9CA86 /* ZSSBarButtonItem.m in Sources */,
 			);
@@ -740,14 +746,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Nicholas Hubbard (W5MUA6S7P7)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ZSSRichTextEditor/ZSSRichTextEditor-Prefix.pch";
 				INFOPLIST_FILE = "ZSSRichTextEditor/ZSSRichTextEditor-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.zedsaid.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ZSSRichTextEditor;
-				PROVISIONING_PROFILE = "A101C649-760C-4D35-A7F9-B98015D89A34";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Adhoc;
@@ -770,6 +777,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -835,6 +843,7 @@
 				GCC_PREFIX_HEADER = "ZSSRichTextEditor/ZSSRichTextEditor-Prefix.pch";
 				INFOPLIST_FILE = "ZSSRichTextEditor/ZSSRichTextEditor-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.zedsaid.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ZSSRichTextEditor;
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -846,14 +855,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Nicholas Hubbard (W5MUA6S7P7)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ZSSRichTextEditor/ZSSRichTextEditor-Prefix.pch";
 				INFOPLIST_FILE = "ZSSRichTextEditor/ZSSRichTextEditor-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.zedsaid.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ZSSRichTextEditor;
-				PROVISIONING_PROFILE = "5E1FEC95-664C-4402-9258-48803C16F896";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -72,6 +72,16 @@ static NSString * const ZSSRichTextEditorToolbarNone = @"com.zedsaid.toolbaritem
 @property (nonatomic) BOOL shouldShowKeyboard;
 
 /**
+ * If the toolbar should always be shown or not
+ */
+@property (nonatomic) BOOL alwaysShowToolbar;
+
+/**
+ * If the sub class recieves text did change events or not
+ */
+@property (nonatomic) BOOL receiveEditorDidChangeEvents;
+
+/**
  *  The placeholder text to use if there is no editor content
  */
 @property (nonatomic, strong) NSString *placeholder;
@@ -194,5 +204,7 @@ static NSString * const ZSSRichTextEditorToolbarNone = @"com.zedsaid.toolbaritem
  *  Scroll event callback with position
  */
 - (void)editorDidScrollWithPosition:(NSInteger)position;
+
+- (void)editorDidChangeWithText:(NSString *)text andHTML:(NSString *)html;
 
 @end

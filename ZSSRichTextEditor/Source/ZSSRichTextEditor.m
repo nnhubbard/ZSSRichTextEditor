@@ -13,6 +13,8 @@
 #import "HRColorUtil.h"
 #import "ZSSTextView.h"
 
+@import JavaScriptCore;
+
 
 @interface UIWebView (HackishAccessoryHiding)
 @property (nonatomic, assign) BOOL hidesInputAccessoryView;
@@ -115,6 +117,8 @@ static CGFloat kDefaultScale = 0.5;
     [super viewDidLoad];
     
     self.editorLoaded = NO;
+    self.receiveEditorDidChangeEvents = NO;
+    self.alwaysShowToolbar = NO;
     self.shouldShowKeyboard = YES;
     self.formatHTML = YES;
     
@@ -168,7 +172,14 @@ static CGFloat kDefaultScale = 0.5;
     backgroundToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
     // Parent holding view
-    self.toolbarHolder = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 44)];
+    self.toolbarHolder = [[UIView alloc] init];
+   
+    if (_alwaysShowToolbar) {
+        self.toolbarHolder.frame = CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44);
+    } else {
+        self.toolbarHolder.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 44);
+    }
+    
     self.toolbarHolder.autoresizingMask = self.toolbar.autoresizingMask;
     [self.toolbarHolder addSubview:self.toolBarScroll];
     [self.toolbarHolder insertSubview:backgroundToolbar atIndex:0];
@@ -194,6 +205,7 @@ static CGFloat kDefaultScale = 0.5;
         line.alpha = 0.7f;
         [toolbarCropper addSubview:line];
     }
+    
     [self.view addSubview:self.toolbarHolder];
     
     // Build the toolbar
@@ -212,7 +224,6 @@ static CGFloat kDefaultScale = 0.5;
     }
     
 }
-
 
 - (void)setEnabledToolbarItems:(NSArray *)enabledToolbarItems {
     
@@ -990,7 +1001,7 @@ static CGFloat kDefaultScale = 0.5;
             UITextField *title = [alertController.textFields objectAtIndex:1];
             if (!self.selectedLinkURL) {
                 [self insertLink:linkURL.text title:title.text];
-                NSLog(@"insert link");
+                //NSLog(@"insert link");
             } else {
                 [self updateLink:linkURL.text title:title.text];
             }
@@ -1043,8 +1054,8 @@ static CGFloat kDefaultScale = 0.5;
     [self.alertView dismissWithClickedButtonIndex:self.alertView.cancelButtonIndex animated:YES];
 }
 
-- (void)addCustomToolbarItemWithButton:(UIButton *)button
-{
+- (void)addCustomToolbarItemWithButton:(UIButton *)button {
+    
     if(self.customBarButtonItems == nil)
     {
         self.customBarButtonItems = [NSMutableArray array];
@@ -1325,6 +1336,7 @@ static CGFloat kDefaultScale = 0.5;
             [textView setContentOffset:offset];
         }];
     }
+    
 }
 
 
@@ -1333,10 +1345,9 @@ static CGFloat kDefaultScale = 0.5;
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     
     
-    
     NSString *urlString = [[request URL] absoluteString];
-    NSLog(@"web request");
-    NSLog(@"%@", urlString);
+    //NSLog(@"web request");
+    //NSLog(@"%@", urlString);
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         return NO;
     } else if ([urlString rangeOfString:@"callback://0/"].location != NSNotFound) {
@@ -1376,6 +1387,20 @@ static CGFloat kDefaultScale = 0.5;
             [self focusTextEditor];
         });
     }
+    
+    /*
+     
+     Callback for when text is changed, solution posted by richardortiz84 https://github.com/nnhubbard/ZSSRichTextEditor/issues/5
+     
+     */
+    JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+    ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
+        if (_receiveEditorDidChangeEvents) {
+            [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+        }
+    };
+    [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
+    
 }
 
 
@@ -1384,6 +1409,10 @@ static CGFloat kDefaultScale = 0.5;
 // Blank implementation
 - (void)editorDidScrollWithPosition:(NSInteger)position {
     
+    
+}
+
+- (void)editorDidChangeWithText:(NSString *)text andHTML:(NSString *)html  {
     
 }
 
@@ -1517,6 +1546,8 @@ static CGFloat kDefaultScale = 0.5;
     // Correct Curve
     UIViewAnimationOptions animationOptions = curve << 16;
     
+    const int extraHeight = 10;
+    
     if ([notification.name isEqualToString:UIKeyboardWillShowNotification]) {
         
         [UIView animateWithDuration:duration delay:0 options:animationOptions animations:^{
@@ -1527,8 +1558,6 @@ static CGFloat kDefaultScale = 0.5;
             self.toolbarHolder.frame = frame;
             
             // Editor View
-            const int extraHeight = 10;
-            
             CGRect editorFrame = self.editorView.frame;
             editorFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
             self.editorView.frame = editorFrame;
@@ -1552,12 +1581,24 @@ static CGFloat kDefaultScale = 0.5;
         [UIView animateWithDuration:duration delay:0 options:animationOptions animations:^{
             
             CGRect frame = self.toolbarHolder.frame;
-            frame.origin.y = self.view.frame.size.height + keyboardHeight;
+            
+            if (_alwaysShowToolbar) {
+                frame.origin.y = self.view.frame.size.height - sizeOfToolbar;
+            } else {
+                frame.origin.y = self.view.frame.size.height + keyboardHeight;
+            }
+            
             self.toolbarHolder.frame = frame;
             
             // Editor View
             CGRect editorFrame = self.editorView.frame;
-            editorFrame.size.height = self.view.frame.size.height;
+            
+            if (_alwaysShowToolbar) {
+                editorFrame.size.height = ((self.view.frame.size.height - sizeOfToolbar) - extraHeight);
+            } else {
+                editorFrame.size.height = self.view.frame.size.height;
+            }
+            
             self.editorView.frame = editorFrame;
             self.editorViewFrame = self.editorView.frame;
             self.editorView.scrollView.contentInset = UIEdgeInsetsZero;
@@ -1565,7 +1606,13 @@ static CGFloat kDefaultScale = 0.5;
             
             // Source View
             CGRect sourceFrame = self.sourceView.frame;
-            sourceFrame.size.height = self.view.frame.size.height;
+            
+            if (_alwaysShowToolbar) {
+                sourceFrame.size.height = ((self.view.frame.size.height - sizeOfToolbar) - extraHeight);
+            } else {
+                sourceFrame.size.height = self.view.frame.size.height;
+            }
+            
             self.sourceView.frame = sourceFrame;
             
         } completion:nil];

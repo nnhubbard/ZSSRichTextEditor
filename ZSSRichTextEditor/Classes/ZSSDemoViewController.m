@@ -9,6 +9,10 @@
 #import "ZSSDemoViewController.h"
 #import "ZSSDemoPickerViewController.h"
 
+
+#import "DemoModalViewController.h"
+
+
 @interface ZSSDemoViewController ()
 
 @end
@@ -21,6 +25,9 @@
     
     self.title = @"Standard";
     
+    self.alwaysShowToolbar = YES;
+    self.receiveEditorDidChangeEvents = NO;
+        
     // Export HTML
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Export" style:UIBarButtonItemStylePlain target:self action:@selector(exportHTML)];
 	
@@ -68,8 +75,22 @@
     
     NSLog(@"%@", [self getHTML]);
     
+    //NSLog(@"%@", [self getText]);
+    
+    //For testing issues with returning to the editor from another view.
+    
+    //DemoModalViewController *destViewController = [[DemoModalViewController alloc] init];
+    //[self presentViewController:destViewController animated:NO completion:nil];
+    
 }
 
+- (void)editorDidChangeWithText:(NSString *)text andHTML:(NSString *)html {
+    
+    //NSLog(@"Text Has Changed: %@", text);
+    
+    //NSLog(@"HTML Has Changed: %@", html);
+    
+}
 
 - (void)didReceiveMemoryWarning
 {
