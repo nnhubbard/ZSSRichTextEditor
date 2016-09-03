@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "HRColorPickerViewController.h"
+#import "ZSSFontsViewController.h"
 
 /**
  *  The types of toolbar items that can be added
@@ -47,13 +48,14 @@ static NSString * const ZSSRichTextEditorToolbarViewSource = @"com.zedsaid.toolb
 static NSString * const ZSSRichTextEditorToolbarParagraph = @"com.zedsaid.toolbaritem.paragraph";
 static NSString * const ZSSRichTextEditorToolbarAll = @"com.zedsaid.toolbaritem.all";
 static NSString * const ZSSRichTextEditorToolbarNone = @"com.zedsaid.toolbaritem.none";
+static NSString * const ZSSRichTextEditorToolbarFonts = @"com.zedsaid.toolbaritem.fonts";
 
 @class ZSSBarButtonItem;
 
 /**
  *  The viewController used with ZSSRichTextEditor
  */
-@interface ZSSRichTextEditor : UIViewController <UIWebViewDelegate, HRColorPickerViewControllerDelegate, UITextViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface ZSSRichTextEditor : UIViewController <UIWebViewDelegate, HRColorPickerViewControllerDelegate, UITextViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate,ZSSFontsViewControllerDelegate>
 
 
 /**
@@ -205,6 +207,19 @@ static NSString * const ZSSRichTextEditorToolbarNone = @"com.zedsaid.toolbaritem
  */
 - (void)editorDidScrollWithPosition:(NSInteger)position;
 
+/**
+ *  Text change callback with text and html
+ */
 - (void)editorDidChangeWithText:(NSString *)text andHTML:(NSString *)html;
+
+/**
+ *  Hashtag callback with word
+ */
+- (void)hashtagRecognizedWithWord:(NSString *)word;
+
+/**
+ *  Mention callback with word
+ */
+- (void)mentionRecognizedWithWord:(NSString *)word;
 
 @end

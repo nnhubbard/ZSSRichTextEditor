@@ -113,22 +113,17 @@ zss_editor.setPlaceholder = function(placeholder) {
     var editor = $('#zss_editor_content');
     
     //set placeHolder
-    if(editor.text().length == 1){
-        editor.text(placeholder);
-        editor.css("color","gray");
-    }
-    //set focus
-    editor.focus(function(){
-                 if($(this).text() == placeholder){
-                 $(this).text("");
-                 $(this).css("color","black");
-                 }
-                 }).focusout(function(){
-                             if(!$(this).text().length){
-                             $(this).text(placeholder);
-                             $(this).css("color","gray");
-                             }
-                             });
+	editor.attr("placeholder",placeholder);
+	
+    //set focus			 
+	editor.focusout(function(){
+        var element = $(this);        
+        if (!element.text().trim().length) {
+            element.empty();
+        }
+    });
+	
+	
     
 }
 
@@ -330,13 +325,25 @@ zss_editor.setOutdent = function() {
     zss_editor.enabledEditingItems();
 }
 
+zss_editor.setFontFamily = function(fontFamily) {
+
+	zss_editor.restorerange();
+	document.execCommand("styleWithCSS", null, true);
+	document.execCommand("fontName", false, fontFamily);
+	document.execCommand("styleWithCSS", null, false);
+	zss_editor.enabledEditingItems();
+		
+}
+
 zss_editor.setTextColor = function(color) {
+		
     zss_editor.restorerange();
     document.execCommand("styleWithCSS", null, true);
     document.execCommand('foreColor', false, color);
     document.execCommand("styleWithCSS", null, false);
     zss_editor.enabledEditingItems();
     // document.execCommand("removeFormat", false, "foreColor"); // Removes just foreColor
+	
 }
 
 zss_editor.setBackgroundColor = function(color) {
@@ -601,6 +608,13 @@ zss_editor.enabledEditingItems = function(e) {
         if (textColor.length != 0 && textColor != 'rgba(0, 0, 0, 0)' && textColor != 'rgb(0, 0, 0)' && textColor != 'transparent') {
             items.push('textColor');
         }
+		
+		//Fonts
+		var font = t.css('font-family');
+		if (font.length != 0 && font != 'Arial, Helvetica, sans-serif') {
+			items.push('fonts');	
+		}
+		
         // Link
         if (nodeName == 'a') {
             zss_editor.currentEditingLink = t;

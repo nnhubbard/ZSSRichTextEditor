@@ -117,6 +117,11 @@
 		DB1D27A21D79EC1700EC1CBD /* ZSSimageDevice.png in Resources */ = {isa = PBXBuildFile; fileRef = DB1D27A01D79EC1700EC1CBD /* ZSSimageDevice.png */; };
 		DB1D27A31D79EC1700EC1CBD /* ZSSimageDevice@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB1D27A11D79EC1700EC1CBD /* ZSSimageDevice@2x.png */; };
 		DB1D27A61D79F62D00EC1CBD /* DemoModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1D27A51D79F62D00EC1CBD /* DemoModalViewController.m */; };
+		DB703BB11D7B2FEA0013C608 /* jQuery.js in Resources */ = {isa = PBXBuildFile; fileRef = DB703BB01D7B2FEA0013C608 /* jQuery.js */; };
+		DB703BB31D7B31D10013C608 /* JSBeautifier.js in Resources */ = {isa = PBXBuildFile; fileRef = DB703BB21D7B31D10013C608 /* JSBeautifier.js */; };
+		DB703BB61D7B73600013C608 /* ZSSFontsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB703BB51D7B73600013C608 /* ZSSFontsViewController.m */; };
+		DB703BB91D7B774F0013C608 /* ZSSfonts.png in Resources */ = {isa = PBXBuildFile; fileRef = DB703BB71D7B774F0013C608 /* ZSSfonts.png */; };
+		DB703BBA1D7B774F0013C608 /* ZSSfonts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB703BB81D7B774F0013C608 /* ZSSfonts@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -259,6 +264,12 @@
 		DB1D27A11D79EC1700EC1CBD /* ZSSimageDevice@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSimageDevice@2x.png"; path = "Source/Images/ZSSimageDevice@2x.png"; sourceTree = "<group>"; };
 		DB1D27A41D79F62D00EC1CBD /* DemoModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoModalViewController.h; sourceTree = "<group>"; };
 		DB1D27A51D79F62D00EC1CBD /* DemoModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoModalViewController.m; sourceTree = "<group>"; };
+		DB703BB01D7B2FEA0013C608 /* jQuery.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = jQuery.js; path = Source/jQuery.js; sourceTree = "<group>"; };
+		DB703BB21D7B31D10013C608 /* JSBeautifier.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = JSBeautifier.js; path = Source/JSBeautifier.js; sourceTree = "<group>"; };
+		DB703BB41D7B73600013C608 /* ZSSFontsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZSSFontsViewController.h; path = Source/ZSSFontsViewController.h; sourceTree = "<group>"; };
+		DB703BB51D7B73600013C608 /* ZSSFontsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZSSFontsViewController.m; path = Source/ZSSFontsViewController.m; sourceTree = "<group>"; };
+		DB703BB71D7B774F0013C608 /* ZSSfonts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZSSfonts.png; path = Source/Images/ZSSfonts.png; sourceTree = "<group>"; };
+		DB703BB81D7B774F0013C608 /* ZSSfonts@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSfonts@2x.png"; path = "Source/Images/ZSSfonts@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,6 +329,8 @@
 		4562858E184CFBE400B6168E /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				DB703BB71D7B774F0013C608 /* ZSSfonts.png */,
+				DB703BB81D7B774F0013C608 /* ZSSfonts@2x.png */,
 				45F73D0818D7AE9700CD6DBA /* ZSSbgcolor.png */,
 				45F8608518A84CF90011266B /* ZSSbgcolor@2x.png */,
 				45F73D0918D7AE9700CD6DBA /* ZSSbold.png */,
@@ -403,6 +416,8 @@
 				4513B3D7184E8F5100A9CA86 /* ZSSBarButtonItem.m */,
 				4552C48F189A094C004EF847 /* ZSSTextView.h */,
 				4552C490189A094C004EF847 /* ZSSTextView.m */,
+				DB703BB41D7B73600013C608 /* ZSSFontsViewController.h */,
+				DB703BB51D7B73600013C608 /* ZSSFontsViewController.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -483,6 +498,8 @@
 			children = (
 				23A76DC2187532F1000169F6 /* editor.html */,
 				23A76DC3187532F1000169F6 /* ZSSRichTextEditor.js */,
+				DB703BB01D7B2FEA0013C608 /* jQuery.js */,
+				DB703BB21D7B31D10013C608 /* JSBeautifier.js */,
 				4562858E184CFBE400B6168E /* Images */,
 			);
 			name = "Editor Resources";
@@ -614,8 +631,10 @@
 				45F73D3C18D7AE9700CD6DBA /* ZSSlink.png in Resources */,
 				45F860B618A84CFA0011266B /* ZSSkeyboard@2x.png in Resources */,
 				45F860AA18A84CFA0011266B /* ZSSclearstyle@2x.png in Resources */,
+				DB703BB11D7B2FEA0013C608 /* jQuery.js in Resources */,
 				45F73D2C18D7AE9700CD6DBA /* ZSSbold.png in Resources */,
 				45F73D4018D7AE9700CD6DBA /* ZSSpicker.png in Resources */,
+				DB703BB91D7B774F0013C608 /* ZSSfonts.png in Resources */,
 				45F73D4818D7AE9700CD6DBA /* ZSStextcolor.png in Resources */,
 				45F73D4618D7AE9700CD6DBA /* ZSSsuperscript.png in Resources */,
 				45F860AB18A84CFA0011266B /* ZSSforcejustify@2x.png in Resources */,
@@ -639,6 +658,7 @@
 				45F860B518A84CFA0011266B /* ZSSitalic@2x.png in Resources */,
 				45F73D3518D7AE9700CD6DBA /* ZSSh6.png in Resources */,
 				2314CBA2198F4CEC00A126F6 /* 152.png in Resources */,
+				DB703BB31D7B31D10013C608 /* JSBeautifier.js in Resources */,
 				23065BF51A06BA67001BA0B0 /* Images.xcassets in Resources */,
 				45F860AE18A84CFA0011266B /* ZSSh3@2x.png in Resources */,
 				45F73D3918D7AE9700CD6DBA /* ZSSitalic.png in Resources */,
@@ -652,6 +672,7 @@
 				45F73D4318D7AE9700CD6DBA /* ZSSrightjustify.png in Resources */,
 				45F73D4B18D7AE9700CD6DBA /* ZSSunlink.png in Resources */,
 				45F73D3018D7AE9700CD6DBA /* ZSSh1.png in Resources */,
+				DB703BBA1D7B774F0013C608 /* ZSSfonts@2x.png in Resources */,
 				45E38AB618AC3AA70079C928 /* Default-568h@2x.png in Resources */,
 				45F73D3E18D7AE9700CD6DBA /* ZSSoutdent.png in Resources */,
 				45F860BD18A84CFA0011266B /* ZSSredo@2x.png in Resources */,
@@ -691,6 +712,7 @@
 				DB1D27A61D79F62D00EC1CBD /* DemoModalViewController.m in Sources */,
 				45F80458189B1E9300A1EDD9 /* ZSSDemoPickerViewController.m in Sources */,
 				4513B3D8184E8F5100A9CA86 /* ZSSBarButtonItem.m in Sources */,
+				DB703BB61D7B73600013C608 /* ZSSFontsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

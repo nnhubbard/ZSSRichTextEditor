@@ -16,6 +16,11 @@
 @import JavaScriptCore;
 
 
+/**
+ 
+ UIWebView modifications for hiding the inputAccessoryView
+ 
+ **/
 @interface UIWebView (HackishAccessoryHiding)
 @property (nonatomic, assign) BOOL hidesInputAccessoryView;
 @end
@@ -78,113 +83,189 @@ static Class hackishFixClass = Nil;
 
 @end
 
+
 @interface ZSSRichTextEditor ()
+
+/*
+ *  Scroll view containing the toolbar
+ */
 @property (nonatomic, strong) UIScrollView *toolBarScroll;
+
+/*
+ *  Toolbar containing ZSSBarButtonItems
+ */
 @property (nonatomic, strong) UIToolbar *toolbar;
+
+/*
+ *  Holder for all of the toolbar components
+ */
 @property (nonatomic, strong) UIView *toolbarHolder;
+
+/*
+ *  String for the HTML
+ */
 @property (nonatomic, strong) NSString *htmlString;
+
+/*
+ *  UIWebView for writing/editing/displaying the content
+ */
 @property (nonatomic, strong) UIWebView *editorView;
+
+/*
+ *  ZSSTextView for displaying the source code for what is displayed in the editor view
+ */
 @property (nonatomic, strong) ZSSTextView *sourceView;
+
+/*
+ *  CGRect for holding the frame for the editor view
+ */
 @property (nonatomic) CGRect editorViewFrame;
+
+/*
+ *  BOOL for holding if the resources are loaded or not
+ */
 @property (nonatomic) BOOL resourcesLoaded;
+
+/*
+ *  Array holding the enabled editor items
+ */
 @property (nonatomic, strong) NSArray *editorItemsEnabled;
+
+/*
+ *  Alert View used when inserting links/images
+ */
 @property (nonatomic, strong) UIAlertView *alertView;
+
+/*
+ *  NSString holding the selected links URL value
+ */
 @property (nonatomic, strong) NSString *selectedLinkURL;
+
+/*
+ *  NSString holding the selected links title value
+ */
 @property (nonatomic, strong) NSString *selectedLinkTitle;
+
+/*
+ *  NSString holding the selected image URL value
+ */
 @property (nonatomic, strong) NSString *selectedImageURL;
+
+/*
+ *  NSString holding the selected image Alt value
+ */
 @property (nonatomic, strong) NSString *selectedImageAlt;
+
+/*
+ *  CGFloat holdign the selected image scale value
+ */
 @property (nonatomic, assign) CGFloat selectedImageScale;
+
+/*
+ *  NSString holding the base64 value of the current image
+ */
 @property (nonatomic, strong) NSString *imageBase64String;
+
+/*
+ *  Bar button item for the keyboard dismiss button in the toolbar
+ */
 @property (nonatomic, strong) UIBarButtonItem *keyboardItem;
+
+/*
+ *  Array for custom bar button items
+ */
 @property (nonatomic, strong) NSMutableArray *customBarButtonItems;
+
+/*
+ *  Array for custom ZSSBarButtonItems
+ */
 @property (nonatomic, strong) NSMutableArray *customZSSBarButtonItems;
+
+/*
+ *  NSString holdign the html
+ */
 @property (nonatomic, strong) NSString *internalHTML;
+
+/*
+ *  BOOL for if the editor is loaded or not
+ */
 @property (nonatomic) BOOL editorLoaded;
+
+/*
+ *  Image Picker for selecting photos from users photo library
+ */
 @property (nonatomic, strong) UIImagePickerController *imagePicker;
+
+/*
+ *  Method for getting a version of the html without quotes
+ */
 - (NSString *)removeQuotesFromHTML:(NSString *)html;
+
+/*
+ *  Method for getting a tidied version of the html
+ */
 - (NSString *)tidyHTML:(NSString *)html;
+
+/*
+ * Method for enablign toolbar items
+ */
 - (void)enableToolbarItems:(BOOL)enable;
+
+/*
+ *  Setter for isIpad BOOL
+ */
 - (BOOL)isIpad;
+
 @end
 
+/*
+ 
+ ZSSRichTextEditor
+ 
+ */
 @implementation ZSSRichTextEditor
 
 //Scale image from device
 static CGFloat kJPEGCompression = 0.8;
 static CGFloat kDefaultScale = 0.5;
 
+#pragma mark - View Did Load Section
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     
+    //Initialise variables
     self.editorLoaded = NO;
     self.receiveEditorDidChangeEvents = NO;
     self.alwaysShowToolbar = NO;
     self.shouldShowKeyboard = YES;
     self.formatHTML = YES;
     
+    //Initalise enabled toolbar items array
     self.enabledToolbarItems = [[NSArray alloc] init];
     
-    // Source View
+    //Frame for the source view and editor view
     CGRect frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    self.sourceView = [[ZSSTextView alloc] initWithFrame:frame];
-    self.sourceView.hidden = YES;
-    self.sourceView.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.sourceView.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.sourceView.font = [UIFont fontWithName:@"Courier" size:13.0];
-    self.sourceView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.sourceView.autoresizesSubviews = YES;
-    self.sourceView.delegate = self;
-    [self.view addSubview:self.sourceView];
     
-    // Editor View
-    self.editorView = [[UIWebView alloc] initWithFrame:frame];
-    self.editorView.delegate = self;
-    self.editorView.hidesInputAccessoryView = YES;
-    self.editorView.keyboardDisplayRequiresUserAction = NO;
-    self.editorView.scalesPageToFit = YES;
-    self.editorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-    self.editorView.dataDetectorTypes = UIDataDetectorTypeNone;
-    self.editorView.scrollView.bounces = NO;
-    self.editorView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:self.editorView];
+    //Source View
+    [self createSourceViewWithFrame:frame];
     
-    // Image Picker used to allow the user insert images from the device (base64 encoded)
-    self.imagePicker = [[UIImagePickerController alloc] init];
-    self.imagePicker.delegate = self;
-    self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    self.imagePicker.allowsEditing = YES;
-    self.selectedImageScale = kDefaultScale; //by default scale to half the size
+    //Editor View
+    [self createEditorViewWithFrame:frame];
     
-    // Scrolling View
-    self.toolBarScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, [self isIpad] ? self.view.frame.size.width : self.view.frame.size.width - 44, 44)];
-    self.toolBarScroll.backgroundColor = [UIColor clearColor];
-    self.toolBarScroll.showsHorizontalScrollIndicator = NO;
+    //Image Picker used to allow the user insert images from the device (base64 encoded)
+    [self setUpImagePicker];
     
-    // Toolbar with icons
-    self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectZero];
-    self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    self.toolbar.backgroundColor = [UIColor clearColor];
-    [self.toolBarScroll addSubview:self.toolbar];
-    self.toolBarScroll.autoresizingMask = self.toolbar.autoresizingMask;
+    //Scrolling View
+    [self createToolBarScroll];
     
-    // Background Toolbar
-    UIToolbar *backgroundToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
-    backgroundToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    //Toolbar with icons
+    [self createToolbar];
     
-    // Parent holding view
-    self.toolbarHolder = [[UIView alloc] init];
-   
-    if (_alwaysShowToolbar) {
-        self.toolbarHolder.frame = CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44);
-    } else {
-        self.toolbarHolder.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 44);
-    }
+    //Parent holding view
+    [self createParentHoldingView];
     
-    self.toolbarHolder.autoresizingMask = self.toolbar.autoresizingMask;
-    [self.toolbarHolder addSubview:self.toolBarScroll];
-    [self.toolbarHolder insertSubview:backgroundToolbar atIndex:0];
-    
-    // Hide Keyboard
+    //Hide Keyboard
     if (![self isIpad]) {
         
         // Toolbar holder used to crop and position toolbar
@@ -204,26 +285,155 @@ static CGFloat kDefaultScale = 0.5;
         line.backgroundColor = [UIColor lightGrayColor];
         line.alpha = 0.7f;
         [toolbarCropper addSubview:line];
+        
     }
     
     [self.view addSubview:self.toolbarHolder];
     
-    // Build the toolbar
+    //Build the toolbar
     [self buildToolbar];
     
+    //Load Resources
     if (!self.resourcesLoaded) {
-        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"editor" ofType:@"html"];
-        NSData *htmlData = [NSData dataWithContentsOfFile:filePath];
-        NSString *htmlString = [[NSString alloc] initWithData:htmlData encoding:NSUTF8StringEncoding];
-        NSString *source = [[NSBundle mainBundle] pathForResource:@"ZSSRichTextEditor" ofType:@"js"];
-        NSString *jsString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:source] encoding:NSUTF8StringEncoding];
-        htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--editor-->" withString:jsString];
         
-        [self.editorView loadHTMLString:htmlString baseURL:self.baseURL];
-        self.resourcesLoaded = YES;
+        [self loadResources];
+        
     }
     
 }
+
+#pragma mark - View Will Appear Section
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    //Add observers for keyboard showing or hiding notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillHideNotification object:nil];
+
+}
+
+#pragma mark - View Will Disappear Section
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    //Remove observers for keyboard showing or hiding notifications
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    
+}
+
+#pragma mark - Set Up View Section
+
+- (void)createSourceViewWithFrame:(CGRect)frame {
+    
+    self.sourceView = [[ZSSTextView alloc] initWithFrame:frame];
+    self.sourceView.hidden = YES;
+    self.sourceView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.sourceView.autocorrectionType = UITextAutocorrectionTypeNo;
+    self.sourceView.font = [UIFont fontWithName:@"Courier" size:13.0];
+    self.sourceView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.sourceView.autoresizesSubviews = YES;
+    self.sourceView.delegate = self;
+    [self.view addSubview:self.sourceView];
+    
+}
+
+- (void)createEditorViewWithFrame:(CGRect)frame {
+    
+    self.editorView = [[UIWebView alloc] initWithFrame:frame];
+    self.editorView.delegate = self;
+    self.editorView.hidesInputAccessoryView = YES;
+    self.editorView.keyboardDisplayRequiresUserAction = NO;
+    self.editorView.scalesPageToFit = YES;
+    self.editorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    self.editorView.dataDetectorTypes = UIDataDetectorTypeNone;
+    self.editorView.scrollView.bounces = NO;
+    self.editorView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.editorView];
+    
+}
+
+- (void)setUpImagePicker {
+    
+    self.imagePicker = [[UIImagePickerController alloc] init];
+    self.imagePicker.delegate = self;
+    self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    self.imagePicker.allowsEditing = YES;
+    self.selectedImageScale = kDefaultScale; //by default scale to half the size
+    
+}
+
+- (void)createToolBarScroll {
+    
+    self.toolBarScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, [self isIpad] ? self.view.frame.size.width : self.view.frame.size.width - 44, 44)];
+    self.toolBarScroll.backgroundColor = [UIColor clearColor];
+    self.toolBarScroll.showsHorizontalScrollIndicator = NO;
+    
+}
+
+- (void)createToolbar {
+    
+    self.toolbar = [[UIToolbar alloc] initWithFrame:CGRectZero];
+    self.toolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.toolbar.backgroundColor = [UIColor clearColor];
+    [self.toolBarScroll addSubview:self.toolbar];
+    self.toolBarScroll.autoresizingMask = self.toolbar.autoresizingMask;
+    
+}
+
+- (void)createParentHoldingView {
+    
+    //Background Toolbar
+    UIToolbar *backgroundToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
+    backgroundToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    
+    //Parent holding view
+    self.toolbarHolder = [[UIView alloc] init];
+    
+    if (_alwaysShowToolbar) {
+        self.toolbarHolder.frame = CGRectMake(0, self.view.frame.size.height - 44, self.view.frame.size.width, 44);
+    } else {
+        self.toolbarHolder.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 44);
+    }
+    
+    self.toolbarHolder.autoresizingMask = self.toolbar.autoresizingMask;
+    [self.toolbarHolder addSubview:self.toolBarScroll];
+    [self.toolbarHolder insertSubview:backgroundToolbar atIndex:0];
+    
+}
+
+#pragma mark - Resources Section
+
+- (void)loadResources {
+    
+    //Create a string with the contents of editor.html
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"editor" ofType:@"html"];
+    NSData *htmlData = [NSData dataWithContentsOfFile:filePath];
+    NSString *htmlString = [[NSString alloc] initWithData:htmlData encoding:NSUTF8StringEncoding];
+    
+    //Add jQuery.js to the html file
+    NSString *jquery = [[NSBundle mainBundle] pathForResource:@"jQuery" ofType:@"js"];
+    NSString *jqueryString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:jquery] encoding:NSUTF8StringEncoding];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!-- jQuery -->" withString:jqueryString];
+    
+    //Add JSBeautifier.js to the html file
+    NSString *beautifier = [[NSBundle mainBundle] pathForResource:@"JSBeautifier" ofType:@"js"];
+    NSString *beautifierString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:beautifier] encoding:NSUTF8StringEncoding];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!-- jsbeautifier -->" withString:beautifierString];
+    
+    //Add ZSSRichTextEditor.js to the html file
+    NSString *source = [[NSBundle mainBundle] pathForResource:@"ZSSRichTextEditor" ofType:@"js"];
+    NSString *jsString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:source] encoding:NSUTF8StringEncoding];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--editor-->" withString:jsString];
+    
+    [self.editorView loadHTMLString:htmlString baseURL:self.baseURL];
+    self.resourcesLoaded = YES;
+    
+}
+
+#pragma mark - Toolbar Section
 
 - (void)setEnabledToolbarItems:(NSArray *)enabledToolbarItems {
     
@@ -252,27 +462,6 @@ static CGFloat kDefaultScale = 0.5;
     
 }
 
-
-- (void)setPlaceholderText {
-    
-    NSString *js = [NSString stringWithFormat:@"zss_editor.setPlaceholder(\"%@\");", self.placeholder];
-    [self.editorView stringByEvaluatingJavaScriptFromString:js];
-    
-}
-
-- (void)setFooterHeight:(float)footerHeight {
-    
-    NSString *js = [NSString stringWithFormat:@"zss_editor.setFooterHeight(\"%f\");", footerHeight];
-    [self.editorView stringByEvaluatingJavaScriptFromString:js];
-}
-
-- (void)setContentHeight:(float)contentHeight {
-    
-    NSString *js = [NSString stringWithFormat:@"zss_editor.contentHeight = %f;", contentHeight];
-    [self.editorView stringByEvaluatingJavaScriptFromString:js];
-}
-
-
 - (NSArray *)itemsForToolbar {
     
     NSMutableArray *items = [[NSMutableArray alloc] init];
@@ -290,7 +479,7 @@ static CGFloat kDefaultScale = 0.5;
             [items addObject:@""];
         }
     }
-
+    
     // Bold
     if ((_enabledToolbarItems && [_enabledToolbarItems containsObject:ZSSRichTextEditorToolbarBold]) || (_enabledToolbarItems && [_enabledToolbarItems containsObject:ZSSRichTextEditorToolbarAll])) {
         ZSSBarButtonItem *bold = [[ZSSBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSbold.png"] style:UIBarButtonItemStylePlain target:self action:@selector(setBold)];
@@ -366,6 +555,19 @@ static CGFloat kDefaultScale = 0.5;
         } else {
             [items addObject:removeFormat];
         }
+    }
+    
+    //  Fonts
+    if ((_enabledToolbarItems && [_enabledToolbarItems containsObject:ZSSRichTextEditorToolbarFonts]) || (_enabledToolbarItems && [_enabledToolbarItems containsObject:ZSSRichTextEditorToolbarAll])) {
+        
+        ZSSBarButtonItem *fonts = [[ZSSBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSfonts.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showFontsPicker)];
+        fonts.label = @"fonts";
+        if (customOrder) {
+            [items replaceObjectAtIndex:[_enabledToolbarItems indexOfObject:ZSSRichTextEditorToolbarFonts] withObject:fonts];
+        } else {
+            [items addObject:fonts];
+        }
+        
     }
     
     // Undo
@@ -694,25 +896,34 @@ static CGFloat kDefaultScale = 0.5;
 }
 
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+#pragma mark - Editor Modification Section
+
+- (void)setPlaceholderText {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillHideNotification object:nil];
+    //Call the setPlaceholder javascript method if a placeholder has been set
+    if (self.placeholder != NULL) {
+    
+        NSString *js = [NSString stringWithFormat:@"zss_editor.setPlaceholder(\"%@\");", self.placeholder];
+        [self.editorView stringByEvaluatingJavaScriptFromString:js];
+        
+    }
+    
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
+- (void)setFooterHeight:(float)footerHeight {
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    //Call the setFooterHeight javascript method
+    NSString *js = [NSString stringWithFormat:@"zss_editor.setFooterHeight(\"%f\");", footerHeight];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+    
 }
 
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)setContentHeight:(float)contentHeight {
+    
+    //Call the contentHeight javascript method
+    NSString *js = [NSString stringWithFormat:@"zss_editor.contentHeight = %f;", contentHeight];
+    [self.editorView stringByEvaluatingJavaScriptFromString:js];
+    
 }
 
 #pragma mark - Editor Interaction
@@ -749,21 +960,27 @@ static CGFloat kDefaultScale = 0.5;
 }
 
 - (NSString *)getHTML {
+    
     NSString *html = [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getHTML();"];
     html = [self removeQuotesFromHTML:html];
     html = [self tidyHTML:html];
     return html;
+    
 }
 
 
 - (void)insertHTML:(NSString *)html {
+    
     NSString *cleanedHTML = [self removeQuotesFromHTML:html];
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertHTML(\"%@\");", cleanedHTML];
     [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+    
 }
 
 - (NSString *)getText {
+    
     return [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.getText();"];
+    
 }
 
 - (void)dismissKeyboard {
@@ -899,6 +1116,64 @@ static CGFloat kDefaultScale = 0.5;
 - (void)paragraph {
     NSString *trigger = @"zss_editor.setParagraph();";
     [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+}
+
+- (void)showFontsPicker {
+    
+    NSLog(@"Fonts Picker Button Pressed");
+    
+    // Save the selection location
+    [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
+    
+    //Call picker
+    ZSSFontsViewController *fontPicker = [ZSSFontsViewController cancelableFontPickerViewControllerWithFontFamily:ZSSFontFamilyDefault];
+    fontPicker.delegate = self;
+    [self.navigationController pushViewController:fontPicker animated:YES];
+    
+}
+
+- (void)setSelectedFontFamily:(ZSSFontFamily)fontFamily {
+    
+    NSString *fontFamilyString;
+    
+    switch (fontFamily) {
+        case ZSSFontFamilyDefault:
+            fontFamilyString = @"Arial, Helvetica, sans-serif";
+            break;
+        
+        case ZSSFontFamilyGeorgia:
+            fontFamilyString = @"Georgia, serif";
+            break;
+        
+        case ZSSFontFamilyPalatino:
+            fontFamilyString = @"Palatino Linotype, Book Antiqua, Palatino, serif";
+            break;
+        
+        case ZSSFontFamilyTimesNew:
+            fontFamilyString = @"Times New Roman, Times, serif";
+            break;
+        
+        case ZSSFontFamilyTrebuchet:
+            fontFamilyString = @"Trebuchet MS, Helvetica, sans-serif";
+            break;
+        
+        case ZSSFontFamilyVerdana:
+            fontFamilyString = @"Verdana, Geneva, sans-serif";
+            break;
+        
+        case ZSSFontFamilyCourierNew:
+            fontFamilyString = @"Courier New, Courier, monospace";
+            break;
+        
+        default:
+            fontFamilyString = @"Arial, Helvetica, sans-serif";
+            break;
+    }
+    
+    NSString *trigger = [NSString stringWithFormat:@"zss_editor.setFontFamily(\"%@\");", fontFamilyString];
+
+    [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+    
 }
 
 - (void)textColor {
@@ -1086,7 +1361,7 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)removeLink {
     [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.unlink();"];
-}//end
+}
 
 - (void)quickLink {
     [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.quickLink();"];
@@ -1316,7 +1591,7 @@ static CGFloat kDefaultScale = 0.5;
         } else {
             item.tintColor = [self barButtonItemDefaultColor];
         }
-    }//end
+    }
     
 }
 
@@ -1372,12 +1647,12 @@ static CGFloat kDefaultScale = 0.5;
     
     return YES;
     
-}//end
+}
 
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.editorLoaded = YES;
-    //[self setPlaceholderText];
+    [self setPlaceholderText];
     if (!self.internalHTML) {
         self.internalHTML = @"";
     }
@@ -1395,26 +1670,97 @@ static CGFloat kDefaultScale = 0.5;
      */
     JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
     ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
+        
         if (_receiveEditorDidChangeEvents) {
+            
             [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+            
         }
+        
+        [self checkForMentionOrHashtagInText:[self getText]];
+        
     };
     [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
     
 }
 
+#pragma mark - Mention & Hashtag Support Section
+
+- (void)checkForMentionOrHashtagInText:(NSString *)text {
+    
+    if ([text containsString:@" "] && [text length] > 0) {
+        
+        NSString *lastWord = nil;
+        NSString *matchedWord = nil;
+        BOOL ContainsHashtag = NO;
+        BOOL ContainsMention = NO;
+        
+        NSRange range = [text rangeOfString:@" " options:NSBackwardsSearch];
+        lastWord = [text substringFromIndex:range.location];
+        
+        if (lastWord != nil) {
+        
+            //Check if last word typed starts with a #
+            NSRegularExpression *hashtagRegex = [NSRegularExpression regularExpressionWithPattern:@"#(\\w+)" options:0 error:nil];
+            NSArray *hashtagMatches = [hashtagRegex matchesInString:lastWord options:0 range:NSMakeRange(0, lastWord.length)];
+            
+            for (NSTextCheckingResult *match in hashtagMatches) {
+                
+                NSRange wordRange = [match rangeAtIndex:1];
+                NSString *word = [lastWord substringWithRange:wordRange];
+                matchedWord = word;
+                ContainsHashtag = YES;
+                
+            }
+            
+            if (!ContainsHashtag) {
+                
+                //Check if last word typed starts with a @
+                NSRegularExpression *mentionRegex = [NSRegularExpression regularExpressionWithPattern:@"@(\\w+)" options:0 error:nil];
+                NSArray *mentionMatches = [mentionRegex matchesInString:lastWord options:0 range:NSMakeRange(0, lastWord.length)];
+                
+                for (NSTextCheckingResult *match in mentionMatches) {
+                    
+                    NSRange wordRange = [match rangeAtIndex:1];
+                    NSString *word = [lastWord substringWithRange:wordRange];
+                    matchedWord = word;
+                    ContainsMention = YES;
+                    
+                }
+                
+            }
+            
+        }
+        
+        if (ContainsHashtag) {
+            
+            [self hashtagRecognizedWithWord:matchedWord];
+            
+        }
+        
+        if (ContainsMention) {
+            
+            [self mentionRecognizedWithWord:matchedWord];
+            
+        }
+        
+    }
+    
+}
 
 #pragma mark - Callbacks
 
-// Blank implementation
-- (void)editorDidScrollWithPosition:(NSInteger)position {
-    
-    
-}
+//Blank implementation
+- (void)editorDidScrollWithPosition:(NSInteger)position {}
 
-- (void)editorDidChangeWithText:(NSString *)text andHTML:(NSString *)html  {
-    
-}
+//Blank implementation
+- (void)editorDidChangeWithText:(NSString *)text andHTML:(NSString *)html  {}
+
+//Blank implementation
+- (void)hashtagRecognizedWithWord:(NSString *)word {}
+
+//Blank implementation
+- (void)mentionRecognizedWithWord:(NSString *)word {}
 
 
 #pragma mark - AlertView
@@ -1617,7 +1963,7 @@ static CGFloat kDefaultScale = 0.5;
             
         } completion:nil];
         
-    }//end
+    }
     
 }
 
@@ -1631,7 +1977,7 @@ static CGFloat kDefaultScale = 0.5;
     html = [html stringByReplacingOccurrencesOfString:@"\r"  withString:@"\\r"];
     html = [html stringByReplacingOccurrencesOfString:@"\n"  withString:@"\\n"];
     return html;
-}//end
+}
 
 
 - (NSString *)tidyHTML:(NSString *)html {
@@ -1641,7 +1987,7 @@ static CGFloat kDefaultScale = 0.5;
         html = [self.editorView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"style_html(\"%@\");", html]];
     }
     return html;
-}//end
+}
 
 
 - (UIColor *)barButtonItemDefaultColor {
@@ -1666,7 +2012,7 @@ static CGFloat kDefaultScale = 0.5;
 
 - (BOOL)isIpad {
     return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
-}//end
+}
 
 
 - (NSString *)stringByDecodingURLFormat:(NSString *)string {
@@ -1674,7 +2020,6 @@ static CGFloat kDefaultScale = 0.5;
     result = [result stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     return result;
 }
-
 
 - (void)enableToolbarItems:(BOOL)enable {
     NSArray *items = self.toolbar.items;
@@ -1685,5 +2030,9 @@ static CGFloat kDefaultScale = 0.5;
     }
 }
 
+#pragma mark - Memory Warning Section
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+}
 
 @end
