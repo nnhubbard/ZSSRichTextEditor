@@ -1652,11 +1652,16 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.editorLoaded = YES;
-    [self setPlaceholderText];
+
     if (!self.internalHTML) {
         self.internalHTML = @"";
     }
     [self updateHTML];
+
+    if(self.placeholder) {
+        [self setPlaceholderText];
+    }
+
     if (self.shouldShowKeyboard) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self focusTextEditor];
