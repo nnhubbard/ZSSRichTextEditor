@@ -680,4 +680,20 @@ zss_editor.blurEditor = function() {
     $('#zss_editor_content').blur();
 }
 
+zss_editor.setCustomCSS = function(customCSS) {
+    
+    document.getElementsByTagName('style')[0].innerHTML=customCSS;
+    
+    //set focus
+    /*editor.focusout(function(){
+                    var element = $(this);
+                    if (!element.text().trim().length) {
+                    element.empty();
+                    }
+                    });*/
+    
+    
+    
+}
+
 //end

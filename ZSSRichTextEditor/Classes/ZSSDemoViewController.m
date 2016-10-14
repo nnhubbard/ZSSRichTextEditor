@@ -25,16 +25,18 @@
     
     self.title = @"Standard";
     
+    //Set Custom CSS
+    NSString *customCSS = @"";
+    [self setCSS:customCSS];
+        
     self.alwaysShowToolbar = YES;
     self.receiveEditorDidChangeEvents = NO;
     
-    
-        
     // Export HTML
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Export" style:UIBarButtonItemStylePlain target:self action:@selector(exportHTML)];
-	
+    
     // HTML Content to set in the editor
-    NSString *html = @"<!-- This is an HTML comment -->"
+    NSString *html = @"<div class='test'></div><!-- This is an HTML comment -->"
     "<p>This is a test of the <strong>ZSSRichTextEditor</strong> by <a title=\"Zed Said\" href=\"http://www.zedsaid.com\">Zed Said Studio</a></p>";
     
     // Set the base URL if you would like to use relative links, such as to images.
@@ -42,6 +44,7 @@
     self.shouldShowKeyboard = NO;
     // Set the HTML contents of the editor
     [self setPlaceholder:@"This is a placeholder that will show when there is no content(html)"];
+    
     [self setHTML:html];
     
 }
@@ -78,20 +81,13 @@
     
     NSLog(@"%@", [self getHTML]);
     
-    //NSLog(@"%@", [self getText]);
-    
-    //For testing issues with returning to the editor from another view.
-    
-    //DemoModalViewController *destViewController = [[DemoModalViewController alloc] init];
-    //[self presentViewController:destViewController animated:NO completion:nil];
-    
 }
 
 - (void)editorDidChangeWithText:(NSString *)text andHTML:(NSString *)html {
     
-    //NSLog(@"Text Has Changed: %@", text);
+    NSLog(@"Text Has Changed: %@", text);
     
-    //NSLog(@"HTML Has Changed: %@", html);
+    NSLog(@"HTML Has Changed: %@", html);
     
 }
 

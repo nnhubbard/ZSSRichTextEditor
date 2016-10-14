@@ -222,4 +222,9 @@ static NSString * const ZSSRichTextEditorToolbarFonts = @"com.zedsaid.toolbarite
  */
 - (void)mentionRecognizedWithWord:(NSString *)word;
 
+/**
+ *  Set custom css
+ */
+- (void)setCSS:(NSString *)css;
+
 @end

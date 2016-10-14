@@ -1,10 +1,6 @@
 ZSSRichTextEditor
 =============
 
-Help Wanted
----
-**Looking for anyone willing to help with this project. I have not had enough time to give the project the love it deserves. Contact me here or [@zedsaid](https://twitter.com/zedsaid).**
-
 The Editor
 ---
 
@@ -69,6 +65,19 @@ Show only specified buttons in the toolbar:
 self.enabledToolbarItems = @[ZSSRichTextEditorToolbarBold, ZSSRichTextEditorToolbarH1, ZSSRichTextEditorToolbarParagraph];
 ```
 
+Always show the toolbar even when the keyboard is hidden:
+```objective-c
+self.alwaysShowToolbar = YES;
+```
+
+Set A Placeholder
+---
+
+```objective-c
+[self setPlaceholder:@"This is a placeholder that will show when there is no content(html)"];
+
+```
+
 Insert Link and Insert Image
 ---
 
@@ -124,6 +133,56 @@ UIButton *myButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, butt
 
 ```
 
+Custom CSS
+---
+
+```objective-c
+NSString *customCSS = @"a {text-decoration:none;} a:hover {color:#FF0000;}";
+[self setCSS:customCSS];
+
+```
+
+Receive Editor Did Change Events
+---
+
+Add the following to your viewDidLoad method:
+
+```objective-c
+self.receiveEditorDidChangeEvents = YES;
+```
+
+Then you will receive events in the following method:
+
+```objective-c
+- (void)editorDidChangeWithText:(NSString *)text andHTML:(NSString *)html {
+    
+    NSLog(@"Text Has Changed: %@", text);
+    
+    NSLog(@"HTML Has Changed: %@", html);
+    
+}
+```
+
+Receive Hashtag & Mention Events
+---
+
+Hashtags:
+```objective-c
+- (void)hashtagRecognizedWithWord:(NSString *)word {
+    
+    NSLog(@"Hashtag has been recognized: %@", word);
+    
+}
+```
+Mentions:
+```objective-c
+- (void)mentionRecognizedWithWord:(NSString *)word {
+    
+    NSLog(@"Mention has been recognized: %@", word);
+    
+}
+```
+
 Supported Functions
 ---
 
@@ -136,6 +195,7 @@ ZSSRichTextEditor has the following functions:
 *   Strikethrough
 *   Underline
 *   Remove Formatting
+*   Font
 *   Justify Left
 *   Justify Center
 *   Justify Right
