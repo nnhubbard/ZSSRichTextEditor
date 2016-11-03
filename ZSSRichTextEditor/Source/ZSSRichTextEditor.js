@@ -161,7 +161,7 @@ zss_editor.calculateEditorHeightWithCaretPosition = function() {
     if (c < offsetY) {
         newPos = c;
     } else if (c > (offsetY + height - padding)) {
-        var newPos = c - height + padding - 18;
+        newPos = c - height + padding - 18;
     }
     
     window.scrollTo(0, newPos);
