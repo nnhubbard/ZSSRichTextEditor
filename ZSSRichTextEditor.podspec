@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "ZSSRichTextEditor"
-  s.version      = "0.5.2.1"
+  s.version      = "0.5.2.2"
   s.summary      = "ZSSRichTextEditor is a beautiful Rich Text WYSIWYG Editor for iOS."
 
   s.description  = <<-DESC
@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 
   s.source_files  = "**/*.{h,m}"
   s.exclude_files = "**/ZSSDemo*.{h,m}", "**/ZSSAppDelegate*.{h,m}", "**/main.m"
-  s.resources = "**/ZSS*.png", "**/ZSSRichTextEditor.js", "**/editor.html"
+  s.resources = "**/ZSS*.png", "**/ZSSRichTextEditor.js", "**/editor.html", "**/jQuery.js", "**/JSBeautifier.js"
 
   s.frameworks = "CoreGraphics", "CoreText"
 
