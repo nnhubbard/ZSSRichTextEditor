@@ -413,23 +413,29 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)loadResources {
     
+    //Define correct bundle for loading resources
+    NSBundle* bundle = [NSBundle mainBundle];
+    if (![bundle pathForResource:@"editor" ofType:@"html"]) {
+        bundle = [NSBundle bundleForClass:[ZSSRichTextEditor class]];
+    }
+    
     //Create a string with the contents of editor.html
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"editor" ofType:@"html"];
+    NSString *filePath = [bundle pathForResource:@"editor" ofType:@"html"];
     NSData *htmlData = [NSData dataWithContentsOfFile:filePath];
     NSString *htmlString = [[NSString alloc] initWithData:htmlData encoding:NSUTF8StringEncoding];
     
     //Add jQuery.js to the html file
-    NSString *jquery = [[NSBundle mainBundle] pathForResource:@"jQuery" ofType:@"js"];
+    NSString *jquery = [bundle pathForResource:@"jQuery" ofType:@"js"];
     NSString *jqueryString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:jquery] encoding:NSUTF8StringEncoding];
     htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!-- jQuery -->" withString:jqueryString];
     
     //Add JSBeautifier.js to the html file
-    NSString *beautifier = [[NSBundle mainBundle] pathForResource:@"JSBeautifier" ofType:@"js"];
+    NSString *beautifier = [bundle pathForResource:@"JSBeautifier" ofType:@"js"];
     NSString *beautifierString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:beautifier] encoding:NSUTF8StringEncoding];
     htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!-- jsbeautifier -->" withString:beautifierString];
     
     //Add ZSSRichTextEditor.js to the html file
-    NSString *source = [[NSBundle mainBundle] pathForResource:@"ZSSRichTextEditor" ofType:@"js"];
+    NSString *source = [bundle pathForResource:@"ZSSRichTextEditor" ofType:@"js"];
     NSString *jsString = [[NSString alloc] initWithData:[NSData dataWithContentsOfFile:source] encoding:NSUTF8StringEncoding];
     htmlString = [htmlString stringByReplacingOccurrencesOfString:@"<!--editor-->" withString:jsString];
     
