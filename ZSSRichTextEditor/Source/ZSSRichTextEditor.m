@@ -2002,6 +2002,9 @@ static CGFloat kDefaultScale = 0.5;
             
             self.sourceView.frame = sourceFrame;
             
+            [self setFooterHeight:0];
+            [self setContentHeight:self.editorViewFrame.size.height];
+            
         } completion:nil];
         
     }
