@@ -1346,12 +1346,19 @@ static CGFloat kDefaultScale = 0.5;
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertLink(\"%@\", \"%@\");", url, title];
     [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
     
+    if (_receiveEditorDidChangeEvents) {
+        [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+    }
 }
 
 
 - (void)updateLink:(NSString *)url title:(NSString *)title {
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.updateLink(\"%@\", \"%@\");", url, title];
     [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
+    
+    if (_receiveEditorDidChangeEvents) {
+        [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+    }
 }
 
 
@@ -1391,10 +1398,18 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)removeLink {
     [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.unlink();"];
+    
+    if (_receiveEditorDidChangeEvents) {
+        [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+    }
 }
 
 - (void)quickLink {
     [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.quickLink();"];
+    
+    if (_receiveEditorDidChangeEvents) {
+        [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+    }
 }
 
 - (void)insertImage {
