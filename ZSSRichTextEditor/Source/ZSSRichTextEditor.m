@@ -272,7 +272,8 @@ static CGFloat kDefaultScale = 0.5;
     
     //Hide Keyboard
     if (![self isIpad]) {
-        
+        NSBundle* bundle = [NSBundle bundleForClass:[ZSSRichTextEditor class]];
+     
         // Toolbar holder used to crop and position toolbar
         UIView *toolbarCropper = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width-44, 0, 44, 44)];
         toolbarCropper.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
@@ -282,7 +283,7 @@ static CGFloat kDefaultScale = 0.5;
         UIToolbar *keyboardToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(-7, -1, 44, 44)];
         [toolbarCropper addSubview:keyboardToolbar];
         
-        self.keyboardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSkeyboard.png"] style:UIBarButtonItemStylePlain target:self action:@selector(dismissKeyboard)];
+        self.keyboardItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ZSSkeyboard.png" inBundle:bundle compatibleWithTraitCollection:nil] style:UIBarButtonItemStylePlain target:self action:@selector(dismissKeyboard)];
         keyboardToolbar.items = @[self.keyboardItem];
         [self.toolbarHolder addSubview:toolbarCropper];
         
