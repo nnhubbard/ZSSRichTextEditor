@@ -229,7 +229,10 @@ zss_editor.setUnderline = function() {
 }
 
 zss_editor.setBlockquote = function() {
-    document.execCommand('formatBlock', false, '<blockquote>');
+    var range = document.getSelection().getRangeAt(0);
+    formatName = range.commonAncestorContainer.parentElement.nodeName === 'BLOCKQUOTE'
+    || range.commonAncestorContainer.nodeName === 'BLOCKQUOTE' ? '<P>' : '<BLOCKQUOTE>';
+    document.execCommand('formatBlock', false, formatName)
     zss_editor.enabledEditingItems();
 }
 
