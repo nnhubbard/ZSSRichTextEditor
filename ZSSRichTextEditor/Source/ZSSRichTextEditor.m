@@ -1712,7 +1712,7 @@ static CGFloat kDefaultScale = 0.5;
     JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
     ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
         
-        if (_receiveEditorDidChangeEvents) {
+        if (self->_receiveEditorDidChangeEvents) {
             
             [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
             
@@ -1969,7 +1969,7 @@ static CGFloat kDefaultScale = 0.5;
             
             CGRect frame = self.toolbarHolder.frame;
             
-            if (_alwaysShowToolbar) {
+            if (self->_alwaysShowToolbar) {
                 frame.origin.y = self.view.frame.size.height - sizeOfToolbar;
             } else {
                 frame.origin.y = self.view.frame.size.height + keyboardHeight;
@@ -1980,7 +1980,7 @@ static CGFloat kDefaultScale = 0.5;
             // Editor View
             CGRect editorFrame = self.editorView.frame;
             
-            if (_alwaysShowToolbar) {
+            if (self->_alwaysShowToolbar) {
                 editorFrame.size.height = ((self.view.frame.size.height - sizeOfToolbar) - extraHeight);
             } else {
                 editorFrame.size.height = self.view.frame.size.height;
@@ -1994,7 +1994,7 @@ static CGFloat kDefaultScale = 0.5;
             // Source View
             CGRect sourceFrame = self.sourceView.frame;
             
-            if (_alwaysShowToolbar) {
+            if (self->_alwaysShowToolbar) {
                 sourceFrame.size.height = ((self.view.frame.size.height - sizeOfToolbar) - extraHeight);
             } else {
                 sourceFrame.size.height = self.view.frame.size.height;
