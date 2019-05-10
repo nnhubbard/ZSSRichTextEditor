@@ -1023,6 +1023,10 @@ static CGFloat kDefaultScale = 0.5;
     [self.view endEditing:YES];
 }
 
+- (BOOL)isFirstResponder {
+    return [[self.editorView stringByEvaluatingJavaScriptFromString:@"document.activeElement.id=='zss_editor_content'"] isEqualToString:@"true"];
+}
+
 - (void)showHTMLSource:(ZSSBarButtonItem *)barButtonItem {
     if (self.sourceView.hidden) {
         self.sourceView.text = [self getHTML];
