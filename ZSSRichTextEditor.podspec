@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   
   s.author       = { "Nic Hubbard" => "nic@zedsaid.com" }
 
-  s.platform     = :ios, "7.0"
+  s.platform     = :ios, "8.0"
 
   s.source       = { :git => "https://github.com/nnhubbard/ZSSRichTextEditor.git", :tag => "0.5.2.1" }
 
