@@ -197,6 +197,10 @@ static Class hackishFixClass = Nil;
 @property (nonatomic) BOOL editorLoaded;
 
 /*
+ *  BOOL for if the editor is paste or not
+ */
+@property (nonatomic) BOOL editorPaste;
+/*
  *  Image Picker for selecting photos from users photo library
  */
 @property (nonatomic, strong) UIImagePickerController *imagePicker;
@@ -273,23 +277,23 @@ static CGFloat kDefaultScale = 0.5;
     //Hide Keyboard
     if (![self isIpad]) {
         NSBundle* bundle = [NSBundle bundleForClass:[ZSSRichTextEditor class]];
-     
+        
         // Toolbar holder used to crop and position toolbar
         UIView *toolbarCropper = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width-44, 0, 44, 44)];
         toolbarCropper.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         toolbarCropper.clipsToBounds = YES;
-
+        
         UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
-
+        
         [btn addTarget:self action:@selector(dismissKeyboard) forControlEvents:UIControlEventTouchUpInside];
         UIImage *image = [[UIImage imageNamed:@"ZSSkeyboard.png" inBundle:bundle compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         [btn setImage:image forState:UIControlStateNormal];
         [btn setTintColor:[self barButtonItemDefaultColor]];
-
+        
         [toolbarCropper addSubview:btn];
-
+        
         [self.toolbarHolder addSubview:toolbarCropper];
-
+        
         UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0.6f, 44)];
         line.backgroundColor = [UIColor lightGrayColor];
         line.alpha = 0.7f;
@@ -319,7 +323,7 @@ static CGFloat kDefaultScale = 0.5;
     //Add observers for keyboard showing or hiding notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillHideNotification object:nil];
-
+    
 }
 
 #pragma mark - View Will Disappear Section
@@ -938,7 +942,7 @@ static CGFloat kDefaultScale = 0.5;
     
     //Call the setPlaceholder javascript method if a placeholder has been set
     if (self.placeholder != NULL && [self.placeholder length] != 0) {
-    
+        
         NSString *js = [NSString stringWithFormat:@"zss_editor.setPlaceholder(\"%@\");", self.placeholder];
         [self.editorView stringByEvaluatingJavaScriptFromString:js];
         
@@ -1159,7 +1163,7 @@ static CGFloat kDefaultScale = 0.5;
 }
 
 - (void)showFontsPicker {
-        
+    
     // Save the selection location
     [self.editorView stringByEvaluatingJavaScriptFromString:@"zss_editor.prepareInsert();"];
     
@@ -1178,38 +1182,38 @@ static CGFloat kDefaultScale = 0.5;
         case ZSSFontFamilyDefault:
             fontFamilyString = @"Arial, Helvetica, sans-serif";
             break;
-        
+            
         case ZSSFontFamilyGeorgia:
             fontFamilyString = @"Georgia, serif";
             break;
-        
+            
         case ZSSFontFamilyPalatino:
             fontFamilyString = @"Palatino Linotype, Book Antiqua, Palatino, serif";
             break;
-        
+            
         case ZSSFontFamilyTimesNew:
             fontFamilyString = @"Times New Roman, Times, serif";
             break;
-        
+            
         case ZSSFontFamilyTrebuchet:
             fontFamilyString = @"Trebuchet MS, Helvetica, sans-serif";
             break;
-        
+            
         case ZSSFontFamilyVerdana:
             fontFamilyString = @"Verdana, Geneva, sans-serif";
             break;
-        
+            
         case ZSSFontFamilyCourierNew:
             fontFamilyString = @"Courier New, Courier, monospace";
             break;
-        
+            
         default:
             fontFamilyString = @"Arial, Helvetica, sans-serif";
             break;
     }
     
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.setFontFamily(\"%@\");", fontFamilyString];
-
+    
     [self.editorView stringByEvaluatingJavaScriptFromString:trigger];
     
 }
@@ -1550,12 +1554,12 @@ static CGFloat kDefaultScale = 0.5;
         [alertController addAction:[UIAlertAction actionWithTitle:insertButtonTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             UITextField *textFieldAlt = [alertController.textFields objectAtIndex:0];
             UITextField *textFieldScale = [alertController.textFields objectAtIndex:1];
-
+            
             self.selectedImageScale = [textFieldScale.text floatValue]?:kDefaultScale;
             self.selectedImageAlt = textFieldAlt.text?:@"";
             
             [self presentViewController:self.imagePicker animated:YES completion:nil];
-
+            
         }]];
         
         [self presentViewController:alertController animated:YES completion:NULL];
@@ -1707,12 +1711,12 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     self.editorLoaded = YES;
-
+    
     if (!self.internalHTML) {
         self.internalHTML = @"";
     }
     [self updateHTML];
-
+    
     if(self.placeholder) {
         [self setPlaceholderText];
     }
@@ -1720,7 +1724,7 @@ static CGFloat kDefaultScale = 0.5;
     if (self.customCSS) {
         [self updateCSS];
     }
-
+    
     if (self.shouldShowKeyboard) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self focusTextEditor];
@@ -1732,19 +1736,29 @@ static CGFloat kDefaultScale = 0.5;
      Callback for when text is changed, solution posted by richardortiz84 https://github.com/nnhubbard/ZSSRichTextEditor/issues/5
      
      */
+    __block bool receiveEditorDidChangeEvents = _receiveEditorDidChangeEvents;
+    __weak typeof(self) weakSelf = self;
     JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
     ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
         
-        if (self->_receiveEditorDidChangeEvents) {
-            
-            [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
-            
+        __weak typeof(weakSelf) StrongSelf = weakSelf;
+        if (receiveEditorDidChangeEvents) {
+            [StrongSelf editorDidChangeWithText:[StrongSelf getText] andHTML:[StrongSelf getHTML]];
         }
+        [StrongSelf checkForMentionOrHashtagInText:[StrongSelf getText]];
         
-        [self checkForMentionOrHashtagInText:[self getText]];
-        
+        if (self->_editorPaste) {
+            [StrongSelf blurTextEditor];
+            self->_editorPaste = NO;
+        }
+    };
+    
+    ctx[@"contentPasteCallback"] = ^(JSValue *msg) {
+        self->_editorPaste = YES;
     };
     [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
+    
+    [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('paste', contentPasteCallback, false);"];
     
 }
 
@@ -1763,7 +1777,7 @@ static CGFloat kDefaultScale = 0.5;
         lastWord = [text substringFromIndex:range.location];
         
         if (lastWord != nil) {
-        
+            
             //Check if last word typed starts with a #
             NSRegularExpression *hashtagRegex = [NSRegularExpression regularExpressionWithPattern:@"#(\\w+)" options:0 error:nil];
             NSArray *hashtagMatches = [hashtagRegex matchesInString:lastWord options:0 range:NSMakeRange(0, lastWord.length)];
@@ -1848,7 +1862,7 @@ static CGFloat kDefaultScale = 0.5;
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-
+    
     if (alertView.tag == 1) {
         if (buttonIndex == 1) {
             UITextField *imageURL = [alertView textFieldAtIndex:0];
@@ -1878,7 +1892,7 @@ static CGFloat kDefaultScale = 0.5;
             self.selectedImageAlt = textFieldAlt.text?:@"";
             
             [self presentViewController:self.imagePicker animated:YES completion:nil];
-
+            
         }
     }
 }
@@ -1903,7 +1917,7 @@ static CGFloat kDefaultScale = 0.5;
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info{
-
+    
     UIImage *selectedImage = info[UIImagePickerControllerEditedImage]?:info[UIImagePickerControllerOriginalImage];
     
     //Scale the image
@@ -1912,7 +1926,7 @@ static CGFloat kDefaultScale = 0.5;
     [selectedImage drawInRect:CGRectMake(0,0,targetSize.width,targetSize.height)];
     UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-
+    
     //Compress the image, as it is going to be encoded rather than linked
     NSData *scaledImageData = UIImageJPEGRepresentation(scaledImage, kJPEGCompression);
     
@@ -1927,7 +1941,7 @@ static CGFloat kDefaultScale = 0.5;
     }
     
     self.imageBase64String = imageBase64String;
-
+    
     //Dismiss the Image Picker
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
