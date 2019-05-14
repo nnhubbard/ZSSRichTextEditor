@@ -1747,14 +1747,14 @@ static CGFloat kDefaultScale = 0.5;
         }
         [StrongSelf checkForMentionOrHashtagInText:[StrongSelf getText]];
         
-        if (self->_editorPaste) {
+        if (StrongSelf.editorPaste) {
             [StrongSelf blurTextEditor];
-            self->_editorPaste = NO;
+            StrongSelf.editorPaste = NO;
         }
     };
     
     ctx[@"contentPasteCallback"] = ^(JSValue *msg) {
-        self->_editorPaste = YES;
+        StrongSelf.editorPaste = YES;
     };
     [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
     
