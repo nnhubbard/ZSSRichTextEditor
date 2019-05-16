@@ -1,3 +1,8 @@
+HELP NEEDED
+---
+
+I no longer have the time needed to work on this project. If anyone is interested in helping or taking over this project please contact me [@zedsaid](https://twitter.com/zedsaid).
+
 ZSSRichTextEditor
 =============
 
