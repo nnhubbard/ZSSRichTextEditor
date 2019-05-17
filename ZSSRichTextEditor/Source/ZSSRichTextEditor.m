@@ -1754,6 +1754,7 @@ static CGFloat kDefaultScale = 0.5;
     };
     
     ctx[@"contentPasteCallback"] = ^(JSValue *msg) {
+        __weak typeof(weakSelf) StrongSelf = weakSelf;
         StrongSelf.editorPaste = YES;
     };
     [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
