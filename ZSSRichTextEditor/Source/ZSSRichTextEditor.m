@@ -2001,7 +2001,11 @@ static CGFloat kDefaultScale = 0.5;
             CGRect frame = self.toolbarHolder.frame;
             
             if (self->_alwaysShowToolbar) {
-                frame.origin.y = self.view.frame.size.height - sizeOfToolbar;
+                CGFloat bottomSafeAreaInset = 0.0;
+                if (@available(iOS 11.0, *)) {
+                    bottomSafeAreaInset = self.view.safeAreaInsets.bottom;
+                }
+                frame.origin.y = self.view.frame.size.height - sizeOfToolbar - bottomSafeAreaInset;
             } else {
                 frame.origin.y = self.view.frame.size.height + keyboardHeight;
             }
