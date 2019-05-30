@@ -1970,14 +1970,14 @@ static CGFloat kDefaultScale = 0.5;
         [UIView animateWithDuration:duration delay:0 options:animationOptions animations:^{
             
             // Toolbar
-            CGRect frame = self.toolbarHolder.frame;
+            CGRect toolbarFrame = self.toolbarHolder.frame;
             CGRect kbRect = [self.toolbarHolder.superview convertRect:keyboardEnd fromView:nil];
-            frame.origin.y = kbRect.origin.y - sizeOfToolbar;
-            self.toolbarHolder.frame = frame;
+            toolbarFrame.origin.y = kbRect.origin.y - sizeOfToolbar;
+            self.toolbarHolder.frame = toolbarFrame;
             
             // Editor View
             CGRect editorFrame = self.editorView.frame;
-            editorFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
+            editorFrame.size.height = toolbarFrame.origin.y - extraHeight;
             self.editorView.frame = editorFrame;
             self.editorViewFrame = self.editorView.frame;
             self.editorView.scrollView.contentInset = UIEdgeInsetsZero;
