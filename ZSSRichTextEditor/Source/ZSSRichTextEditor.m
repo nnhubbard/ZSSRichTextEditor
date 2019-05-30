@@ -1911,7 +1911,7 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
     //Dismiss the Image Picker
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info{
@@ -1941,7 +1941,7 @@ static CGFloat kDefaultScale = 0.5;
     self.imageBase64String = imageBase64String;
     
     //Dismiss the Image Picker
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
