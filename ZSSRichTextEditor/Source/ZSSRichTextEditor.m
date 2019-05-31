@@ -321,9 +321,7 @@ static CGFloat kDefaultScale = 0.5;
     [super viewWillAppear:animated];
     
     //Add observers for keyboard showing or hiding notifications
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillHideNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowOrHide:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
 #pragma mark - View Will Disappear Section
@@ -332,8 +330,7 @@ static CGFloat kDefaultScale = 0.5;
     [super viewWillDisappear:animated];
     
     //Remove observers for keyboard showing or hiding notifications
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
     
 }
 
@@ -1914,7 +1911,7 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
     //Dismiss the Image Picker
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *, id> *)info{
@@ -1944,17 +1941,13 @@ static CGFloat kDefaultScale = 0.5;
     self.imageBase64String = imageBase64String;
     
     //Dismiss the Image Picker
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
 #pragma mark - Keyboard status
 
 - (void)keyboardWillShowOrHide:(NSNotification *)notification {
-    
-    // Orientation
-    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    
     // User Info
     NSDictionary *info = notification.userInfo;
     CGFloat duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
@@ -1965,26 +1958,26 @@ static CGFloat kDefaultScale = 0.5;
     CGFloat sizeOfToolbar = self.toolbarHolder.frame.size.height;
     
     // Keyboard Size
-    //Checks if IOS8, gets correct keyboard height
-    CGFloat keyboardHeight = UIInterfaceOrientationIsLandscape(orientation) ? ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.000000) ? keyboardEnd.size.height : keyboardEnd.size.width : keyboardEnd.size.height;
+    CGFloat keyboardHeight = keyboardEnd.size.height;
     
     // Correct Curve
     UIViewAnimationOptions animationOptions = curve << 16;
     
     const int extraHeight = 10;
     
-    if ([notification.name isEqualToString:UIKeyboardWillShowNotification]) {
+    if (keyboardEnd.origin.y < [[UIScreen mainScreen] bounds].size.height) {
         
         [UIView animateWithDuration:duration delay:0 options:animationOptions animations:^{
             
             // Toolbar
-            CGRect frame = self.toolbarHolder.frame;
-            frame.origin.y = self.view.frame.size.height - (keyboardHeight + sizeOfToolbar);
-            self.toolbarHolder.frame = frame;
+            CGRect toolbarFrame = self.toolbarHolder.frame;
+            CGRect kbRect = [self.toolbarHolder.superview convertRect:keyboardEnd fromView:nil];
+            toolbarFrame.origin.y = kbRect.origin.y - sizeOfToolbar;
+            self.toolbarHolder.frame = toolbarFrame;
             
             // Editor View
             CGRect editorFrame = self.editorView.frame;
-            editorFrame.size.height = (self.view.frame.size.height - keyboardHeight) - sizeOfToolbar - extraHeight;
+            editorFrame.size.height = toolbarFrame.origin.y - extraHeight;
             self.editorView.frame = editorFrame;
             self.editorViewFrame = self.editorView.frame;
             self.editorView.scrollView.contentInset = UIEdgeInsetsZero;
@@ -2008,7 +2001,11 @@ static CGFloat kDefaultScale = 0.5;
             CGRect frame = self.toolbarHolder.frame;
             
             if (self->_alwaysShowToolbar) {
-                frame.origin.y = self.view.frame.size.height - sizeOfToolbar;
+                CGFloat bottomSafeAreaInset = 0.0;
+                if (@available(iOS 11.0, *)) {
+                    bottomSafeAreaInset = self.view.safeAreaInsets.bottom;
+                }
+                frame.origin.y = self.view.frame.size.height - sizeOfToolbar - bottomSafeAreaInset;
             } else {
                 frame.origin.y = self.view.frame.size.height + keyboardHeight;
             }
