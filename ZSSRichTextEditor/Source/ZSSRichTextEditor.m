@@ -353,6 +353,12 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)createEditorViewWithFrame:(CGRect)frame {
     
+    NSString *jScript = @"var meta = document.createElement('meta'); meta.setAttribute('name', 'viewport'); meta.setAttribute('content', 'width=device-width'); document.getElementsByTagName('head')[0].appendChild(meta);";
+
+    WKUserScript *wkUScript = [[WKUserScript alloc] initWithSource:jScript injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
+    WKUserContentController *wkUController = [[WKUserContentController alloc] init];
+    [wkUController addUserScript:wkUScript];
+    
     
     WKWebViewConfiguration *config =
           [[WKWebViewConfiguration alloc] init];
@@ -360,6 +366,8 @@ static CGFloat kDefaultScale = 0.5;
           addScriptMessageHandler:self name:@"ZSSRichTextEditor"];
     
     config.dataDetectorTypes = WKDataDetectorTypeNone;
+    
+    config.userContentController = wkUController;
 
     
     self.editorView = [[WKWebView alloc] initWithFrame:frame
@@ -371,7 +379,6 @@ static CGFloat kDefaultScale = 0.5;
     
     //TODO: do we need these?
 //    self.editorView.keyboardDisplayRequiresUserAction = NO;
-//    self.editorView.scalesPageToFit = YES;
 
     self.editorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
     self.editorView.scrollView.bounces = NO;
