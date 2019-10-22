@@ -78,9 +78,9 @@
 
 
 - (void)exportHTML {
-    
-    NSLog(@"%@", [self getHTML]);
-    
+    [self getHTML:^(NSString *result, NSError * _Nullable error) {
+        NSLog(@"%@", result);
+    }];
 }
 
 - (void)editorDidChangeWithText:(NSString *)text andHTML:(NSString *)html {

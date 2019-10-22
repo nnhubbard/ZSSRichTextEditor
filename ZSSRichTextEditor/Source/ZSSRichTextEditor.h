@@ -51,6 +51,11 @@ static NSString * const ZSSRichTextEditorToolbarAll = @"com.zedsaid.toolbaritem.
 static NSString * const ZSSRichTextEditorToolbarNone = @"com.zedsaid.toolbaritem.none";
 static NSString * const ZSSRichTextEditorToolbarFonts = @"com.zedsaid.toolbaritem.fonts";
 
+// source string for parsing JSON
+static NSString * const ZSSEditorHTML = @"zss_editor.getHTML();";
+static NSString * const ZSSEditorText = @"zss_editor.getText();";
+static NSString * const ZSSEditorContent = @"document.activeElement.id=='zss_editor_content'";
+
 @class ZSSBarButtonItem;
 
 /**
@@ -116,13 +121,13 @@ static NSString * const ZSSRichTextEditorToolbarFonts = @"com.zedsaid.toolbarite
  *  Returns the HTML from the Rich Text Editor
  *
  */
-- (NSString *)getHTML;
+- (void)getHTML:(void (^ _Nullable)(_Nullable id, NSError * _Nullable error))completionHandler;
 
 /**
  *  Returns the plain text from the Rich Text Editor
  *
  */
-- (NSString *)getText;
+- (void)getText:(void (^ _Nullable)(_Nullable id, NSError * _Nullable error))completionHandler;
 
 /**
  *  Inserts HTML at the caret position

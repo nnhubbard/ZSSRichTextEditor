@@ -206,6 +206,10 @@ static Class hackishFixClass = Nil;
  */
 @property (nonatomic, strong) UIImagePickerController *imagePicker;
 
+
+// local var to hold first responder state after callback
+@property (nonatomic) BOOL isFirstResponderUpdated;
+
 /*
  *  Method for getting a version of the html without quotes
  */
@@ -214,7 +218,7 @@ static Class hackishFixClass = Nil;
 /*
  *  Method for getting a tidied version of the html
  */
-- (NSString *)tidyHTML:(NSString *)html;
+- (void)tidyHTML:(NSString *)html completionHandler:(void (^ _Nullable)(_Nullable id, NSError * _Nullable error))completionHandler;
 
 /*
  * Method for enablign toolbar items
@@ -375,10 +379,12 @@ static CGFloat kDefaultScale = 0.5;
 
     
     self.editorView.UIDelegate = self;
+    self.editorView.navigationDelegate = self;
     self.editorView.hidesInputAccessoryView = YES;
     
-    //TODO: do we need these?
+    //TODO: Is this behavior correct? Is it the right replacement?
 //    self.editorView.keyboardDisplayRequiresUserAction = NO;
+    [ZSSRichTextEditor allowDisplayingKeyboardWithoutUserAction];
 
     self.editorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
     self.editorView.scrollView.bounces = NO;
@@ -1043,8 +1049,11 @@ static CGFloat kDefaultScale = 0.5;
 #pragma mark - Editor Interaction
 
 - (void)focusTextEditor {
-    //TODO: do we need this?
+    
+    //TODO: Is this behavior correct? Is it the right replacement?
 //    self.editorView.keyboardDisplayRequiresUserAction = NO;
+    [ZSSRichTextEditor allowDisplayingKeyboardWithoutUserAction];
+    
     NSString *js = [NSString stringWithFormat:@"zss_editor.focusEditor();"];
     [self.editorView evaluateJavaScript:js completionHandler:^(NSString *result, NSError *error) {
      
@@ -1077,26 +1086,32 @@ static CGFloat kDefaultScale = 0.5;
     NSString *cleanedHTML = [self removeQuotesFromHTML:self.sourceView.text];
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.setHTML(\"%@\");", cleanedHTML];
     [self.editorView evaluateJavaScript:trigger completionHandler:^(NSString *result, NSError *error) {
-     
+
     }];
 
     
 }
 
-- (NSString *)getHTML {
+- (void)getHTML:(void (^ _Nullable)(_Nullable id, NSError * _Nullable error))completionHandler {
     
     
-    [self.editorView evaluateJavaScript:@"zss_editor.getHTML();" completionHandler:^(NSString *result, NSError *error) {
+    [self.editorView evaluateJavaScript:ZSSEditorHTML completionHandler:^(NSString *result, NSError *error) {
+        
+        if (error != NULL) {
+            NSLog(@"HTML Parsing Error: %@", error);
+        }
+        
+        NSLog(@"%@", result);
      
         NSString *html = [self removeQuotesFromHTML:result];
-        html = [self tidyHTML:html];
-        //TODO: fix return issue in callback
-//        return html;
+        
+        NSLog(@"%@", html);
+        
+        [self tidyHTML:html completionHandler:^(NSString *result, NSError *error) {
+            completionHandler(result, error);
+        }];
 
     }];
-
-    NSString *something = @"";
-    return something;
 }
 
 
@@ -1110,17 +1125,25 @@ static CGFloat kDefaultScale = 0.5;
 
 }
 
-- (NSString *)getText {
+- (void)getText:(void (^ _Nullable)(_Nullable id, NSError * _Nullable error))completionHandler {
     
-    [self.editorView evaluateJavaScript:@"zss_editor.getText();" completionHandler:^(NSString *result, NSError *error) {
+    [self.editorView evaluateJavaScript:ZSSEditorText completionHandler:^(NSString *result, NSError *error) {
         
-        //TODO: return result somehow
+        if (error != NULL) {
+            NSLog(@"Text Parsing Error: %@", error);
+        }
+        
+        
+        completionHandler(result, error);
     }];
-    
-    NSString *something = @"";
-    return something;
+}
 
-
+- (void)updateEditor {
+    [self getHTML:^(NSString *htmlResult, NSError * _Nullable error) {
+        [self getText:^(NSString *textResult, NSError * _Nullable error) {
+            [self editorDidChangeWithText:textResult andHTML:htmlResult];
+        }];
+    }];
 }
 
 - (void)dismissKeyboard {
@@ -1129,19 +1152,29 @@ static CGFloat kDefaultScale = 0.5;
 
 - (BOOL)isFirstResponder {
     
-    [self.editorView evaluateJavaScript:@"document.activeElement.id=='zss_editor_content'" completionHandler:^(NSString *result, NSError *error) {
-        //TODO: return result equal to string true
+    [self.editorView evaluateJavaScript:ZSSEditorContent completionHandler:^(NSNumber *result, NSError *error) {
+        
+        //save the result as a bool and then update the UI
+        self.isFirstResponderUpdated = [result boolValue];
+        if (self.isFirstResponderUpdated == true) {
+            [self becomeFirstResponder];
+        } else {
+            [self resignFirstResponder];
+        }
     }];
     
-    NSString *something = @"";
-    return [something isEqualToString:@"true"];
-
-    
+    //this state is old and will quickly be updated after the callback above completes
+    //TODO: refactor to find a more elegant approach
+    return self.isFirstResponderUpdated;
 }
 
 - (void)showHTMLSource:(ZSSBarButtonItem *)barButtonItem {
     if (self.sourceView.hidden) {
-        self.sourceView.text = [self getHTML];
+        
+        [self getHTML:^(NSString *result, NSError * _Nullable error) {
+            self.sourceView.text = result;
+        }];
+        
         self.sourceView.hidden = NO;
         barButtonItem.tintColor = [UIColor blackColor];
         self.editorView.hidden = YES;
@@ -1520,7 +1553,6 @@ static CGFloat kDefaultScale = 0.5;
     
 }
 
-
 - (void)insertLink:(NSString *)url title:(NSString *)title {
     
     NSString *trigger = [NSString stringWithFormat:@"zss_editor.insertLink(\"%@\", \"%@\");", url, title];
@@ -1529,7 +1561,7 @@ static CGFloat kDefaultScale = 0.5;
     }];
     
     if (_receiveEditorDidChangeEvents) {
-        [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+        [self updateEditor];
     }
 }
 
@@ -1541,7 +1573,7 @@ static CGFloat kDefaultScale = 0.5;
     }];
     
     if (_receiveEditorDidChangeEvents) {
-        [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+        [self updateEditor];
     }
 }
 
@@ -1586,7 +1618,7 @@ static CGFloat kDefaultScale = 0.5;
     }];
     
     if (_receiveEditorDidChangeEvents) {
-        [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+        [self updateEditor];
     }
 }
 
@@ -1596,7 +1628,7 @@ static CGFloat kDefaultScale = 0.5;
     }];
     
     if (_receiveEditorDidChangeEvents) {
-        [self editorDidChangeWithText:[self getText] andHTML:[self getHTML]];
+        [self updateEditor];
     }
 }
 
@@ -1934,14 +1966,18 @@ static CGFloat kDefaultScale = 0.5;
      */
     __block bool receiveEditorDidChangeEvents = _receiveEditorDidChangeEvents;
     __weak typeof(self) weakSelf = self;
+    webView valueForKeyPath:<#(nonnull NSString *)#>
     JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
     ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
         
         __weak typeof(weakSelf) StrongSelf = weakSelf;
         if (receiveEditorDidChangeEvents) {
-            [StrongSelf editorDidChangeWithText:[StrongSelf getText] andHTML:[StrongSelf getHTML]];
+            [self updateEditor];
         }
-        [StrongSelf checkForMentionOrHashtagInText:[StrongSelf getText]];
+        
+        [StrongSelf getText:^(NSString * result, NSError * _Nullable error) {
+            [StrongSelf checkForMentionOrHashtagInText:result];
+        }];
         
         if (StrongSelf.editorPaste) {
             [StrongSelf blurTextEditor];
@@ -2258,19 +2294,26 @@ static CGFloat kDefaultScale = 0.5;
 }
 
 
-- (NSString *)tidyHTML:(NSString *)html {
+- (void)tidyHTML:(NSString *)html completionHandler:(void (^ _Nullable)(_Nullable id, NSError * _Nullable error))completionHandler {
     html = [html stringByReplacingOccurrencesOfString:@"<br>" withString:@"<br />"];
     html = [html stringByReplacingOccurrencesOfString:@"<hr>" withString:@"<hr />"];
     if (self.formatHTML) {
-        
-        NSString *html = @"";
-        
-        [self.editorView evaluateJavaScript:@"style_html(\"%@\");" completionHandler:^(NSString *result, NSError *error) {
-            //TODO: use result as html and return it
+                
+        html = [NSString stringWithFormat:@"style_html(\"%@\");", html];
+        [self.editorView evaluateJavaScript:html completionHandler:^(NSString *result, NSError *error) {
+            
+            if (error != NULL) {
+                NSLog(@"HTML Tidying Error: %@", error);
+            }
+            
+            NSLog(@"%@", result);
+            
+            completionHandler(result, error);
         }];
         
+    } else {
+        completionHandler(html, NULL);
     }
-    return html;
 }
 
 
