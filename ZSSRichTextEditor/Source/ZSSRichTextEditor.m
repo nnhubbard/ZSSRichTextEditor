@@ -1966,7 +1966,6 @@ static CGFloat kDefaultScale = 0.5;
      */
     __block bool receiveEditorDidChangeEvents = _receiveEditorDidChangeEvents;
     __weak typeof(self) weakSelf = self;
-    webView valueForKeyPath:<#(nonnull NSString *)#>
     JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
     ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
         
