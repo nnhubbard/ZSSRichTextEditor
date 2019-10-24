@@ -28,7 +28,7 @@
 
 @implementation WKWebView (HackishAccessoryHiding)
 
-static const char * const hackishFixClassName = "UIWebBrowserViewMinusAccessoryView";
+static const char * const hackishFixClassName = "WKWebBrowserViewMinusAccessoryView";
 static Class hackishFixClass = Nil;
 
 - (UIView *)hackishlyFoundBrowserView {
@@ -36,7 +36,7 @@ static Class hackishFixClass = Nil;
     
     UIView *browserView = nil;
     for (UIView *subview in scrollView.subviews) {
-        if ([NSStringFromClass([subview class]) hasPrefix:@"UIWebBrowserView"]) {
+        if ([NSStringFromClass([subview class]) hasPrefix:@"WKWebBrowserView"]) {
             browserView = subview;
             break;
         }
@@ -76,7 +76,7 @@ static Class hackishFixClass = Nil;
         object_setClass(browserView, hackishFixClass);
     }
     else {
-        Class normalClass = objc_getClass("UIWebBrowserView");
+        Class normalClass = objc_getClass("WKWebBrowserView");
         object_setClass(browserView, normalClass);
     }
     [browserView reloadInputViews];
@@ -1946,7 +1946,7 @@ static CGFloat kDefaultScale = 0.5;
     NSLog(@"%@", query);
 
     
-    if (navigationAction.navigationType == UIWebViewNavigationTypeLinkClicked) {
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
 
         //On the old UIWebView delegate it returned false Bool here
         //TODO: what should we do now?
