@@ -1905,7 +1905,7 @@ static CGFloat kDefaultScale = 0.5;
     
     /*
      
-     Callback for when text is changed, solution posted by richardortiz84 https://github.com/nnhubbard/ZSSRichTextEditor/issues/5
+     Callback for when text is changed, written by @madebydouglas derived from richardortiz84 https://github.com/nnhubbard/ZSSRichTextEditor/issues/5
      
      */
     
@@ -1997,12 +1997,9 @@ static CGFloat kDefaultScale = 0.5;
         });
     }
     
-    
-    
-    
     /*
      
-     Callback for when text is changed, solution posted by richardortiz84 https://github.com/nnhubbard/ZSSRichTextEditor/issues/5
+     Create listeners for when text is changed, solution by @madebydouglas derived from richardortiz84 https://github.com/nnhubbard/ZSSRichTextEditor/issues/5
      
      */
     
@@ -2018,41 +2015,8 @@ static CGFloat kDefaultScale = 0.5;
     [self.editorView evaluateJavaScript:pasteListener completionHandler:^(NSString *result, NSError *error) {
         if (error != NULL) {
             NSLog(@"%@", error);
-        }asd
+        }
     }];
-
-    //TODO: the code below here is broken on WKWebView
-    
-//    __block bool receiveEditorDidChangeEvents = _receiveEditorDidChangeEvents;
-//    __weak typeof(self) weakSelf = self;
-//
-//
-//    JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-//    ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
-//
-//        __weak typeof(weakSelf) StrongSelf = weakSelf;
-//        if (receiveEditorDidChangeEvents) {
-//            [self updateEditor];
-//        }
-//
-//        [StrongSelf getText:^(NSString * result, NSError * _Nullable error) {
-//            [StrongSelf checkForMentionOrHashtagInText:result];
-//        }];
-//
-//        if (StrongSelf.editorPaste) {
-//            [StrongSelf blurTextEditor];
-//            StrongSelf.editorPaste = NO;
-//        }
-//    };
-    
-//    ctx[@"contentPasteCallback"] = ^(JSValue *msg) {
-//        __weak typeof(weakSelf) StrongSelf = weakSelf;
-//        StrongSelf.editorPaste = YES;
-//    };
-//    [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
-//
-//    [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('paste', contentPasteCallback, false);"];
-    
 }
 
 #pragma mark - Mention & Hashtag Support Section
