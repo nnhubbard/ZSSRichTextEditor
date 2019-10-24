@@ -357,21 +357,26 @@ static CGFloat kDefaultScale = 0.5;
 
 - (void)createEditorViewWithFrame:(CGRect)frame {
     
-    NSString *jScript = @"var meta = document.createElement('meta'); meta.setAttribute('name', 'viewport'); meta.setAttribute('content', 'width=device-width'); document.getElementsByTagName('head')[0].appendChild(meta);";
+    
+    //allocate config and contentController and add scriptMessageHandler
+    WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
 
-    WKUserScript *wkUScript = [[WKUserScript alloc] initWithSource:jScript injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
-    WKUserContentController *wkUController = [[WKUserContentController alloc] init];
-    [wkUController addUserScript:wkUScript];
+    WKUserContentController *contentController = [[WKUserContentController alloc] init];
+    [contentController addScriptMessageHandler:self name:@"jsm"];
+    
+    config.userContentController = contentController;
+
+    //load scripts
+    NSString *scriptString = @"var meta = document.createElement('meta'); meta.setAttribute('name', 'viewport'); meta.setAttribute('content', 'width=device-width'); document.getElementsByTagName('head')[0].appendChild(meta);";
+
+    WKUserScript *script = [[WKUserScript alloc] initWithSource:scriptString injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
+    
+    [contentController addUserScript:script];
     
     
-    WKWebViewConfiguration *config =
-          [[WKWebViewConfiguration alloc] init];
-    [config.userContentController
-          addScriptMessageHandler:self name:@"ZSSRichTextEditor"];
-    
+    //set data detection to none so it doesnt conflict
     config.dataDetectorTypes = WKDataDetectorTypeNone;
     
-    config.userContentController = wkUController;
 
     
     self.editorView = [[WKWebView alloc] initWithFrame:frame
@@ -1892,28 +1897,61 @@ static CGFloat kDefaultScale = 0.5;
 }
 
 
-#pragma mark - WKWebView Delegate
+#pragma mark - WKScriptMessageHandler Delegate
 
-- (void)userContentController:(WKUserContentController *)userContentController
-                        didReceiveScriptMessage:(WKScriptMessage *)message {
-    NSDictionary *sentData = (NSDictionary *)message.body;
-    NSString *messageString = sentData[@"message"];
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    NSString *messageString = (NSString *)message.body;
     NSLog(@"Message received: %@", messageString);
+    
+    /*
+     
+     Callback for when text is changed, solution posted by richardortiz84 https://github.com/nnhubbard/ZSSRichTextEditor/issues/5
+     
+     */
+    
+    if ([messageString isEqualToString:@"paste"]) {
+        self.editorPaste = YES;
+    }
+    
+    if ([messageString isEqualToString:@"input"]) {
+        
+        if (_receiveEditorDidChangeEvents) {
+            [self updateEditor];
+        }
+        
+        [self getText:^(NSString * result, NSError * _Nullable error) {
+            [self checkForMentionOrHashtagInText:result];
+        }];
+        
+        if (self.editorPaste) {
+            [self blurTextEditor];
+            self.editorPaste = NO;
+        }
+    }
 }
+
+#pragma mark - WKNavigationDelegate Delegate
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
        
-    NSString *urlString = [navigationAction.request.URL query];
+    
+    NSString *query = [navigationAction.request.URL query];
+    
+    NSString *urlString = [navigationAction.request.URL absoluteString];
 
     decisionHandler(WKNavigationActionPolicyAllow);
 
-    //NSLog(@"web request");
-    //NSLog(@"%@", urlString);
+    NSLog(@"web request");
+    NSLog(@"%@", urlString);
+    NSLog(@"%@", query);
 
     
     if (navigationAction.navigationType == UIWebViewNavigationTypeLinkClicked) {
 
-       } else if ([urlString rangeOfString:@"callback://0/"].location != NSNotFound) {
+        //On the old UIWebView delegate it returned false Bool here
+        //TODO: what should we do now?
+        
+    } else if ([urlString rangeOfString:@"callback://0/"].location != NSNotFound) {
         
         // We recieved the callback
         NSString *className = [urlString stringByReplacingOccurrencesOfString:@"callback://0/" withString:@""];
@@ -1959,38 +1997,61 @@ static CGFloat kDefaultScale = 0.5;
         });
     }
     
+    
+    
+    
     /*
      
      Callback for when text is changed, solution posted by richardortiz84 https://github.com/nnhubbard/ZSSRichTextEditor/issues/5
      
      */
-    __block bool receiveEditorDidChangeEvents = _receiveEditorDidChangeEvents;
-    __weak typeof(self) weakSelf = self;
-    JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-    ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
-        
-        __weak typeof(weakSelf) StrongSelf = weakSelf;
-        if (receiveEditorDidChangeEvents) {
-            [self updateEditor];
-        }
-        
-        [StrongSelf getText:^(NSString * result, NSError * _Nullable error) {
-            [StrongSelf checkForMentionOrHashtagInText:result];
-        }];
-        
-        if (StrongSelf.editorPaste) {
-            [StrongSelf blurTextEditor];
-            StrongSelf.editorPaste = NO;
-        }
-    };
     
-    ctx[@"contentPasteCallback"] = ^(JSValue *msg) {
-        __weak typeof(weakSelf) StrongSelf = weakSelf;
-        StrongSelf.editorPaste = YES;
-    };
-    [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
+    NSString *inputListener = @"document.getElementById('zss_editor_content').addEventListener('input', function() {window.webkit.messageHandlers.jsm.postMessage('input');});";
+    NSString *pasteListener = @"document.getElementById('zss_editor_content').addEventListener('paste', function() {window.webkit.messageHandlers.jsm.postMessage('paste');});";
     
-    [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('paste', contentPasteCallback, false);"];
+    [self.editorView evaluateJavaScript:inputListener completionHandler:^(NSString *result, NSError *error) {
+        if (error != NULL) {
+            NSLog(@"%@", error);
+        }
+    }];
+    
+    [self.editorView evaluateJavaScript:pasteListener completionHandler:^(NSString *result, NSError *error) {
+        if (error != NULL) {
+            NSLog(@"%@", error);
+        }asd
+    }];
+
+    //TODO: the code below here is broken on WKWebView
+    
+//    __block bool receiveEditorDidChangeEvents = _receiveEditorDidChangeEvents;
+//    __weak typeof(self) weakSelf = self;
+//
+//
+//    JSContext *ctx = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
+//    ctx[@"contentUpdateCallback"] = ^(JSValue *msg) {
+//
+//        __weak typeof(weakSelf) StrongSelf = weakSelf;
+//        if (receiveEditorDidChangeEvents) {
+//            [self updateEditor];
+//        }
+//
+//        [StrongSelf getText:^(NSString * result, NSError * _Nullable error) {
+//            [StrongSelf checkForMentionOrHashtagInText:result];
+//        }];
+//
+//        if (StrongSelf.editorPaste) {
+//            [StrongSelf blurTextEditor];
+//            StrongSelf.editorPaste = NO;
+//        }
+//    };
+    
+//    ctx[@"contentPasteCallback"] = ^(JSValue *msg) {
+//        __weak typeof(weakSelf) StrongSelf = weakSelf;
+//        StrongSelf.editorPaste = YES;
+//    };
+//    [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('input', contentUpdateCallback, false);"];
+//
+//    [ctx evaluateScript:@"document.getElementById('zss_editor_content').addEventListener('paste', contentPasteCallback, false);"];
     
 }
 

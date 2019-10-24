@@ -62,6 +62,8 @@ zss_editor.init = function() {
                  zss_editor.updateScrollOffset = true;
                  zss_editor.setScrollPosition();
                  zss_editor.enabledEditingItems(e);
+                 zss_editor.debug('debug test');
+                 zss_editor.sendScript('script test');
                  });
     $(window).on('touchstart', function(e) {
                  zss_editor.isDragging = false;
@@ -73,6 +75,10 @@ zss_editor.init = function() {
                  });
     
 }//end
+
+zss_editor.sendScript = function(msg) {
+    window.webkit.messageHandlers.jsm.postMessage(msg);
+}
 
 zss_editor.updateOffset = function() {
     
