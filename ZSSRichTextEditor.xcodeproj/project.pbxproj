@@ -115,6 +115,7 @@
 		45F860C718A84CFA0011266B /* ZSSunorderedlist@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A518A84CFA0011266B /* ZSSunorderedlist@2x.png */; };
 		45F860C818A84CFA0011266B /* ZSSviewsource@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 45F860A618A84CFA0011266B /* ZSSviewsource@2x.png */; };
 		946ADB9B2285CA3B00DB27F2 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 946ADB9A2285CA3B00DB27F2 /* Launch Screen.storyboard */; };
+		C3598B1B235A550D00C1A530 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3598B1A235A550D00C1A530 /* WebKit.framework */; };
 		DB1D27A21D79EC1700EC1CBD /* ZSSimageDevice.png in Resources */ = {isa = PBXBuildFile; fileRef = DB1D27A01D79EC1700EC1CBD /* ZSSimageDevice.png */; };
 		DB1D27A31D79EC1700EC1CBD /* ZSSimageDevice@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB1D27A11D79EC1700EC1CBD /* ZSSimageDevice@2x.png */; };
 		DB1D27A61D79F62D00EC1CBD /* DemoModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1D27A51D79F62D00EC1CBD /* DemoModalViewController.m */; };
@@ -262,6 +263,7 @@
 		45F860A518A84CFA0011266B /* ZSSunorderedlist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSunorderedlist@2x.png"; path = "Source/Images/ZSSunorderedlist@2x.png"; sourceTree = "<group>"; };
 		45F860A618A84CFA0011266B /* ZSSviewsource@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSviewsource@2x.png"; path = "Source/Images/ZSSviewsource@2x.png"; sourceTree = "<group>"; };
 		946ADB9A2285CA3B00DB27F2 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		C3598B1A235A550D00C1A530 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		DB1D27A01D79EC1700EC1CBD /* ZSSimageDevice.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZSSimageDevice.png; path = Source/Images/ZSSimageDevice.png; sourceTree = "<group>"; };
 		DB1D27A11D79EC1700EC1CBD /* ZSSimageDevice@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ZSSimageDevice@2x.png"; path = "Source/Images/ZSSimageDevice@2x.png"; sourceTree = "<group>"; };
 		DB1D27A41D79F62D00EC1CBD /* DemoModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoModalViewController.h; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 			files = (
 				4581EB82184845790048CAB0 /* CoreGraphics.framework in Frameworks */,
 				4581EB84184845790048CAB0 /* UIKit.framework in Frameworks */,
+				C3598B1B235A550D00C1A530 /* WebKit.framework in Frameworks */,
 				4581EB80184845790048CAB0 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -446,6 +449,7 @@
 		4581EB7E184845790048CAB0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C3598B1A235A550D00C1A530 /* WebKit.framework */,
 				4581EBAE1848459F0048CAB0 /* CoreText.framework */,
 				4581EB7F184845790048CAB0 /* Foundation.framework */,
 				4581EB81184845790048CAB0 /* CoreGraphics.framework */,
