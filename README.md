@@ -6,18 +6,18 @@ The Editor
 
 `ZSSRichTextEditor` is a beautiful Rich Text `WYSIWYG Editor` for `iOS`. It includes all of the standard editor tools one would expect from a `WYSIWYG` editor as well as an amazing source view with syntax highlighting.
 
-![Toolbar](http://f.cl.ly/items/0L3c0N3u142Q2S0v1Y0o/demo1.gif "Toolbar")
+![toolbar](https://user-images.githubusercontent.com/30858/132384030-59c0d2be-ab90-4535-9dd8-e5ee3e405e2e.gif)
 
 The editor is used how any other text input area in iOS is used. A selection of text or content is made, then tapping on the toolbar item below will apply that style. A Source View is also included, you can make changes and this will be reflected in the editor preview.
 
-![Editor](http://cl.ly/image/3i41403g200B/demo.gif "Editor")
+![editor](https://user-images.githubusercontent.com/30858/132384094-9a1d2182-0c21-468d-b3d9-2049397e2af5.gif)
 
 Colors
 ---
 
 We wanted to have a really beautiful color picker to make changing colors really simple. So, we used the open-source HRColorPicker which was exactly what we were looking for. Choosing colors for text or background is simple and seamless.
 
-![Colors](http://f.cl.ly/items/3D1k3v1E2L0g2z2j3b1M/demo3.gif "Colors")
+![colors](https://user-images.githubusercontent.com/30858/132384119-6b4a836d-1c21-400a-bb5a-5d18534d3bd5.gif)
 
 How It Works
 ---
